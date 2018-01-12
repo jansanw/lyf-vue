@@ -11,19 +11,18 @@ import orderlist from './modules/orderlist'
 import discovery from './modules/discovery'
 
 
-
-Vue.use(Vuex)
-const debug = process.env.NODE_ENV !== 'production'
+Vue.use(Vuex);
+const debug = process.env.NODE_ENV !== 'production';
 export default new Vuex.Store({
-  modules: {
-    home,
-    class_index,
-    actionsheet,
-    common,
-    page_load_state,
-    orderlist,
-    discovery,
+    modules: {
+        home,
+        class_index,
+        actionsheet,
+        common,
+        page_load_state,
+        orderlist,
+        discovery,
 
-  },
-  strict: debug
-})
+    },
+    strict: debug
+});
