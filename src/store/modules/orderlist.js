@@ -30,11 +30,7 @@ const mutations = {
             }
 
         }
-        if (payload.ret.data.data.current_page >= payload.ret.data.data.last_page) {
-            state.list[state.active].load_more = false;
-        } else {
-            state.list[state.active].load_more = true;
-        }
+        state.list[state.active].load_more = !(payload.ret.data.data.current_page >= payload.ret.data.data.last_page);
         state.list[state.active].init = true;
 
         //state.list[state.active].is_load = false;

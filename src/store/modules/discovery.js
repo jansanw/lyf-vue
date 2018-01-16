@@ -24,7 +24,7 @@ const state = {
 const mutations = {
     ['DISCOVERY_GETDATA_CALLBACK'](state, payload) {
         state.list[state.active].init = true;
-        if (state.list[state.active].page == 1) {
+        if (state.list[state.active].page === 1) {
             state.list[state.active].order_list = payload.ret.data.data.data
 
         } else {

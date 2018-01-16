@@ -11,7 +11,7 @@ const state = {
 };
 const mutations = {
     ['UPDATE_PAGE_LOAD_STATE_DATA'](state, payload) {
-        for (var key in payload) {
+        for (let key in payload) {
             state[key] = payload[key]
         }
 

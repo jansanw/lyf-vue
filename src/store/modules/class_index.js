@@ -9,7 +9,7 @@ const actions = {
             is_load: true
         });
         http.userGet('get_class_index', res => {
-            context.commit('SET_CLASS_INDEX_DATA', res)
+            context.commit('SET_CLASS_INDEX_DATA', res);
             $loading.hide();
             cb(res)
         }, error => {

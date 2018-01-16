@@ -53,10 +53,10 @@ const actions = {
 };
 const mutations = {
     ['SET_DATA'](state, payload) {
-        state.list[state.active].init = true
-        if (state.list[state.active].page == 1) {
-            if (state.active == 0) {
-                state.goods_class = payload.data.data.goods_class
+        state.list[state.active].init = true;
+        if (state.list[state.active].page === 1) {
+            if (state.active === 0) {
+                state.goods_class = payload.data.data.goods_class;
                 state.swiper_data = payload.data.data.slide.adv
             } else {
                 state.list[state.active].subclass = payload.data.data.goods_class
@@ -68,7 +68,7 @@ const mutations = {
             }
         }
         if (state.list[state.active].page >= payload.data.data.goods_list.last_page) {
-            state.list[state.active].page = payload.data.data.goods_list.current_page
+            state.list[state.active].page = payload.data.data.goods_list.current_page;
             state.list[state.active].load_more = false;
         }
         state.list[state.active].is_load = false;

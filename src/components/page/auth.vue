@@ -19,10 +19,10 @@
             }
         },
         mounted() {
-            this.token = this.$route.params.token;
+            this.token = this.$route.params.token || '666666666666';
             this.back = this.$api.get("login_back");
             this.back = this.back.split("#");
-            this.back = this.back[1];
+            this.back = this.back[1] || "/home";
             if (this.token === 0) {
                 $toast.show("登录失败")
             } else {

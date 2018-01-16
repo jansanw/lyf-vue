@@ -84,7 +84,7 @@ export default {
         }
     },
     ck_login() {
-        let token = this.l_get("token");
+        let token = '6666';//this.l_get("token");
         if (!token) {
             $loading.hide();
             //记录登录前地址
@@ -92,7 +92,7 @@ export default {
             // let login_url = "http://lyf.aoyi66.com/home/wx/login_v2?back=" + encodeURIComponent("http://" + window.location.host + "/#/auth");
             // login_url
             // window.location.href = "/#/login";
-            $router.push("/login");
+            $router.replace("/login");
             return false
         } else {
             return true
