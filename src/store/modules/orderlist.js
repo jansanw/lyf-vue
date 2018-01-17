@@ -14,17 +14,16 @@ for (let i = 0; i < catLen; i++) {
 const state = {
     list,
     active: 0,
-
 };
 
 const mutations = {
     ['ORDERLIST_GETDATA_CALLBACK'](state, payload) {
         state.list[state.active].init = true;
-        if (state.list[state.active].page == 1) {
+        if (state.list[state.active].page === 1) {
             state.list[state.active].order_list = payload.ret.data.data.data
 
         } else {
-            state.list[state.active].page = payload.ret.data.data.current_page
+            state.list[state.active].page = payload.ret.data.data.current_page;
             for (let i = 0; i < payload.ret.data.data.data.length; i++) {
                 state.list[state.active].order_list.push(payload.ret.data.data.data[i]);
             }

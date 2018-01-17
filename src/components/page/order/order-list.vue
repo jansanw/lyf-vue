@@ -136,7 +136,7 @@
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 let id = vm.$route.params.type;
-                vm.active = id;
+                // vm.active = id;
                 vm.$store.commit('ORDERLIST_UPDATE', {active: id});
 //      vm.loading=true
                 vm.getData(() => {
@@ -160,21 +160,62 @@
 
         methods: {
             getData(done) {
+                this.loading = false;
+                this.$store.commit('ORDERLIST_GETDATA_CALLBACK', {
+                    //mock
+                    //state.list[state.active].order_list = payload.ret.data.data.data
+                    ret: {
+                        data: {
+                            data: {
+                                data: [
+                                    {
+                                        order_store: {
+                                            store_avatar: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
+                                            store_name: "苏宁"
+                                        },
+                                        if_lock: 0,
+                                        order_state: 20, /*30:确认收货,40:评价订单,10:取消订单,0:删除订单*/
+                                        order_id: 666,
+                                        order_goods: [
+                                            {
+                                                goods_image_url: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
+                                                goods_name: "抱枕",
+                                                goods_spec: "红色，大大的",
+                                                goods_price: 99,
+                                                goods_marketprice: 999,
+                                                goods_num: 1
+                                            }
+                                        ],
+                                        goods_count: 1,
+                                        order_amount: 99,
+                                        shipping_fee: 8,
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                });
+                this.loading = false;
+                this.$nextTick(() => {
+                    $loading.hide();
+                    done()
+                });
+                return;
+
 
                 if (!this.load_more) return;
                 $loading.show();
-                console.log('!load_more=', !this.load_more, 'loading=', this.loading, 'pages=', this.page)
+                console.log('!load_more=', !this.load_more, 'loading=', this.loading, 'pages=', this.page);
 //      if (this.page == 1) {
 //        $loading.show()
 //      }
-
                 let condition = '&state_type=' + this.state_type[this.active];
                 //console.log('this.active=',this.active,'condition=',condition)
                 this.$api.userAuthGet("order_list?page=" + this.page + condition, res => {
                     console.log(res);
 
-                    if (res.data.status_code == 1) {
-                        this.$store.commit('ORDERLIST_GETDATA_CALLBACK', {ret: res})
+                    if (res.data.status_code === 1) {
+                        this.$store.commit('ORDERLIST_GETDATA_CALLBACK', {ret: res});
 //          if (this.page == 1) {
 //            this.order_list = res.data.data.data
 //          } else {
@@ -203,14 +244,14 @@
                 if (this.loading) return;
 //      this.page = 1
 //      this.load_more = true
-                this.$store.commit('ORDERLIST_UPDATE_LIST', {load_more: true})
+                this.$store.commit('ORDERLIST_UPDATE_LIST', {load_more: true});
                 this.getData(done)
             },
             onInfinite() {
 //      this.$set(this.pages,this.active,this.page+1)
-                this.$store.commit('ORDERLIST_UPDATE_LIST', {page: this.page + 1})
+                this.$store.commit('ORDERLIST_UPDATE_LIST', {page: this.page + 1});
 
-                console.log('pages=', this.page, 'load_more=', this.load_more)
+                console.log('pages=', this.page, 'load_more=', this.load_more);
                 if (this.load_more) {
                     this.getData(() => {
                         //this.$refs.lyf_scroll.infiniteDone()
@@ -314,7 +355,6 @@
 //    }
         },
         watch: {
-
             active(val, oldVal) {
                 if (!this.init) {
                     this.loading = true;

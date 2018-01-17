@@ -228,16 +228,16 @@
         swiper,
         swiperSlide
     }
-        from 'vue-awesome-swiper'
+        from 'vue-awesome-swiper';
     import actionsheet from '../../layout/action-sheet.vue';
     import {
         mapState,
         mapActions
     }
-        from 'vuex'
-    import VoucherList from '../../layout/voucher-list.vue'
-    import bus from "../../../bus.js"
-    import BScroll from 'better-scroll'
+        from 'vuex';
+    import VoucherList from '../../layout/voucher-list.vue';
+    import bus from "../../../bus.js";
+    import BScroll from 'better-scroll';
 
     function dataInit() {
         return {
@@ -308,7 +308,7 @@
                 this.store_hot_list_w = 0;
                 items.map(a => {
                     this.store_hot_list_w += a.clientWidth
-                })
+                });
                 this.$nextTick(() => {
                     if (this.store_hot_scl) {
                         this.store_hot_scl.refresh()

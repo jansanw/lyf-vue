@@ -135,7 +135,7 @@
                                                 <div class="edit-quantity">
                                                     <p class="btn-minus">
                                                         <a @click="cut_goods_num(store.store_id,index)"
-                                                           class="btn minus off" min="1"></a>
+                                                           class="btn minus off"></a>
                                                     </p>
                                                     <p class="btn-input">
                                                         <input type="number" min="1"
@@ -342,6 +342,58 @@
         },
         methods: {
             getList() {
+                //mock
+                let res = {
+                    data: {
+                        data: {
+                            cart_list: [{
+                                store_id: 0,
+                                store_name: "苏宁",
+                                voucher_list: [],//neck_voucher
+                                // edit_text: "编辑",
+                                // is_edit: true,
+                                goods: [
+                                    {
+                                        cart_id: 66,
+                                        // is_check: false,
+                                        goods_image_url: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
+                                        goods_name: "抱枕",
+                                        goods_spec_text: "红色，大大的",
+                                        goods_price: 99,
+                                        goods_marketprice: 999,
+                                        goods_num: 1
+                                    },
+                                    {
+                                        cart_id: 67,
+                                        // is_check: false,
+                                        goods_image_url: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
+                                        goods_name: "抱枕",
+                                        goods_spec_text: "红色，大大的",
+                                        goods_price: 99,
+                                        goods_marketprice: 999,
+                                        goods_num: 1
+                                    }
+                                ]
+                            }]
+                        }
+                    }
+                };
+                for (let key in res.data.data.cart_list) {
+                    this.$set(res.data.data.cart_list[key], "is_edit", false);
+                    this.$set(res.data.data.cart_list[key], "edit_text", "编辑");
+                    for (let c_k in res.data.data.cart_list[key].goods) {
+                        this.$set(res.data.data.cart_list[key].goods[c_k], "is_check", false)
+                    }
+                }
+                this.cart_list = res.data.data.cart_list;
+                this.cart_count = res.data.data.cart_count;
+                console.log(this.cart_list);
+                this.show_page = true;
+                $loading.hide();
+                this.$store.commit('UPDATE_COMMON_DATA', {
+                    cart_view_data_reload: false
+                });
+                return;
                 this.$api.userAuthGet('cart_list', res => {
                     for (let key in res.data.data.cart_list) {
                         this.$set(res.data.data.cart_list[key], "is_edit", false);
@@ -357,11 +409,11 @@
                     $loading.hide();
                     this.$store.commit('UPDATE_COMMON_DATA', {
                         cart_view_data_reload: false
-                    })
+                    });
                 }, error => {
                     this.$store.commit('UPDATE_COMMON_DATA', {
                         cart_view_data_reload: false
-                    })
+                    });
                 })
             },
             edit_cart(store_id) {

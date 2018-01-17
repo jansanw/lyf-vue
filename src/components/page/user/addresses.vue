@@ -335,6 +335,18 @@
         },
         methods: {
             getData() {
+                //mock
+                this.address_list = [{
+                    true_name:"阿山",
+                    mob_phone:"15*******97",
+                    area_info:"广东省 广州市 黄埔区 萝岗街道",
+                    address:"科学大道中科99号汇金谷三街十号C1座6楼",
+                    is_default:1,
+                    address_id:1,
+                }];
+                $loading.hide();
+                return;
+
                 this.$api.userAuthGet("user_address", res => {
                     this.address_list = res.data.data;
                     $loading.hide()

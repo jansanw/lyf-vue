@@ -101,16 +101,15 @@
                 </li>
             </ul>
 
-
             <div class="personal-wrapper-2" style="margin-top: 0">
                 <div class="p-wrapper-2-item" @click='this.$router.push({name:"message_list"})'>
                     <div class="p-messages"><i class="iconfont icon-xiaoxi1 color-assertive"></i></div>
                     <p class="p-wrap-2-title">我的消息</p>
                 </div>
-                <div class="p-wrapper-2-item" @click='this.$router.push({name:"my_voucher"})'>
-                    <div class="p-coupons"><i class="iconfont icon-coupon color-positive"></i></div>
-                    <p class="p-wrap-2-title">我的优惠券</p>
-                </div>
+                <!--<div class="p-wrapper-2-item" @click='this.$router.push({name:"my_voucher"})'>-->
+                    <!--<div class="p-coupons"><i class="iconfont icon-coupon color-positive"></i></div>-->
+                    <!--<p class="p-wrap-2-title">我的优惠券</p>-->
+                <!--</div>-->
                 <div class="p-wrapper-2-item" @click='this.$router.push({name:"favorite"})'>
                     <div class="p-likes"><i class="iconfont icon-ai-mark color-calm"></i></div>
                     <p class="p-wrap-2-title">我的收藏</p>
@@ -120,13 +119,13 @@
                     <p class="p-wrap-2-title">退款/售后</p>
                 </div>
             </div>
-            <div class="personal-wrapper-2 hm-margin-b" style="margin-top: 0">
-                <div class="p-wrapper-2-item" @click='this.$router.push({name:"message_list"})'>
-                    <div class="p-messages"><i class="iconfont icon-gerenzhongxin color-assertive"></i></div>
-                    <p class="p-wrap-2-title">旧版会员中心</p>
-                </div>
+            <!--<div class="personal-wrapper-2 hm-margin-b" style="margin-top: 0">-->
+                <!--<div class="p-wrapper-2-item" @click='this.$router.push({name:"message_list"})'>-->
+                    <!--<div class="p-messages"><i class="iconfont icon-gerenzhongxin color-assertive"></i></div>-->
+                    <!--<p class="p-wrap-2-title">旧版会员中心</p>-->
+                <!--</div>-->
 
-            </div>
+            <!--</div>-->
             <!--<div class="" style="margin-bottom:.8rem;">-->
             <!--<div class="item item-divider">-->
             <!--必备工具-->
@@ -166,8 +165,6 @@
                     </div>
                 </li>
             </ul>
-
-
         </scroll>
         <footnav :active="4"></footnav>
     </div>
@@ -199,6 +196,24 @@
         methods: {
             get_data(done) {
                 this.is_load = true;
+                this.is_load = false;
+                this.page_show = true;
+
+                //mock
+                this.user = {
+                    user: {
+                        avatar: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
+                        nickname: "jansanw",
+                        user_wx: "666666"
+                    },
+                    order_count: {
+                        order_nopay_count: 1,
+                        order_nosend_count:1,
+                        order_noreceipt_count:1,
+                        order_noeval_count:1
+                    }
+                };
+                return;
                 this.$api.userAuthGet("user_index", res => {
                     if (res.data.status_code === 1) {
                         this.user = res.data.data

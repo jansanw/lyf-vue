@@ -70,7 +70,7 @@
                             <div class="module o_item">
                                 <div class="item-list o-t-item" v-for="goods in order_info.order_goods">
                                     <div class="item-img">
-                                        <p><img class="" v-lazy="goods.image_url" data-src-checked="true"></p>
+                                        <p><img class="" v-lazy="goods.goods_image_url" data-src-checked="true"></p>
                                     </div>
                                     <div class="item-info">
                                         <h3 class="title">{{goods.goods_name}}</h3>
@@ -185,15 +185,55 @@
         },
         methods: {
             getData() {
+                //mock
+
+                this.order_info = {
+
+                    order_sn: "6666666",
+                    order_pay: {
+                        pay_sn: "alipay999999999"
+                    },
+                    add_time: "09:50",
+                    payment_time: "09:55",
+                    finnshed_time: "09:55",
+                    order_state: 40,
+                    if_lock: 0,
+                    order_text: "订单完成~",
+                    reciver_name: "收货人",
+                    reciver_phone: "1588********",
+                    reciver_addr: "广州科密...",
+                    store_info: {
+                        store_avatar: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
+                        store_name: "苏宁"
+                    },
+                    order_goods: [
+                        {
+                            goods_image_url: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
+                            goods_name: "抱枕",
+                            goods_spec: "红色，大大的",
+                            goods_price: 99,
+                            goods_marketprice: 999,
+                            goods_num: 1
+                        }
+                    ],
+                    order_amount: 99,
+                    shipping_fee: 8,
+
+
+                };
+                this.page_show = true;
+                $loading.hide();
+
+
+                return;
                 this.$api.userAuthGet("order_info?order_id=" + this.order_id, res => {
                     if (res.data.status_code === 1) {
                         this.order_info = res.data.data;
-
-                        this.page_show = true
+                        this.page_show = true;
                     }
-                    $loading.hide()
+                    $loading.hide();
                 }, error => {
-                    $loading.hide()
+                    $loading.hide();
                 })
             },
             go_refund(order_id, goods_id, type) {

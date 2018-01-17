@@ -1,5 +1,9 @@
 <template lang="html">
     <div class="page">
+        <!--固定不动的元素 要放到page-content的外面-->
+        <div class="download-app">
+            <i class="iconfont icon-houtui2" @click="goback"></i>
+        </div>
         <div class="topbar">
             <div ref="list_top_menu" class="top-menu aui-border-b hm-flex-1">
                 <ul ref="list_top_menu_list" class="top-menu-list" :style="'width:'+m_w+'px'">
@@ -122,7 +126,7 @@
 
 
                     } else {
-                        for (var index in res.data.data.goods_list.data) {
+                        for (let index in res.data.data.goods_list.data) {
                             this.goods.push(res.data.data.goods_list.data[index])
                         }
                     }
@@ -165,9 +169,9 @@
                 }
             },
             _setMenuW() {
-                var items = this.$refs.list_top_menu_item;
-                var a = 0;
-                for (var index in items) {
+                let items = this.$refs.list_top_menu_item;
+                let a = 0;
+                for (let index in items) {
                     a = a + items[index].clientWidth
                 }
                 this.m_w = a;
@@ -220,6 +224,9 @@
                         show_search: 0,
                     }
                 });
+            },
+            goback() {
+                this.$router.go(-1)
             },
         },
         beforeRouteEnter(to, from, next) {
@@ -296,4 +303,30 @@
         -webkit-line-clamp: 2;
     }
 
+    .download-app {
+        padding-top: 1.11rem;
+        height: 1.28rem;
+        background-color: transparent;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        vertical-align: middle;
+        display: block;
+        i {
+            display: block;
+            float: left;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.3);
+            margin: 0.13rem 0.27rem;
+            font-size: 0.48rem;
+            width: 0.85rem;
+            height: 0.85rem;
+            line-height: 0.85rem;
+            border-radius: 50%;
+            text-align: center;
+            z-index: 100;
+        }
+    }
 </style>
