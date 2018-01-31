@@ -7,9 +7,9 @@
                 <div class="item-note" v-if="Province && City && District">{{Province}} {{City}} {{District}}</div>
                 <div class="item-note" v-else>请选择地区</div>
                 <span class="icon ion-ios-arrow-right"></span></hl-item>
-            <von-input type="text" v-model="address" placeholder="请填写详细街道地址" label="地址"></von-input>
+            <von-input type="text" v-model="street" placeholder="请填写详细街道地址" label="街道"></von-input>
             <div class="pd-10">
-                <button class="button button-assertive button-block" :disabled="ck_save" @click="save_addrsss()">保存
+                <button class="button button-assertive button-block" :disabled="ck_save" @click="save_address()">保存
                 </button>
             </div>
 
@@ -35,16 +35,16 @@
                 <section>
                     <div class="ul" ref="addList">
                         <ul ref="addList_ul">
-                            <li class="addList" v-for="(v,k) in info" @click="getProvinceId(v.area_id, v.area_name, k)"
-                                v-if="showProvince" :class="v.selected ? 'active' : ''">{{v.area_name}}
+                            <li class="addList" v-for="(v,k) in info" @click="getProvinceId(v.id, v.name, k)"
+                                v-if="showProvince" :class="v.selected ? 'active' : ''">{{v.name}}
                             </li>
                             <li class="addList" v-for="(v,k) in showCityList"
-                                @click="getCityId(v.area_id, v.area_name, k)" v-if="showCity"
-                                :class="v.selected ? 'active' : ''">{{v.area_name}}
+                                @click="getCityId(v.id, v.name, k)" v-if="showCity"
+                                :class="v.selected ? 'active' : ''">{{v.name}}
                             </li>
                             <li class="addList" v-for="(v,k) in showDistrictList"
-                                @click="getDistrictId(v.area_id, v.area_name, k)" v-if="showDistrict"
-                                :class="v.selected ? 'active' : ''">{{v.area_name}}
+                                @click="getDistrictId(v.id, v.name, k)" v-if="showDistrict"
+                                :class="v.selected ? 'active' : ''">{{v.name}}
                             </li>
                         </ul>
                     </div>
@@ -61,19 +61,19 @@
     export default {
         data() {
             return {
-                address_id: 0,
+                id: -1,
                 name: "",
                 mobile: "",
-                address: "",
+                street: "",
                 showChose: false,
                 showProvince: true,
                 showCity: false,
                 showDistrict: false,
                 showCityList: false,
                 showDistrictList: false,
-                province: 0,
-                city: 0,
-                district: 0,
+                province_id: 0,
+                city_id: 0,
+                district_id: 0,
                 GetProvinceId: 2,
                 District: false,
                 Province: false,
@@ -86,7 +86,7 @@
         computed: {
             ck_save: {
                 get() {
-                    return (this.province <= 0 || this.city <= 0 || this.district <= 0 || this.name == '' || this.mobile == '' || this.address == '');
+                    return (this.province_id <= 0 || this.city_id <= 0 || this.district_id <= 0 || this.name === '' || this.mobile === '' || this.street === '');
                 },
                 set() {
 
@@ -94,7 +94,7 @@
             }
         },
         watch: {
-            address_id(val, oldVal) {
+            id(val, oldVal) {
                 if (val !== oldVal && val > 0) {
                     if (this.info.length <= 0) {
                         $loading.show();
@@ -138,19 +138,19 @@
             _filter(add, name, code) {
                 let result = [];
                 for (let i = 0; i < add.length; i++) {
-                    if (code == add[i].area_id) {
+                    if (code === add[i].id) {
                         result = add[i].children;
                     }
                 }
                 return result;
             },
             getProvinceId: function (code, input, index) {
-                this.province = code;
+                this.province_id = code;
                 this.Province = input;
                 this.showProvince = false;
                 this.showCity = true;
                 this.showDistrict = false;
-                this.showCityList = this._filter(this.info, 'city', this.province);
+                this.showCityList = this._filter(this.info, 'city', this.province_id);
                 // 点击选择当前
                 this.info.map(a => a.selected = false);
                 this.info[index].selected = true;
@@ -168,9 +168,9 @@
                 this.Province = false;
                 this.City = false;
                 this.District = false;
-                this.province = 0;
-                this.city = 0;
-                this.district = 0;
+                this.province_id = 0;
+                this.city_id = 0;
+                this.district_id = 0;
                 // 选项页面的切换
                 this.showProvince = true;
                 this.showCity = false;
@@ -180,12 +180,12 @@
                 })
             },
             getCityId: function (code, input, index) {
-                this.city = code;
+                this.city_id = code;
                 this.City = input;
                 this.showProvince = false;
                 this.showCity = false;
                 this.showDistrict = true;
-                this.showDistrictList = this._filter(this.showCityList, 'district', this.city);
+                this.showDistrictList = this._filter(this.showCityList, 'district', this.city_id);
                 // 选择当前添加active
                 this.showCityList.map(a => a.selected = false);
                 this.showCityList[index].selected = true;
@@ -201,14 +201,14 @@
                 // 清除市级和区级选项
                 this.City = false;
                 this.District = false;
-                this.city = 0;
-                this.district = 0;
+                this.city_id = 0;
+                this.district_id = 0;
                 this.$nextTick(() => [
                     this._initScroll()
                 ])
             },
             getDistrictId: function (code, input, index) {
-                this.district = code;
+                this.district_id = code;
                 this.District = input;
                 // 选择当前添加active
                 this.showDistrictList.map(a => a.selected = false);
@@ -228,9 +228,9 @@
                 ])
             },
             getData() {
-                this.$api.userAuthGet("get_area_all", res => {
-                    this.info = res.data.data
-                    if (this.address_id == 0) {
+                this.$api.userAuthGet("area.json", res => {
+                    this.info = res.data.data;
+                    if (this.id === 0) {
                         this.showChose = true;
                     } else {
                         this.init_address()
@@ -244,15 +244,15 @@
                 })
             },
             init_address() {
-                this.info.filter((a, k) => {
-                    if (a.area_id == this.province) {
-                        this.getProvinceId(a.area_id, a.area_name, k);
-                        a.children.filter((aa, kk) => {
-                            if (aa.area_id == this.city) {
-                                this.getCityId(aa.area_id, aa.area_name, kk);
-                                aa.children.filter((aaa, kkk) => {
-                                    if (aaa.area_id == this.district) {
-                                        this.getDistrictId(aaa.area_id, aaa.area_name, kkk)
+                this.info.filter((province, k) => {
+                    if (province.id === this.province) {
+                        this.getProvinceId(province.id, province.name, k);
+                        province.children.filter((city, kk) => {
+                            if (city.id === this.city) {
+                                this.getCityId(city.id, city.name, kk);
+                                city.children.filter((district, kkk) => {
+                                    if (district.id === this.district) {
+                                        this.getDistrictId(district.id, district.name, kkk)
                                     }
                                 })
                             }
@@ -260,22 +260,22 @@
                     }
                 })
             },
-            save_addrsss() {
-                $loading.show()
-                this.$api.userAuthPost("user_save_address", {
-                    address_id: this.address_id,
-                    province: this.province,
-                    city: this.city,
-                    district: this.district,
+            save_address() {
+                $loading.show();
+                this.$api.userAuthPost(this.id === -1 ? "address/create" : "address/update", {
+                    id: this.id,
+                    province_id: this.province_id,
+                    city_id: this.city_id,
+                    district_id: this.district_id,
                     name: this.name,
                     mobile: this.mobile,
-                    address: this.address
-                }, res => {
-                    bus.$emit("onEditAddress", res);
-                    $toast.show(res.data.message)
-                }, error => {
-                    $toast.show(res.data.message)
-                })
+                    area: this.Province + ' ' + this.City + ' ' + this.District,
+                    street: this.street
+                }, rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        bus.$emit("onEditAddress", data);
+                    });
+                });
             },
         }
     }
@@ -366,6 +366,10 @@
         color: #EA5A49;
     }
 
+    .title.aui-border-b{
+        text-align: center;
+    }
+
     .area {
         display: inline-block;
         font-size: .37rem;
@@ -391,7 +395,7 @@
     }
 
     .address ul li {
-
+        text-align: center;
     }
 
     .address .title .active {

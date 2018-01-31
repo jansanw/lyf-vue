@@ -2,7 +2,7 @@ require('./check-versions')();
 
 const config = require('../config');
 if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
+    process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
 }
 
 const opn = require('opn');
@@ -24,28 +24,29 @@ let app = express();
 let compiler = webpack(webpackConfig);
 
 let devMiddleware = require('webpack-dev-middleware')(compiler, {
-  publicPath: webpackConfig.output.publicPath,
-  quiet: true
+    publicPath: webpackConfig.output.publicPath,
+    quiet: true
 });
 
 let hotMiddleware = require('webpack-hot-middleware')(compiler, {
-  log: () => {}
+    log: () => {
+    }
 });
 // force page reload when html-webpack-plugin template changes
 compiler.plugin('compilation', function (compilation) {
-  compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
-    hotMiddleware.publish({ action: 'reload' });
-    cb()
-  })
+    compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
+        hotMiddleware.publish({action: 'reload'});
+        cb()
+    })
 });
 
 // proxy api requests
 Object.keys(proxyTable).forEach(function (context) {
-  let options = proxyTable[context];
-  if (typeof options === 'string') {
-    options = { target: options }
-  }
-  app.use(proxyMiddleware(options.filter || context, options))
+    let options = proxyTable[context];
+    if (typeof options === 'string') {
+        options = {target: options}
+    }
+    app.use(proxyMiddleware(options.filter || context, options))
 });
 
 // handle fallback for HTML5 history API
@@ -69,17 +70,17 @@ app.use(vonicPath, express.static('./node_modules/vonic/dist'));
 let uri = 'http://localhost:' + port;
 
 devMiddleware.waitUntilValid(function () {
-  console.log('> Listening at ' + uri + '\n')
+    console.log('> Listening at ' + uri + '\n')
 });
 
 module.exports = app.listen(port, function (err) {
-  if (err) {
-    console.log(err);
-    return
-  }
+    if (err) {
+        console.log(err);
+        // return
+    }
 
-  // when env is testing, don't need open it
-  // if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-  //   opn(uri)
-  // }
+    // when env is testing, don't need open it
+    // if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
+    //   opn(uri)
+    // }
 });

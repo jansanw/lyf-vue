@@ -4,7 +4,6 @@
             <div class="padding">
                 <button @click="go_back()" class="button button-assertive button-block">点击回到登录前页面</button>
             </div>
-
         </div>
     </div>
 </template>
@@ -19,8 +18,8 @@
             }
         },
         mounted() {
-            this.token = this.$route.params.token || '666666666666';
-            this.back = this.$api.get("login_back");
+            this.token = this.$route.params.token;
+            this.back = this.$api.s_get("login_back");
             this.back = this.back.split("#");
             this.back = this.back[1] || "/home";
             if (this.token === 0) {

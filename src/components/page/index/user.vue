@@ -4,7 +4,7 @@
             <div class="personal-head head-bg-img">
                 <img alt="" v-lazy="user.user.avatar">
                 <div class="p-head-info">
-                    <p class="p-nickname">{{user.user.nickname}}</p>
+                    <p class="p-nickname">{{user.user.name}}</p>
                     <p class="p-platform" v-if="user.user.user_wx != ''">已绑定微信</p>
                     <p class="p-platform" v-else>未绑定微信</p>
                 </div>
@@ -19,7 +19,7 @@
                     <div class="number"><span>￥</span>253.0</div>
                     <div class="number-title">钱包</div>
                 </div>
-                <div class="personal-numbers-item" @click='go_friendlist(0)'>
+                <div class="personal-numbers-item" id="friend" @click='go_friend_list(0)'>
                     <div class="number">256</div>
                     <div class="number-title">好友</div>
                 </div>
@@ -31,7 +31,7 @@
                 <li class="aui-list-item " style="min-height: 44px;">
                     <div class="aui-list-item-inner">
                         <div class="aui-list-item-title">我的订单</div>
-                        <div class="aui-list-item-right" @click="go_orderlist(0)"
+                        <div class="aui-list-item-right" @click="go_order_list(0)"
                              style="color: #aaa;display: flex;align-items: center;">查看更多 <i class="ion-ios-arrow-right"
                                                                                             style="color: #DDD;margin-left: 5px;"></i>
                         </div>
@@ -43,44 +43,44 @@
             <!--<div class="personal-orders">-->
             <!--<div class="p-orders">-->
             <!--<span class="p-all-orders">我的订单</span>-->
-            <!--<span class="p-all-orders-span" @click="go_orderlist(0)">查看更多 <i class="ion-ios-arrow-right"></i></span>-->
+            <!--<span class="p-all-orders-span" @click="go_order_list(0)">查看更多 <i class="ion-ios-arrow-right"></i></span>-->
             <!--</div>-->
             <!--</div>-->
             <div class="personal-wrapper-1 hm-margin-b">
-                <div class="p-wrapper-1-item" @click="go_orderlist(0)">
+                <div class="p-wrapper-1-item" @click="go_order_list(0)">
                     <div class="p-grouping"><i class="iconfont icon-yichengtuan"></i></div>
                     <p class="p-wrap-1-title">
                         全部订单
                     </p>
                 </div>
-                <div class="p-wrapper-1-item" @click="go_orderlist(1)">
+                <div class="p-wrapper-1-item" @click="go_order_list(1)">
                     <div class="p-unpaid"><i class="iconfont icon-daifukuan"></i><span
-                            v-if="user.order_count.order_nopay_count >0">{{user.order_count.order_nopay_count}}</span>
+                            v-if="user.order_count.order_no_pay_count >0">{{user.order_count.order_no_pay_count}}</span>
                     </div>
                     <p class="p-wrap-1-title">
 
                         待付款
                     </p>
                 </div>
-                <div class="p-wrapper-1-item" @click="go_orderlist(2)">
+                <div class="p-wrapper-1-item" @click="go_order_list(2)">
                     <div class="p-unshipping"><i class="iconfont icon-wuliu"></i><span
-                            v-if="user.order_count.order_nosend_count >0">{{user.order_count.order_nosend_count}}</span>
+                            v-if="user.order_count.order_no_send_count >0">{{user.order_count.order_no_send_count}}</span>
                     </div>
                     <p class="p-wrap-1-title">
                         待发货
                     </p>
                 </div>
-                <div class="p-wrapper-1-item" @click="go_orderlist(3)">
+                <div class="p-wrapper-1-item" @click="go_order_list(3)">
                     <div class="p-unreceived"><i class="iconfont icon-daishouhuo"></i><span
-                            v-if="user.order_count.order_noreceipt_count >0">{{user.order_count.order_noreceipt_count}}</span>
+                            v-if="user.order_count.order_no_receipt_count >0">{{user.order_count.order_no_receipt_count}}</span>
                     </div>
                     <p class="p-wrap-1-title">
                         待收货
                     </p>
                 </div>
-                <div class="p-wrapper-1-item" @click="go_orderlist(4)">
+                <div class="p-wrapper-1-item" @click="go_order_list(4)">
                     <div class="p-unrated"><i class="iconfont icon-daipingjia"></i><span
-                            v-if="user.order_count.order_noeval_count >0">{{user.order_count.order_noeval_count}}</span>
+                            v-if="user.order_count.order_no_eval_count >0">{{user.order_count.order_no_eval_count}}</span>
                     </div>
                     <p class="p-wrap-1-title">
                         待评价
@@ -92,7 +92,7 @@
                 <li class="aui-list-item " style="min-height: 44px;">
                     <div class="aui-list-item-inner">
                         <div class="aui-list-item-title">必备工具</div>
-                        <div class="aui-list-item-right" @click="go_orderlist(0)"
+                        <div class="aui-list-item-right" @click="go_order_list(0)"
                              style="color: #aaa;display: flex;align-items: center;">查看更多 <i class="ion-ios-arrow-right"
                                                                                             style="color: #DDD;margin-left: 5px;"></i>
                         </div>
@@ -107,8 +107,8 @@
                     <p class="p-wrap-2-title">我的消息</p>
                 </div>
                 <!--<div class="p-wrapper-2-item" @click='this.$router.push({name:"my_voucher"})'>-->
-                    <!--<div class="p-coupons"><i class="iconfont icon-coupon color-positive"></i></div>-->
-                    <!--<p class="p-wrap-2-title">我的优惠券</p>-->
+                <!--<div class="p-coupons"><i class="iconfont icon-coupon color-positive"></i></div>-->
+                <!--<p class="p-wrap-2-title">我的优惠券</p>-->
                 <!--</div>-->
                 <div class="p-wrapper-2-item" @click='this.$router.push({name:"favorite"})'>
                     <div class="p-likes"><i class="iconfont icon-ai-mark color-calm"></i></div>
@@ -120,10 +120,10 @@
                 </div>
             </div>
             <!--<div class="personal-wrapper-2 hm-margin-b" style="margin-top: 0">-->
-                <!--<div class="p-wrapper-2-item" @click='this.$router.push({name:"message_list"})'>-->
-                    <!--<div class="p-messages"><i class="iconfont icon-gerenzhongxin color-assertive"></i></div>-->
-                    <!--<p class="p-wrap-2-title">旧版会员中心</p>-->
-                <!--</div>-->
+            <!--<div class="p-wrapper-2-item" @click='this.$router.push({name:"message_list"})'>-->
+            <!--<div class="p-messages"><i class="iconfont icon-gerenzhongxin color-assertive"></i></div>-->
+            <!--<p class="p-wrap-2-title">旧版会员中心</p>-->
+            <!--</div>-->
 
             <!--</div>-->
             <!--<div class="" style="margin-bottom:.8rem;">-->
@@ -180,7 +180,8 @@
         data() {
             return {
                 user: {
-                    order_nopay_count: []
+                    user: {},
+                    order_count: {},
                 },
                 page_show: false,
                 is_load: false
@@ -200,33 +201,39 @@
                 this.page_show = true;
 
                 //mock
-                this.user = {
-                    user: {
-                        avatar: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
-                        nickname: "jansanw",
-                        user_wx: "666666"
-                    },
-                    order_count: {
-                        order_nopay_count: 1,
-                        order_nosend_count:1,
-                        order_noreceipt_count:1,
-                        order_noeval_count:1
-                    }
-                };
-                return;
-                this.$api.userAuthGet("user_index", res => {
-                    if (res.data.status_code === 1) {
-                        this.user = res.data.data
-                    }
-                    $loading.hide();
-                    this.is_load = false;
-                    this.page_show = true;
-                    done()
+                // let _user = {
+                //     user: {
+                //         avatar: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
+                //         nickname: "jansanw",
+                //         user_wx: "888"
+                //     },
+                //     order_count: {
+                //         order_no_pay_count: 1,
+                //         order_no_send_count: 1,
+                //         order_no_receipt_count: 1,
+                //         order_no_eval_count: 1
+                //     }
+                // };
+                // this.user = _user;
+                //  return;
+
+
+                this.$api.userAuthGet("user/info", rps => {
+                    this.$api.responseFilter(rps.data, function (data) {
+                        if (!data.user.avatar)
+                            data.user.avatar = "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg";
+                        this.user = data;
+
+                        $loading.hide();
+                        this.is_load = false;
+                        this.page_show = true;
+                        done();
+                    }.bind(this));
                 }, error => {
                     $toast.show("加载失败")
-                })
+                });
             },
-            go_orderlist(id) {
+            go_order_list(id) {
                 $router.push({
                     name: 'order_list',
                     params: {
@@ -234,7 +241,7 @@
                     }
                 })
             },
-            go_friendlist(id) {
+            go_friend_list(id) {
                 $router.push({
                     name: 'friend_list',
                     params: {
@@ -489,6 +496,10 @@
             .number-title {
                 color: #333;
             }
+        }
+
+        #friend {
+            display: none;
         }
     }
 </style>

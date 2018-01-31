@@ -193,6 +193,8 @@
                     order_pay: {
                         pay_sn: "alipay999999999"
                     },
+                    order_amount: 99,
+                    shipping_fee: 8,
                     add_time: "09:50",
                     payment_time: "09:55",
                     finnshed_time: "09:55",
@@ -216,8 +218,6 @@
                             goods_num: 1
                         }
                     ],
-                    order_amount: 99,
-                    shipping_fee: 8,
 
 
                 };

@@ -270,24 +270,23 @@
                         <div class="address-item-wrap">
                             <div class="address-item-main">
                                 <div class="contact-name">
-                                    {{address.true_name}}，{{address.mob_phone}}
+                                    {{address.name}}，{{address.mobile}}
                                 </div>
                                 <div class="contact-address">
-                                    {{address.area_info}} {{address.address}}
+                                    {{address.area}} {{address.street}}
                                 </div>
                             </div>
-
                         </div>
                         <div class="address-item-ops-1">
                             <i style="margin:5px;" class="text-14"
                                :class="{'color-assertive':address.is_default== 1,' ion-ios-checkmark':address.is_default== 1,'ion-ios-circle-outline':address.is_default== 0}"></i><span
-                                @click="set_address_default(address.address_id)">默认地址</span>
+                                @click="set_address_default(address.id)">默认地址</span>
                         </div>
                         <div class="address-item-ops-2">
-                            <div class="address-item-edit" @click="edit_address(address.address_id)">
+                            <div class="address-item-edit" @click="edit_address(address.id)">
                                 <span><i class="ion-compose"></i> 编辑</span>
                             </div>
-                            <div class="address-item-delete" @click="del_address(address.address_id)">
+                            <div class="address-item-delete" @click="del_address(address.id, key)">
                                 <span><i class="ion-trash-a"></i> 删除</span>
                             </div>
                         </div>
@@ -310,13 +309,13 @@
         name: "address_list",
         data() {
             return {
-                f_modal: undefined,
+                edit_address_modal: null,
                 address_list: [],
             }
         },
         destroyed() {
-            if (this.f_modal)
-                $modal.destroy(this.f_modal)
+            if (this.edit_address_modal)
+                $modal.destroy(this.edit_address_modal)
         },
         mounted() {
             $loading.show();
@@ -325,82 +324,78 @@
                 title: '地址管理',
                 theme: 'default'
             }).then((modal) => {
-                this.f_modal = modal
+                this.edit_address_modal = modal
             });
             bus.$on("onEditAddress", res => {
                 this.getData();
-                this.f_modal.hide();
+                this.edit_address_modal.hide();
             })
 
         },
         methods: {
             getData() {
-                //mock
-                this.address_list = [{
-                    true_name:"阿山",
-                    mob_phone:"15*******97",
-                    area_info:"广东省 广州市 黄埔区 萝岗街道",
-                    address:"科学大道中科99号汇金谷三街十号C1座6楼",
-                    is_default:1,
-                    address_id:1,
-                }];
-                $loading.hide();
-                return;
-
-                this.$api.userAuthGet("user_address", res => {
-                    this.address_list = res.data.data;
-                    $loading.hide()
-                }, error => {
-                    $loading.hide()
+                this.$api.userAuthGet("address/lists", rps => {
+                    $loading.hide();
+                    this.$api.responseFilter(rps.data, data => {
+                        this.address_list = data.list;
+                    });
                 })
             },
             add_address() {
-                this.f_modal.show()
+                this.edit_address_modal.show()
             },
-            edit_address(address_id) {
-                this.address_list.filter(a => {
-                    return a.address_id == address_id;
+            edit_address(id) {
+                this.address_list.filter(item => {
+                    return item.id === id;
                 }).map(item => {
-                    this.f_modal.content.address_id = address_id;
-                    this.f_modal.content.name = item.true_name;
-                    this.f_modal.content.mobile = item.tel_phone;
-                    this.f_modal.content.address = item.address;
-                    this.f_modal.content.province = item.province_id;
-                    this.f_modal.content.city = item.city_id;
-                    this.f_modal.content.district = item.area_id;
+                    this.edit_address_modal.content.id = id;
+                    this.edit_address_modal.content.name = item.name;
+                    this.edit_address_modal.content.mobile = item.mobile;
+                    this.edit_address_modal.content.street = item.street;
+                    this.edit_address_modal.content.province_id = item.province_id;
+                    this.edit_address_modal.content.city_id = item.city_id;
+                    this.edit_address_modal.content.district_id = item.district_id;
+                    let area = item.area.split(" ");
+                    this.edit_address_modal.content.Province = area[0] || '';
+                    this.edit_address_modal.content.City = area[1] || '';
+                    this.edit_address_modal.content.District = area[2] || '';
                 });
-                console.log(this.f_modal);
-                this.f_modal.show()
+                console.log(this.edit_address_modal);
+                this.edit_address_modal.show()
             },
-            del_address(address_id) {
+            del_address(id, key) {
+                if (this.address_list.length <= 1) {
+                    $toast.show("至少保留一个地址吧~");
+                    return;
+                }
+
                 $dialog.confirm({
-                    theme: 'ios',
-                    title: '确认要删除吗?',
-                    cancelText: '取消',
-                    okText: '确认'
+                    title: '确认要删除吗?'
                 }).then((res) => {
                     if (res) {
                         $loading.show();
-                        this.$api.userAuthGet("user_del_address?address_id=" + address_id, res => {
-                            $toast.show(res.data.message);
-                            if (res.data.status_code == 1) {
-                                this.getData()
-                            }
-                        }, error => {
-                            $toast.show("删除成功")
-                        })
+                        this.$api.userAuthGet("address/delete?id=" + id, rps => {
+                            this.$api.responseFilter(rps.data, () => {
+                                this.address_list.splice(key, 1);
+                                let has_default = false;
+                                this.address_list.forEach(item => {
+                                    has_default = has_default || item.is_defalut === 1;
+                                });
+                                if (!has_default)
+                                    this.set_address_default(this.address_list[0].id);
+                            });
+                        });
                     }
                 })
             },
-            set_address_default(address_id) {
+            set_address_default(id) {
                 $loading.show();
-                this.$api.userAuthGet("user_set_address_default?address_id=" + address_id, res => {
-                    $toast.show(res.data.message)
-                    if (res.data.status_code == 1) {
-                        this.getData()
-                    }
-                }, error => {
-                    $toast.show("删除成功")
+                this.$api.userAuthGet("address/set_default?id=" + id, rps => {
+                    this.$api.responseFilter(rps.data, () => {
+                        this.address_list.map(item => {
+                            item.is_default = item.id === id ? 1 : 0;
+                        });
+                    });
                 })
             },
             change_address(key) {

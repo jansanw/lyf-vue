@@ -4,7 +4,7 @@ let http = axios.create({
     baseURL: HOST + '/api/',
     timeout: 10000,
     headers: {
-        'Authorization': 'Bearer 123'
+        'Authorization': ''
     }
 });
 export default {

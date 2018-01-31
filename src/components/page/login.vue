@@ -1,4 +1,4 @@
-<style lang="css">
+<style lang="css" scoped>
 
     .fx {
         position: fixed;
@@ -7,6 +7,9 @@
         z-index: 99;
     }
 
+    .other-action .freeLogin.on .before.un-remember {
+        background: white;
+    }
 </style>
 
 <template lang="html">
@@ -26,58 +29,61 @@
                     <div class="login-info">
                         <ul class="info-input">
                             <li>
-                                <input type="text" name="username" id="username" placeholder="手机号/邮箱/用户名" value=""
-                                       class="normalInput">
+                                <input type="text" name="account" id="account" placeholder="手机号/邮箱/用户名" value=""
+                                       class="normalInput" v-model="account">
                             </li>
                             <li>
                                 <input type="password" name="password" id="password" placeholder="密码"
-                                       class="normalInput">
+                                       class="normalInput" v-model="password">
                             </li>
                         </ul>
-                        <a id="btn_login" class="sub disable-btn" rel="nofollow">登 录</a>
+                        <a id="btn_login"
+                           :class="{sub:true, 'disable-btn':!(account.length > 5 && password.length > 5)}"
+                           rel="nofollow"
+                           @click="login">登 录</a>
                         <div id="login_l" class="other-action">
                             <label class="freeLogin on" style="line-height:.99rem;">
-                                <input type="checkbox" class="ck" name="auto" checked="checked">
-                                <i class="before"><img :src="lable_on"></i>两周内免登录
+                                <input type="checkbox" class="ck" name="auto" v-model="remember">
+                                <i :class="{before:true, 'un-remember':!remember}"><img :src="lable_on"></i>两周内免登录
                             </label>
                         </div>
                     </div>
                 </form>
-                <form id="quick-login" action="/muser/password" method="post"
-                      enctype="application/x-www-form-urlencoded" v-if="false">
-                    <div class="login-info">
-                        <ul class="info-input clear">
-                            <li>
-                                <input type="tel" pattern="[0-9]*" placeholder="请输入手机号码" id="mobile" name="mobile"
-                                       class="normalInput">
-                            </li>
-                            <li>
-                                <div class="quickLoginHmtl clear">
-                                    <input type="tel" class="code-txt normalInput fl" id="code" placeholder="请输入验证码"
-                                           name="code">
-                                    <a class="btn_get get-code disable-code" id="code_btn" href="javascript:;">获取验证码</a>
-                                </div>
-                            </li>
-                        </ul>
-                        <input type="hidden" name="mtoken" value="2dee9a13913334435eb81a6efd3e61ac" id="mtoken">
-                        <input type="hidden" name="mtokenact" value="quick" id="mtokenact">
-                        <a id="btn_quick_login" class="sub codeBtn disable-btn" rel="nofollow">登 录</a>
-                        <a style="display:none;" id="normal_login" class="sub disable-btn" rel="nofollow">登 录</a>
-                        <div id="quick_l" class="other-action">
-                            <label class="freeLogin on" style="line-height:.99rem;">
-                                <input type="checkbox" class="ck" name="auto_quick" checked="checked"><i class="before"><img
-                                    :src="lable_on"></i>两周内免登录</label>
-                        </div>
-                    </div>
-                </form>
-                <div class="wap-app">
-                    <h3 class="third-txt">第三方账号快速登录</h3>
-                    <div class="third-app clear">
-                        <a class="qq">
-                            <img src="//jp.juancdn.com/jpwebapp_v1/images_v1/user/tencent.png?29cf7667-1&amp;sv=bdd23e22">
-                        </a>
-                    </div>
-                </div>
+                <!--<form id="quick-login" action="/muser/password" method="post"-->
+                <!--enctype="application/x-www-form-urlencoded" v-if="false">-->
+                <!--<div class="login-info">-->
+                <!--<ul class="info-input clear">-->
+                <!--<li>-->
+                <!--<input type="tel" pattern="[0-9]*" placeholder="请输入手机号码" id="mobile" name="mobile"-->
+                <!--class="normalInput">-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<div class="quickLoginHmtl clear">-->
+                <!--<input type="tel" class="code-txt normalInput fl" id="code" placeholder="请输入验证码"-->
+                <!--name="code">-->
+                <!--<a class="btn_get get-code disable-code" id="code_btn" href="javascript:;">获取验证码</a>-->
+                <!--</div>-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--<input type="hidden" name="mtoken" value="2dee9a13913334435eb81a6efd3e61ac" id="mtoken">-->
+                <!--<input type="hidden" name="mtokenact" value="quick" id="mtokenact">-->
+                <!--<a id="btn_quick_login" class="sub codeBtn disable-btn" rel="nofollow">登 录</a>-->
+                <!--<a style="display:none;" id="normal_login" class="sub disable-btn" rel="nofollow">登 录</a>-->
+                <!--<div id="quick_l" class="other-action">-->
+                <!--<label class="freeLogin on" style="line-height:.99rem;">-->
+                <!--<input type="checkbox" class="ck" name="auto_quick" checked="checked"><i class="before"><img-->
+                <!--:src="lable_on"></i>两周内免登录</label>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</form>-->
+                <!--<div class="wap-app">-->
+                <!--<h3 class="third-txt">第三方账号快速登录</h3>-->
+                <!--<div class="third-app clear">-->
+                <!--<a class="qq">-->
+                <!--<img src="//jp.juancdn.com/jpwebapp_v1/images_v1/user/tencent.png?29cf7667-1&amp;sv=bdd23e22">-->
+                <!--</a>-->
+                <!--</div>-->
+                <!--</div>-->
             </div>
         </div>
     </div>
@@ -85,17 +91,34 @@
 </template>
 
 <script>
-    import "../../assets/user-login.scss"
+    import "../../assets/user-login.scss";
+    import Qs from 'Qs';
 
     export default {
         name: "login",
         data() {
             return {
+                account: "18126417044",
+                password: "1234567",
+                remember: false,
                 lable_on: require("../../assets/images/label_on.png")
             }
         },
         mounted() {
-
+        },
+        methods: {
+            login() {
+                this.$api.userGet("/user/login?" + Qs.stringify({
+                    account: this.account,
+                    password: this.password,
+                    remember: this.remember
+                }), rps => {
+                    this.$api.responseFilter(rps.data, function (data) {
+                        this.$api.l_set('token', data.token);
+                        $router.back(this.$api.s_get("login_back") || "/home");
+                    }.bind(this));
+                });
+            }
         }
     }
 

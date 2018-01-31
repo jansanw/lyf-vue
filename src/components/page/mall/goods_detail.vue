@@ -390,7 +390,7 @@
                 })
             },
             go_goods(id) {
-                this.goods_id = id
+                this.goods_id = id;
                 $router.push({
                     name: 'goods_detail',
                     params: {
@@ -419,7 +419,7 @@
                     key: 'showpicksheet',
                     value: true
                 });
-                if (this.firstTimeOpenSheet == false) {
+                if (this.firstTimeOpenSheet === false) {
                     this.$store.commit('ACTIONSHEET_UPDATE', {
                         key: 'firstTimeOpenSheet',
                         value: true
@@ -432,7 +432,7 @@
                     key: 'showpicksheet',
                     value: true
                 });
-                if (this.firstTimeOpenSheet == false) {
+                if (this.firstTimeOpenSheet === false) {
                     this.$store.commit('ACTIONSHEET_UPDATE', {
                         key: 'firstTimeOpenSheet',
                         value: true
@@ -447,7 +447,7 @@
                 })
             },
             goods_img_show(index) {
-                if (typeof WeixinJSBridge != "undefined") {
+                if (typeof WeixinJSBridge !== "undefined") {
                     WeixinJSBridge.invoke('imagePreview', {
                         'current': this.data.goods_image[index],
                         'urls': this.data.goods_image
@@ -476,7 +476,7 @@
                     for (let valueKey in spec_value) {
                         let valueJson = spec_value[valueKey];
                         for (let keyValueJson in valueJson) {
-                            if (keyValueJson == goodsKey) {
+                            if (keyValueJson === goodsKey) {
                                 spec_key[valueKey] = keyValueJson
                             }
                         }

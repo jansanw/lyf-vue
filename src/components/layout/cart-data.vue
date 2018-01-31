@@ -461,7 +461,7 @@
                     return
                 }
                 this.$api.userAuthGet('cart_edit_quantity?cart_id=' + cart_id + '&quantity=' + quantity, res => {
-                    if (res.data.status_code != 1) {
+                    if (res.data.status_code !== 1) {
                         this.cart_list[store_id].goods[index].goods_num++;
                         $toast.show(res.data.message)
                     } else {

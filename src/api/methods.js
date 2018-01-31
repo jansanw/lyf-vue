@@ -1,56 +1,43 @@
-import axios from 'axios'
+import axios from 'axios';
 
+axios.defaults.baseURL = HOST + '/api/';
 export default {
     //http
     userGet(url, cb, error) {
-        let http = axios.create({
-            baseURL: HOST + '/api/',
-            timeout: 10000,
-            headers: {
-                'Authorization': 'Bearer ' + this.l_get("token")
-            }
-        });
-        http.get(url).then(res => {
+        axios.get(url).then(res => {
             cb(res)
         }).catch(err => {
-            error(err)
+            // error(err)
+            this.errorFilter(err, error);
         });
     },
     userPost(url, data, cb, error) {
-        let http = axios.create({
-            baseURL: HOST + '/api/',
-            timeout: 10000,
-            headers: {
-                'Authorization': 'Bearer ' + this.l_get("token")
-            }
-        });
-        http.post(url, data).then(res => {
+        axios.post(url, data).then(res => {
             cb(res)
         }).catch(err => {
-            error(err)
+            // error(err)
+            this.errorFilter(err, error);
         });
     },
     //判断登录的请求
     userAuthGet(url, cb, error) {
         if (this.ck_login()) {
-            let uhttp = axios.create({
-                baseURL: HOST + '/api/',
-                timeout: 10000,
+            axios.get(url, {
                 headers: {
-                    'Authorization': 'Bearer ' + this.l_get("token")
+                    'Authorization': this.l_get("token")
                 }
-            });
-            uhttp.get(url).then(res => {
-                if (res.data.status_code <= -10000) {
-                    $toast.show("登录信息已过期");
-                    this.l_remove("token");
-                    this.ck_login()
-                }
+            }).then(res => {
+                // if (res.data.status_code <= -10000) {
+                //     $toast.show("登录信息已过期");
+                //     this.l_remove("token");
+                //     this.ck_login()
+                // }
                 cb(res);
             }).catch(err => {
-                $loading.hide();
+                // $loading.hide();
                 //TODO 判断是否登录
-                error(err)
+                // error(err)
+                this.errorFilter(err, error);
             });
         } else {
             $toast.show("未登录");
@@ -59,37 +46,93 @@ export default {
     },
     userAuthPost(url, data, cb, error) {
         if (this.ck_login()) {
-            let uhttp = axios.create({
-                baseURL: HOST + '/api/',
-                timeout: 10000,
+            axios.create({
                 headers: {
-                    'Authorization': 'Bearer ' + this.l_get("token")
+                    'Authorization': this.l_get("token")
                 }
-            });
-            uhttp.post(url, data).then(res => {
-                if (res.data.status_code <= -10000) {
-                    $toast.show("登录信息已过期");
-                    this.l_remove("token");
-                    this.ck_login()
-                }
+            }).post(url, data).then(res => {
+                // if (res.data.status_code <= -10000) {
+                //     $toast.show("登录信息已过期");
+                //     this.l_remove("token");
+                //     this.ck_login()
+                // }
                 cb(res)
             }).catch(err => {
-                $loading.hide();
+                // $loading.hide();
                 //TODO 判断是否登录
-                error(err)
+                // error(err)
+                this.errorFilter(err, error);
             });
         } else {
             $toast.show("未登录");
             return false;
         }
     },
+    //json输出默认弹出消息和动作
+    responseFilter(data, success, error) {
+        // console.log(data);
+        if (Object.prototype.toString.call(data) !== "[object Object]") {
+            $dialog.alert({
+                content: "数据异常，请联系管理员",
+                okTheme: 'assertive'
+            });
+            if (this.is_function(error))
+                error(data);
+        }
+
+        switch (data.react.type) {
+            case "tip": {
+                if (data.msg)
+                    $toast.show(data.msg);
+                // if (data.react.url)
+                // setTimeout(function () {
+                //     window.location.href = data.react.url;
+                // }, 1500);
+                break;
+            }
+            case "alert": {
+                if (data.msg)
+                    $dialog.alert({
+                        content: data.msg,
+                    }).then(() => {
+                        // if (data.react.url)
+                        //     window.location.href = data.react.url;
+                    });
+                break;
+            }
+        }
+
+        // if (data.react.__token__)
+        //     window.__token__ = data.react.__token__;
+        //执行回调
+        if (data.code === 0/* && data.data && data.data.length*/ && this.is_function(success))
+            success(data.data, data.msg);
+        else if (data.code !== 0 && this.is_function(error))
+            error(data);
+    },
+    errorFilter(error, err) {
+        $loading.hide();
+        console.log(error.response);
+        if (error.response.status && error.response.status === 401) {
+            $toast.show("登录信息已过期");
+            this.l_remove("token");
+            this.ck_login()
+        } else if (this.is_function(err)) {
+            err(error.response);
+        } else {
+            $dialog.alert({content: "网络异常，请重试"});
+        }
+    },
+    is_function(func) {
+        return Object.prototype.toString.call(func) === '[object Function]';
+    },
     ck_login() {
-        let token = '6666';//this.l_get("token");
+        let token = this.l_get("token");
         if (!token) {
             $loading.hide();
             //记录登录前地址
-            this.set("login_back", window.location.href);
-            // let login_url = "http://lyf.aoyi66.com/home/wx/login_v2?back=" + encodeURIComponent("http://" + window.location.host + "/#/auth");
+            this.s_set("login_back", window.location.hash.replace(/#/g, ''));
+            // let login_url = "http://lyf.aoyi.com/home/wx/login_v2?back=" + encodeURIComponent("http://" + window.location.host + "/#/auth");
             // login_url
             // window.location.href = "/#/login";
             $router.replace("/login");
@@ -98,13 +141,13 @@ export default {
             return true
         }
     },
-    //ssession
-    get(name) {
+    //session
+    s_get(name) {
         let value = sessionStorage.getItem(name);
         if (/^\{.*\}$/.test(value)) value = JSON.parse(value);
         return value
     },
-    set(name, value) {
+    s_set(name, value) {
         if (typeof value === typeof {}) value = JSON.stringify(value);
         return sessionStorage.setItem(name, value)
     },

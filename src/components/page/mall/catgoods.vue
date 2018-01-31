@@ -117,7 +117,7 @@
             getData(done) {
                 this.is_load = true;
                 this.$api.userGet('goods_list?gc_id=' + this.cat_goods_list_class_id + '&page=' + this.page, res => {
-                    if (res.data.data.goods_list.current_page == 1) {
+                    if (res.data.data.goods_list.current_page === 1) {
                         if (!this.cat_goods_list_class_init_menu) {
 
                             this.goods_class = res.data.data.goods_class
@@ -130,7 +130,7 @@
                             this.goods.push(res.data.data.goods_list.data[index])
                         }
                     }
-                    if (this.page == res.data.data.goods_list.last_page || res.data.data.goods_list.total == 0) {
+                    if (this.page === res.data.data.goods_list.last_page || res.data.data.goods_list.total === 0) {
                         this.load_more = false
                     }
 
