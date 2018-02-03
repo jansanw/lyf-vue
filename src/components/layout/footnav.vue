@@ -21,8 +21,8 @@
             return {
                 list: [
                     {title: "首页", link: "home", icon: "icon-shouye-shouye", active_icon: 'icon-shouye-shixin1'},
-                    {title: "发现", link: "discovery", icon: "icon-z-new", active_icon: 'icon-xinpinshixin'},
-                    {title: "分类", link: "class_all", icon: "icon-sousuo", active_icon: 'icon-sousuoshixin'},
+                    // {title: "发现", link: "discovery", icon: "icon-z-new", active_icon: 'icon-xinpinshixin'},
+                    {title: "分类", link: "category", icon: "icon-sousuo", active_icon: 'icon-sousuoshixin'},
                     {title: "购物车", link: "cart", icon: "icon-gouwuche1", active_icon: 'icon-gouwucheshixin'},
                     {title: "我的", link: "user", icon: "icon-gerenzhongxinxian", active_icon: 'icon-gerenzhongxin'}
                 ]
@@ -32,9 +32,9 @@
         computed: {
             ...mapState({
                 home: state => state.page_load_state.home,
-                new_arrivals: state => state.page_load_state.new_arrivals,
+                // new_arrivals: state => state.page_load_state.new_arrivals,
                 cart: state => state.page_load_state.cart,
-                class_all: state => state.page_load_state.class_all,
+                category: state => state.page_load_state.category,
                 user: state => state.page_load_state.user
             })
         },
@@ -42,7 +42,7 @@
 
         methods: {
             go(name, index) {
-                if ((name == 'home' && !this.home) || (name == 'new_arrivals' && !this.new_arrivals) || (name == 'class_all' && !this.class_all) || (name == 'cart' && !this.cart) || (name == 'user' && !this.user)) {
+                if ((name === 'home' && !this.home)/* || (name === 'new_arrivals' && !this.new_arrivals)*/ || (name === 'category' && !this.category) || (name === 'cart' && !this.cart) || (name === 'user' && !this.user)) {
                     $loading.show()
                 }
                 this.$router.push({name: name})

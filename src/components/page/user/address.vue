@@ -4,7 +4,7 @@
         position: fixed;
     }
 
-    .addresses-list li {
+    .address-list li {
         position: relative;
         background-color: #fff;
         margin-bottom: 10px;
@@ -264,7 +264,7 @@
     <div class="page">
         <div class="page-content">
             <div>
-                <ul class="addresses-list">
+                <ul class="address-list">
                     <li class="address-item-use" v-for="(address,key,index) in address_list"
                         @click="change_address(key)">
                         <div class="address-item-wrap">
@@ -334,7 +334,7 @@
         },
         methods: {
             getData() {
-                this.$api.userAuthGet("address/lists", rps => {
+                this.$api.userAuthGet("address/page", rps => {
                     $loading.hide();
                     this.$api.responseFilter(rps.data, data => {
                         this.address_list = data.list;

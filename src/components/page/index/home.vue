@@ -249,7 +249,7 @@
             },
             go_search() {
                 $router.push({
-                    name: 'class_all',
+                    name: 'category',
                     params: {
                         show_search: 1,
                     }

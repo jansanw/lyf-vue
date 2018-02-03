@@ -1,7 +1,8 @@
 <template>
     <div class="" v-nav="{hideNavbar:true}">
         <transition>
-            <keep-alive exclude="cart_data,order_buynow,address_list,order_logistics,order_detail,order_rate,comment_list,goods_detail">
+            <keep-alive
+                    exclude="cart_data,order_buynow,address_list,order_logistics,order_detail,order_rate,comment_list,goods_detail">
                 <router-view></router-view>
             </keep-alive>
         </transition>
@@ -21,7 +22,7 @@
                         iconOn: 'ion-ios-list',
                         iconOff: 'ion-ios-list-outline',
                         text: '分类',
-                        path: '/class_all'
+                        path: '/category'
                     },
                     {
                         iconOn: 'ion-ios-cart',

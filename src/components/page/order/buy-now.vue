@@ -129,7 +129,7 @@
     import "../../../assets/buy-now.scss"
     import 'lib-flexible/flexible'
 
-    import address_modal from "../user/addresses.vue"
+    import address_modal from "../user/address.vue"
     import orderStoreVoucherList from "../../layout/order-store-voucher-list.vue"
     import bus from "../../../bus.js"
 

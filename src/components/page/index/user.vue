@@ -166,7 +166,7 @@
                 </li>
             </ul>
         </scroll>
-        <footnav :active="4"></footnav>
+        <footnav :active="3"></footnav>
     </div>
 </template>
 

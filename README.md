@@ -35,7 +35,7 @@
 │      │  
 │      ├─index （首页）
 │      │      cart.vue //购物车
-│      │      class_all.vue //分类
+│      │      category.vue //分类
 │      │      discovery.vue
 │      │      home.vue //首页
 │      │      user.vue //用户用心
@@ -63,7 +63,7 @@
 │      │      
 │      ├─user //用户
 │      │      address-from.vue //收货地址编辑
-│      │      addresses.vue //收货地址
+│      │      address.vue //收货地址
 │      │      favorite.vue //
 │      │      friend-list.vue
 │      │      message-detail.vue

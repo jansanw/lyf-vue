@@ -35,11 +35,11 @@ let Home = resolve => require(['./components/page/index/home.vue'], resolve);
 let discovery = resolve => require(['./components/page/index/discovery.vue'], resolve);
 let Cart = resolve => require(['./components/page/index/cart.vue'], resolve);
 let User = resolve => require(['./components/page/index/user.vue'], resolve);
-let ClassAll = resolve => require(['./components/page/index/class_all.vue'], resolve);
+let ClassAll = resolve => require(['./components/page/index/category.vue'], resolve);
 let goods_detail = resolve => require(['./components/page/mall/goods_detail.vue'], resolve);
 let comment_list = resolve => require(['./components/page/mall/comment-list.vue'], resolve);
 let catgoods = resolve => require(['./components/page/mall/catgoods.vue'], resolve);
-let address = resolve => require(['./components/page/user/addresses.vue'], resolve);
+let address = resolve => require(['./components/page/user/address.vue'], resolve);
 let order_buynow = resolve => require(['./components/page/order/buy-now.vue'], resolve);
 let order_list = resolve => require(['./components/page/order/order-list.vue'], resolve);
 let order_detail = resolve => require(['./components/page/order/order-detail.vue'], resolve);
@@ -85,8 +85,8 @@ let routes = [{
             component: discovery
         },
         {
-            path: 'class_all',
-            name: "class_all",
+            path: 'category',
+            name: "category",
             meta: {title: '全部分类'},
             component: ClassAll
         },

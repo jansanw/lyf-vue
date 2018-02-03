@@ -4,13 +4,13 @@
             <li @click="setTab('/home')" class="fb-move-bottom"><a class="nav-controller"
                                                                    :class="{'active':index==0}"><i
                     class="fb fb-home"></i>首页</a></li>
-            <li @click="setTab('/new_arrivals')"><a class="nav-controller" :class="{'active':index==1}"><i
-                    class="fb fb-rank"></i>新品</a></li>
-            <li @click="setTab('/class_all')"><a class="nav-controller" :class="{'active':index==2}"><i
+            <!--<li @click="setTab('/new_arrivals')"><a class="nav-controller" :class="{'active':index==1}"><i-->
+                    <!--class="fb fb-rank"></i>新品</a></li>-->
+            <li @click="setTab('/category')"><a class="nav-controller" :class="{'active':index==1}"><i
                     class="fb fb-class"></i>搜索</a></li>
-            <li @click="setTab('/cart')"><a class="nav-controller" :class="{'active':index==3}"><i
+            <li @click="setTab('/cart')"><a class="nav-controller" :class="{'active':index==2}"><i
                     class="fb fb-chat"></i>购物车</a></li>
-            <li @click="setTab('/user')"><a class="nav-controller" :class="{'active':index==4}"><i
+            <li @click="setTab('/user')"><a class="nav-controller" :class="{'active':index==3}"><i
                     class="fb fb-user"></i>个人中心</a></li>
         </ul>
     </div>
@@ -28,14 +28,14 @@
             ...mapState({
                 home: state => state.page_load_state.home,
                 cart: state => state.page_load_state.cart,
-                class_all: state => state.page_load_state.class_all,
+                category: state => state.page_load_state.category,
                 user: state => state.page_load_state.user
             }),
         },
         props: ['index'],
         methods: {
             setTab(name) {
-                if ((name == '/home' && !this.home) || (name == '/class_all' && !this.class_all) || (name == '/cart' && !this.cart) || (name == '/user' && !this.user)) {
+                if ((name == '/home' && !this.home) || (name == '/category' && !this.category) || (name == '/cart' && !this.cart) || (name == '/user' && !this.user)) {
                     $loading.show()
                 }
 

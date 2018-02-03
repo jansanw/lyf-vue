@@ -8,7 +8,7 @@ const actions = {
         context.commit("UPDATE_CLASS_INDEX", {
             is_load: true
         });
-        http.userGet('get_class_index', res => {
+        http.userGet('category/index', res => {
             context.commit('SET_CLASS_INDEX_DATA', res);
             $loading.hide();
             cb(res)
@@ -23,12 +23,12 @@ const actions = {
 };
 const mutations = {
     ['SET_CLASS_INDEX_DATA'](state, payload) {
-        state.class_list = payload.data.data
+        state.class_list = payload.data.data;
         state.is_load = false;
     },
     ['UPDATE_CLASS_INDEX'](state, payload) {
         for (let key in payload) {
-            state[key] = payload[key]
+            state[key] = payload[key];
         }
 
     }

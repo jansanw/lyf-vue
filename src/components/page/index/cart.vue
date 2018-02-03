@@ -1,7 +1,7 @@
 <template lang="html">
     <div class="page has-tabbar">
         <cart-data></cart-data>
-        <footnav :active="3"></footnav>
+        <footnav :active="2"></footnav>
     </div>
 </template>
 <script>

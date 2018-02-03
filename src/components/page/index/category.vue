@@ -8,49 +8,6 @@
                 </div>
             </div>
         </div>
-        <div class="page-content" style="top:1.2rem;">
-            <div id="root-list" ref="root_list" class="turn-background-grey">
-                <ul :style="'height:'+l_h+'px'">
-                    <li ref="root_list_item" v-for="(item,index) in class_list" class="root-list-item "
-                        :class="{'root-active':currentIndex==index}" @click="selectMenu(index)" v-cloak>
-                        <div class="root-box">
-                            <span>{{item.gc_name}}</span>
-                            <i class="icon icon-category-bag url-icon">
-                                <img class="selected-icon"
-                                     src="http://omsproductionimg.yangkeduo.com/images/2017-06-01/834a8cc3c7ae5f87aa4f23c310352412.png">
-                                <img class="unselected-icon"
-                                     src="http://omsproductionimg.yangkeduo.com/images/2017-06-04/da66477f08f39bbb5ae6d245176e3799.png">
-                            </i>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div id="detail-list" ref="detail_list">
-                <ul :style="'height:'+r_h+'px'">
-                    <li ref="detail_list_item" v-for="(item,index) in class_list" class="classification-detail-item">
-                        <div class="head">
-                            <div class="tab">
-                                <span>{{item.gc_name}}</span>
-                            </div>
-                            <div class="show-all" @click="go_cat(item.gc_id)">
-                                查看更多
-                                <img class="detail-arrow"
-                                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAQBAMAAADdUfNzAAAAIVBMVEUAAACcnJycnJycnJycnJycnJycnJycnJycnJycnJycnJx3mU74AAAAC3RSTlMAfw5vJHdYSjUbQQwBkC0AAAAySURBVAjXY+AoYgCCicIKQFJV0AhIsgiCOY6onAQgySUYAGFDxMFqIEywXpg5IDNhAAB0CwdERcuYjQAAAABJRU5ErkJggg==">
-                            </div>
-                        </div>
-                        <ul class="detail">
-                            <li v-for="chidren in item.children" class="detail-item" @click="go_cat(chidren.gc_id)">
-                                <img v-lazy="chidren.logo">
-                                <p>{{chidren.gc_name}}</p>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li class="blank"></li>
-                </ul>
-            </div>
-        </div>
         <div class="search-view-container" v-show="show_search">
             <div class="search-view-box">
                 <div class="search-view-top">
@@ -116,9 +73,55 @@
                 </div>
             </div>
         </div>
+        <div class="page-content" style="top:1.2rem;">
+            <div id="root-list" ref="root_list" class="turn-background-grey">
+                <ul :style="'height:'+l_h+'px'">
+                    <li ref="root_list_item" v-for="(item,index) in class_list" class="root-list-item "
+                        :class="{'root-active':(/*currentIndex==index || */current_index ==index)}"
+                        @click="selectMenu(index)" v-cloak>
+                        <div class="root-box">
+                            <span>{{item.name}}</span>
+                            <span class="icon icon-category-bag url-icon" v-if="false">
+                                <i class="selected-icon ion-ios-color-wand"></i>
+                                <i class="unselected-icon ion-ios-color-wand-outline"></i>
+                                <!--<img class="selected-icon"-->
+                                <!--src="http://omsproductionimg.yangkeduo.com/images/2017-06-01/834a8cc3c7ae5f87aa4f23c310352412.png">-->
+                                <!--<img class="unselected-icon"-->
+                                <!--src="http://omsproductionimg.yangkeduo.com/images/2017-06-04/da66477f08f39bbb5ae6d245176e3799.png">-->
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div id="detail-list" ref="detail_list">
+                <ul :style="'height:'+r_h+'px'">
+                    <li ref="detail_list_item" v-for="(item,index) in class_list" class="classification-detail-item">
+                        <div class="head">
+                            <div class="tab">
+                                <span>{{item.name}}</span>
+                                <i class="ion-ios-color-wand" v-if="current_index ==index"></i>
+                            </div>
+                            <div class="show-all" @click="go_cat(item.id)">
+                                进入分类
+                                <img class="detail-arrow"
+                                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAQBAMAAADdUfNzAAAAIVBMVEUAAACcnJycnJycnJycnJycnJycnJycnJycnJycnJycnJx3mU74AAAAC3RSTlMAfw5vJHdYSjUbQQwBkC0AAAAySURBVAjXY+AoYgCCicIKQFJV0AhIsgiCOY6onAQgySUYAGFDxMFqIEywXpg5IDNhAAB0CwdERcuYjQAAAABJRU5ErkJggg==">
+                            </div>
+                        </div>
+                        <ul class="detail">
+                            <li v-for="sub_item in item.children" class="detail-item" @click="go_cat(sub_item.id)">
+                                <img v-lazy="sub_item.icon">
+                                <p>{{sub_item.name}}</p>
+                            </li>
 
+                        </ul>
+                    </li>
+
+                    <li class="blank"></li>
+                </ul>
+            </div>
+        </div>
         <!--<lyf-tab-bar :index="2"></lyf-tab-bar>-->
-        <footnav :active="2"></footnav>
+        <footnav :active="1"></footnav>
     </div>
 </template>
 
@@ -132,7 +135,7 @@
     import BScroll from 'better-scroll'
 
     export default {
-        name: "class_all",
+        name: "category",
         components: {
 //    LyfTabBar,
             footnav
@@ -145,6 +148,7 @@
                 scrollY: 0,
                 show_search: false,
                 search_key: '',
+                current_index: 0
             }
         },
         computed: {
@@ -169,10 +173,10 @@
         mounted() {
             //$loading.hide()
             this.$store.commit('UPDATE_PAGE_LOAD_STATE_DATA', {
-                class_all: true,
+                category: true,
             });
             let s_h = this.$route.params.show_search;
-            if (s_h == 1) {
+            if (s_h === 1) {
                 this.show_search = true
             }
 
@@ -218,7 +222,7 @@
                 this.detail_list_scroll.on('scroll', (pos) => {
                     //scrollY接收变量
                     this.scrollY = Math.abs(Math.round(pos.y));
-                    if (this.currentIndex == 5) {
+                    if (this.currentIndex === 5) {
                         let el = items[this.currentIndex];
                         this.root_list_scroll.scrollToElement(el, 700);
                     } else if (this.currentIndex < 5) {
@@ -249,6 +253,7 @@
                 })
             },
             selectMenu(index) {
+                this.current_index = index;
                 //运用BScroll接口，滚动到相应位置
                 let rList = this.$refs.detail_list_item;
                 //获取对应元素的列表
@@ -257,22 +262,21 @@
                 this.detail_list_scroll.scrollToElement(el, 300);
             },
             search_click() {
-                console.log("132132");
                 this.show_search = !this.show_search
             },
             clear_search() {
                 this.search_key = ''
             },
-            go_cat(gc_id) {
+            go_cat(id) {
                 this.$store.commit('UPDATE_COMMON_DATA', {
-                    cat_goods_list_class_id: gc_id,
+                    cat_goods_list_class_id: id,
                     cat_goods_list_class_init_menu: false,
                     cat_goods_list_class_active: 0
                 });
                 $router.push({
                     name: 'catgoods',
                     params: {
-                        gc_id: gc_id,
+                        gc_id: id,
                     }
                 });
             }
@@ -376,7 +380,7 @@
         background-color: #fafafa;
     }
 
-    .root-active {
+    .root-active,.tab i.ion-ios-color-wand {
         color: #e02e24;
         background-color: #fff;
     }
@@ -401,7 +405,7 @@
         font-size: .35rem;
     }
 
-    .root-list-item .root-box i {
+    .root-list-item .root-box .icon {
         width: .56rem;
         height: .56rem;
         border-radius: 50%;
@@ -411,7 +415,7 @@
         margin-left: .16rem;
     }
 
-    .root-list-item .root-box i:before {
+    .root-list-item .root-box .icon:before {
         display: inline-block;
         line-height: .56rem;
         font-size: .29rem;
@@ -419,7 +423,7 @@
         position: relative;
     }
 
-    .root-list-item .root-box i .selected-icon {
+    .root-list-item .root-box .icon .selected-icon {
         display: none;
     }
 
@@ -427,7 +431,7 @@
         display: none;
     }
 
-    .root-list-item .root-box i .unselected-icon {
+    .root-list-item .root-box .icon .unselected-icon {
         display: inline-block;
     }
 
@@ -435,7 +439,7 @@
         display: inline-block;
     }
 
-    .root-list-item .root-box i img {
+    .root-list-item .root-box .icon i, .root-list-item .root-box .icon img {
         position: absolute;
         top: 0;
         right: 0;
@@ -496,10 +500,13 @@
     }
 
     .classification-detail-item .detail li {
-        width: 1.6rem;
+        /*width: 1.6rem;*/
+        /*margin: 0 .72rem .43rem 0;*/
+        width: 1.9rem;
+        margin: 0 .42rem .43rem 0;
         height: 1.92rem;
-        margin: 0 .72rem .43rem 0;
         float: left;
+        text-align: center;
     }
 
     .classification-detail-item .detail li img {

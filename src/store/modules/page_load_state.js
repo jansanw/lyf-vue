@@ -5,8 +5,8 @@
 const state = {
     home: false,
     cart: false,
-    discovery: false,
-    class_all: false,
+    // discovery: false,
+    category: false,
     user: false
 };
 const mutations = {
