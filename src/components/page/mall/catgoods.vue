@@ -9,7 +9,7 @@
                 <ul ref="list_top_menu_list" class="top-menu-list" :style="'width:'+m_w+'px'">
                     <!--:style="'width:'+m_w+'px'"-->
                     <li ref="list_top_menu_item" class="top-menu-item" :class="index==active?'active':''"
-                        v-for="(item,index) in goods_class" @click="changeMenu(index,item.gc_id)">{{item.gc_name}}
+                        v-for="(item,index) in goods_class" @click="changeMenu(index,item.category_id)">{{item.gc_name}}
                     </li>
 
                 </ul>
@@ -104,10 +104,10 @@
             }
         },
         mounted() {
-            this.gc_id = this.$route.params.gc_id;
-            if (this.gc_id > 0) {
+            this.category_id = this.$route.params.category_id;
+            if (this.category_id > 0) {
                 this.$store.commit('UPDATE_COMMON_DATA', {
-                    cat_goods_list_class_id: this.gc_id
+                    cat_goods_list_class_id: this.category_id
                 })
             }
             this.getData(() => {
@@ -116,7 +116,7 @@
         methods: {
             getData(done) {
                 this.is_load = true;
-                this.$api.userGet('goods_list?gc_id=' + this.cat_goods_list_class_id + '&page=' + this.page, res => {
+                this.$api.userGet('goods_list?category_id=' + this.cat_goods_list_class_id + '&page=' + this.page, res => {
                     if (res.data.data.goods_list.current_page === 1) {
                         if (!this.cat_goods_list_class_init_menu) {
 
@@ -179,10 +179,10 @@
                     this._initScroll()
                 })
             },
-            changeMenu(index, gc_id) {
+            changeMenu(index, category_id) {
                 if (this.active == index) return;
                 this.$store.commit('UPDATE_COMMON_DATA', {
-                    cat_goods_list_class_id: gc_id,
+                    cat_goods_list_class_id: category_id,
                     cat_goods_list_class_active: index
                 });
                 this.page = 1;
@@ -239,10 +239,10 @@
                         cat_goods_list_class_init_menu: false
                     })
                 }
-                vm.gc_id = vm.$route.params.gc_id;
-                if (vm.gc_id > 0) {
+                vm.category_id = vm.$route.params.category_id;
+                if (vm.category_id > 0) {
                     vm.$store.commit('UPDATE_COMMON_DATA', {
-                        cat_goods_list_class_id: vm.gc_id
+                        cat_goods_list_class_id: vm.category_id
                     })
                 }
                 vm.getData(() => {

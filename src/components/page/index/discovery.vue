@@ -102,51 +102,51 @@
                 m_w: 0,
                 news_class: [
                     {
-                        "gc_id": 0,
+                        "category_id": 0,
                         "gc_name": "首页"
                     },
                     {
-                        "gc_id": 1,
+                        "category_id": 1,
                         "gc_name": "女装"
                     },
                     {
-                        "gc_id": 21,
+                        "category_id": 21,
                         "gc_name": "男装"
                     },
                     {
-                        "gc_id": 31,
+                        "category_id": 31,
                         "gc_name": "母婴"
                     },
                     {
-                        "gc_id": 41,
+                        "category_id": 41,
                         "gc_name": "家居"
                     },
                     {
-                        "gc_id": 76,
+                        "category_id": 76,
                         "gc_name": "美食"
                     },
                     {
-                        "gc_id": 51,
+                        "category_id": 51,
                         "gc_name": "电器"
                     },
                     {
-                        "gc_id": 89,
+                        "category_id": 89,
                         "gc_name": "家纺"
                     },
                     {
-                        "gc_id": 100,
+                        "category_id": 100,
                         "gc_name": "美妆"
                     },
                     {
-                        "gc_id": 111,
+                        "category_id": 111,
                         "gc_name": "水果"
                     },
                     {
-                        "gc_id": 11,
+                        "category_id": 11,
                         "gc_name": "鞋包"
                     },
                     {
-                        "gc_id": 69,
+                        "category_id": 69,
                         "gc_name": "内衣"
                     }
                 ]

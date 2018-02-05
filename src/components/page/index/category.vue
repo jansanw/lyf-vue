@@ -153,8 +153,8 @@
         },
         computed: {
             ...mapState({
-                class_list: state => state.class_index.class_list,
-                is_load: state => state.class_index.is_load,
+                class_list: state => state.category.class_list,
+                is_load: state => state.category.is_load,
             }),
             currentIndex() {
                 for (let i = 0; i < this.listHeight.length; i++) {
@@ -276,7 +276,7 @@
                 $router.push({
                     name: 'catgoods',
                     params: {
-                        gc_id: id,
+                        category_id: id,
                     }
                 });
             }

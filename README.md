@@ -82,7 +82,7 @@
     │  index.js //主
     └─modules
             actionsheet.js
-            class_index.js
+            category.js
             common.js
             discovery.js
             home.js

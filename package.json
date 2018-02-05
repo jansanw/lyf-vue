@@ -1,8 +1,8 @@
 {
-  "name": "lyf2",
+  "name": "jansanw-shop",
   "version": "1.0.0",
-  "description": "老友粉2.0",
-  "author": "zhangwei <296404875@qq.com>",
+  "description": "jansanw-shop",
+  "author": "jansnaw <282293095@qq.com>",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",

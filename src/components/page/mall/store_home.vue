@@ -149,7 +149,7 @@
                 }
             },
             getData() {
-                this.$api.userGet('index?page=1&gc_id=1', res => {
+                this.$api.userGet('index?page=1&category_id=1', res => {
                     console.log(res);
                     this.data = res.data.data.goods_list.data
 

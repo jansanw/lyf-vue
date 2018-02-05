@@ -5,39 +5,38 @@
                 <div ref="top_menu" class="top-menu aui-border-b hm-flex-1">
                     <ul ref="top_menu_list" class="top-menu-list" :style="'width:'+m_w+'px'">
                         <li ref="top_menu_item" class="top-menu-item" :class="index==active?'active':''"
-                            v-for="(item,index) in goods_class" @click="changeMenu(index)">{{item.gc_name}}
+                            v-for="(item,index) in category" @click="changeMenu(index)">{{item.name}}
                         </li>
                     </ul>
                 </div>
-                <a class="search-btn J_search-btn  aui-border-b" @click="go_search()"><i
-                        class="iconfont icon-sousuo"></i></a><!--ion-search-->
+                <a class="search-btn J_search-btn  aui-border-b" @click="go_search()">
+                    <i class="iconfont icon-sousuo"></i></a><!--ion-search-->
             </div>
             <scroll ref="lyf_scroll" class="index-scroll page-content" style="top: 1.07rem;" :on-infinite="onInfinite"
                     :inner="360" :onScrollListener="onScrollListener">
-                <!--:on-refresh="onRefresh"-->
-                <swiper :options="swiperOption" v-show="active==0" v-if="false">
-                    <template v-for="slide in swiper_data">
+                <!--&lt;!&ndash;:on-refresh="onRefresh"&ndash;&gt; :alt="item.name" -->
+                <swiper :options="swiperOption" v-show="active==0">
+                    <template v-for="item in slide">
                         <swiper-slide>
-                            <img v-lazy="slide.adv_content" alt=""
-                                 style="background-color:#ffffff; width:100%; height:3.73rem;">
+                            <img v-lazy="item.content" style="background-color:#ffffff; width:100%; height:3.73rem;">
                         </swiper-slide>
                     </template>
                     <div class="swiper-pagination" slot="pagination"></div>
                 </swiper>
                 <!--二级分类列表-->
-                <div class="hm-content" v-show="subclass.length>0" style="margin-bottom: 0.1rem;">
+                <div class="hm-content" v-show="sub_category.length>0" style="margin-bottom: 0.1rem;">
                     <ul class="category hm-flex" style="flex-wrap:wrap;">
-                        <li style="width: 25%;" v-for="item in subclass">
-                            <div @click="go_cat(item.gc_id)">
-                                <img :src="item.logo">
-                                <span>{{item.gc_name}}</span>
+                        <li style="width: 25%;" v-for="item in sub_category">
+                            <div @click="go_cat(item.category_id)">
+                                <img :src="item.icon">
+                                <span>{{item.name}}</span>
                             </div>
                         </li>
                         <li style="width: 25%;">
-                            <div @click="go_cat(goods_class[active].gc_id)">
+                            <div @click="go_cat(category[active].category_id)">
                                 <!-- <a v-link="{name:'categorylist',params:{id:item.cat_id,name:item.cat_name}}"> -->
                                 <img src="../../../assets/images/more_cat.png">
-                                <span>查看全部</span>
+                                <span>进入分类</span>
                                 <!-- </a> -->
                             </div>
                         </li>
@@ -61,28 +60,32 @@
                     </div>
                 </div>
 
-                <div class="goods-list clear" v-for="(items,indexs) in goods_class" v-if="active == indexs">
+                <div class="goods-list clear" v-for="(items,indexs) in category" v-if="active === indexs">
                     <!--加上可避免切换时图片晃-->
                     <div class="hm-list hm-flex" v-if="goods.length>0" style="flex-wrap:wrap">
                         <div style="width: 49.4%;margin:0.3%;background: #fff;"
                              v-for="(item,index) in goods[active].goods">
-                            <div class="hm-list-item" style="padding:0" @click="goodsClick(item.goods_id)">
+                            <div class="hm-list-item" style="padding:0" @click="goodsClick(item.id)">
                                 <div class="hm-list-inner" style="padding:0">
-                                    <img v-lazy="item.goods_image" style="width: 100%;">
+                                    <img v-lazy="item.cover" style="width: 100%;">
                                     <div style="padding:.13rem .08rem .13rem .08rem;">
                                         <div class="goods-name aui-ellipsis-2"
                                              style=" height:1.17rem; line-height:.59rem; font-size:.37rem; color:#333;">
-                                            {{item.goods_name}}
+                                            {{item.name}}
                                         </div>
                                         <div class="hm-list-price hm-flex"
                                              style=" margin-top:.07rem;justify-content: space-between;">
                                             <div class="" style="color: #ee2e3a;font-weight: 700;">
-                                                <span>￥<b><big
-                                                        style="font-size:.48rem;">{{item.goods_price|price_yuan}}</big></b>{{item.goods_price|price_jiao}}</span>
+                                                <span>￥
+                                                    <b>
+                                                        <strong style="font-size:.48rem;">{{item.price|price_yuan}}</strong>
+                                                    </b>
+                                                    {{item.price|price_jiao}}
+                                                </span>
                                             </div>
                                             <div class="hm-color-gray" style="color:#9c9c9c;">
                                                 <small>已售</small>
-                                                {{item.goods_salenum}}
+                                                {{item.price}}
                                                 <small>件</small>
                                             </div>
                                         </div>
@@ -132,20 +135,20 @@
                 active: 0,
                 step_width: 0,
                 swiperOption: {
-                    autoplay: 5000,
+                    autoplay: 3000,
                     pagination: '.swiper-pagination'
                 },
                 top_menu_scroll: null
             }
         },
         computed: mapState({
-            goods_class: state => state.home.goods_class,
-            swiper_data: state => state.home.swiper_data,
+            category: state => state.home.category,
+            slide: state => state.home.slide,
             list: state => state.home.list,
             init_load: state => state.home.init_load,
             goods: state => state.home.list,
             list_scroll: state => state.home.list[state.home.active].scroll,
-            subclass: state => state.home.list[state.home.active].subclass,
+            sub_category: state => state.home.list[state.home.active].sub_category,
             page: state => state.home.list[state.home.active].page,
             is_load: state => state.home.list[state.home.active].is_load,
             load_more: state => state.home.list[state.home.active].load_more,
@@ -203,11 +206,11 @@
                 let o_scrol = this.$refs.lyf_scroll.$el.scrollTop;
                 let o_active = this.active;
 //      console.log('o_active=',o_active,'o_scrol=',o_scrol)
-                this.$store.commit('UPDATE_HOME_LIST_SCROLL', {active: o_active, scrol: o_scrol})
+                this.$store.commit('UPDATE_HOME_LIST_SCROLL', {active: o_active, scrol: o_scrol});
 
                 //移动menu
                 this.active = index;
-                this.$store.commit('UPDATE', {active: index})
+                this.$store.commit('UPDATE', {active: index});
                 if (index >= 1 && index < this.menu_len) {
                     this.top_menu_scroll.scrollTo(-this.step_width * (index - 1), 0, 500);
                 }
@@ -218,16 +221,15 @@
                 if (this.list[this.active].init == false) {
                     this.$store.dispatch('getData', res => {
                         this.$nextTick(() => {
-                            this.$refs.lyf_scroll.setscrollTop(this.list_scroll)
-                            this.$refs.lyf_scroll.infiniteDone()
+                            this.$refs.lyf_scroll.setscrollTop(this.list_scroll);
+                            this.$refs.lyf_scroll.infiniteDone();
                         })
                     })
                 } else {
                     this.$nextTick(() => {
 //          console.log(this.active,this.list_scroll);
-                        this.$refs.lyf_scroll.setscrollTop(this.list_scroll)
-                        this.$refs.lyf_scroll.infiniteDone()
-
+                        this.$refs.lyf_scroll.setscrollTop(this.list_scroll);
+                        this.$refs.lyf_scroll.infiniteDone();
                     })
                 }
             },
@@ -239,11 +241,11 @@
                     }
                 });
             },
-            go_cat(gc_id) {
+            go_cat(category_id) {
                 $router.push({
                     name: 'catgoods',
                     params: {
-                        gc_id: gc_id,
+                        category_id: category_id,
                     }
                 });
             },
@@ -375,8 +377,7 @@
         }
     }
 
-    #go-top,
-    .go-top {
+    #go-top, .go-top {
         display: block;
         width: 1.12rem;
         height: 1.12rem;
@@ -390,8 +391,7 @@
         -webkit-transition: bottom 0.8s ease, opacity 0.6s ease;
     }
 
-    #go-top span,
-    .go-top span {
+    #go-top span, .go-top span {
         position: absolute;
         bottom: 0.19rem;
         width: 100%;

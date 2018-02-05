@@ -6,7 +6,7 @@ for (let i = 0; i < catLen; i++) {
     list.push({
         init: false,
         goods: [],///ok
-        subclass: [],///
+        sub_category: [],///
         scroll: 0,
         page: 1,
         is_load: false,
@@ -16,8 +16,8 @@ for (let i = 0; i < catLen; i++) {
 }
 
 const state = {
-    swiper_data: [],
-    goods_class: [],
+    slide: [],
+    category: [],
     list,
     active: 0,
     init_load: false
@@ -28,18 +28,18 @@ const actions = {
         context.commit("UPDATE_LIST", {
             is_load: true
         });
-        let gc = state.goods_class[state.active];
-        //console.log(state.active,JSON.stringify(gc))
-        let gc_id = 0;
-        if (gc) gc_id = gc.gc_id;
+        let category_id = 0;
+        if (state.category[state.active])
+            category_id = state.category[state.active].id;
         let showpage = 1;
         let activelist = state.list[state.active];
         if (activelist) showpage = state.list[state.active].page;
-        http.userGet('index?page=' + showpage + '&gc_id=' + gc_id, res => {
+        http.userGet('index?page=' + showpage + '&categoryId=' + category_id, res => {
             context.commit('SET_DATA', res);
             $loading.hide();
             cb(res)
         }, error => {
+            console.log(error);
             context.commit("UPDATE_LIST", {
                 is_load: false,
                 load_more: false,
@@ -56,19 +56,19 @@ const mutations = {
         state.list[state.active].init = true;
         if (state.list[state.active].page === 1) {
             if (state.active === 0) {
-                state.goods_class = payload.data.data.goods_class;
-                state.swiper_data = payload.data.data.slide.adv
+                state.category = payload.data.data.category;
+                state.slide = payload.data.data.slide;
             } else {
-                state.list[state.active].subclass = payload.data.data.goods_class
+                state.list[state.active].sub_category = payload.data.data.category;
             }
-            state.list[state.active].goods = payload.data.data.goods_list.data
+            state.list[state.active].goods = payload.data.data.goods.list;
         } else {
-            for (let i = 0; i < payload.data.data.goods_list.data.length; i++) {
-                state.list[state.active].goods.push(payload.data.data.goods_list.data[i]);
+            for (let i = 0; i < payload.data.data.goods.list.length; i++) {
+                state.list[state.active].goods.push(payload.data.data.goods.list[i]);
             }
         }
-        if (state.list[state.active].page >= payload.data.data.goods_list.last_page) {
-            state.list[state.active].page = payload.data.data.goods_list.current_page;
+        if (state.list[state.active].page >= payload.data.data.goods.pageCount) {
+            state.list[state.active].page = payload.data.data.goods.page;
             state.list[state.active].load_more = false;
         }
         state.list[state.active].is_load = false;
@@ -77,18 +77,17 @@ const mutations = {
     },
     ['UPDATE'](state, payload) {
         for (let key in payload) {
-            state[key] = payload[key]
+            state[key] = payload[key];
         }
-
     },
     ['UPDATE_LIST'](state, payload) {
         for (let key in payload) {
-            state.list[state.active][key] = payload[key]
+            state.list[state.active][key] = payload[key];
         }
 
     },
     ['UPDATE_HOME_LIST_SCROLL'](state, payload) {
-        state.list[payload.active].scroll = payload.scrol
+        state.list[payload.active].scroll = payload.scrol;
     }
 };
 export default {
