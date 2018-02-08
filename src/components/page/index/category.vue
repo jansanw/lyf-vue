@@ -99,12 +99,11 @@
                         <div class="head">
                             <div class="tab">
                                 <span>{{item.name}}</span>
-                                <i class="ion-ios-color-wand" v-if="current_index ==index"></i>
+                                <i class="ion-ios-color-wand" v-if="current_index == index"></i>
                             </div>
                             <div class="show-all" @click="go_cat(item.id)">
-                                进入分类
-                                <img class="detail-arrow"
-                                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAQBAMAAADdUfNzAAAAIVBMVEUAAACcnJycnJycnJycnJycnJycnJycnJycnJycnJycnJx3mU74AAAAC3RSTlMAfw5vJHdYSjUbQQwBkC0AAAAySURBVAjXY+AoYgCCicIKQFJV0AhIsgiCOY6onAQgySUYAGFDxMFqIEywXpg5IDNhAAB0CwdERcuYjQAAAABJRU5ErkJggg==">
+                                更多...
+                                <!--<img class="detail-arrow" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAQBAMAAADdUfNzAAAAIVBMVEUAAACcnJycnJycnJycnJycnJycnJycnJycnJycnJycnJx3mU74AAAAC3RSTlMAfw5vJHdYSjUbQQwBkC0AAAAySURBVAjXY+AoYgCCicIKQFJV0AhIsgiCOY6onAQgySUYAGFDxMFqIEywXpg5IDNhAAB0CwdERcuYjQAAAABJRU5ErkJggg==">-->
                             </div>
                         </div>
                         <ul class="detail">
@@ -166,7 +165,6 @@
                         return i;
                     }
                 }
-
                 return 0;
             }
         },
@@ -380,7 +378,7 @@
         background-color: #fafafa;
     }
 
-    .root-active,.tab i.ion-ios-color-wand {
+    .root-active, .tab i.ion-ios-color-wand {
         color: #e02e24;
         background-color: #fff;
     }

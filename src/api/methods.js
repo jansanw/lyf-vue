@@ -144,7 +144,7 @@ export default {
     //session
     s_get(name) {
         let value = sessionStorage.getItem(name);
-        if (/^\{.*\}$/.test(value)) value = JSON.parse(value);
+        if (/^(\{.*\})|(\[.*\])$/.test(value)) value = JSON.parse(value);
         return value
     },
     s_set(name, value) {
@@ -156,7 +156,7 @@ export default {
     },
     l_get(name) {
         let value = localStorage.getItem(name);
-        if (/^\{.*\}$/.test(value)) value = JSON.parse(value);
+        if (/^(\{.*\})|(\[.*\])$/.test(value)) value = JSON.parse(value);
         return value
     },
     l_set(name, value) {

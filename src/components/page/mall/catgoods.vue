@@ -8,38 +8,41 @@
             <div ref="list_top_menu" class="top-menu aui-border-b hm-flex-1">
                 <ul ref="list_top_menu_list" class="top-menu-list" :style="'width:'+m_w+'px'">
                     <!--:style="'width:'+m_w+'px'"-->
-                    <li ref="list_top_menu_item" class="top-menu-item" :class="index==active?'active':''"
-                        v-for="(item,index) in goods_class" @click="changeMenu(index,item.category_id)">{{item.gc_name}}
+                    <li ref="list_top_menu_item" class="top-menu-item" :class="index == active ? 'active' : ''"
+                        v-for="(item,index) in category" @click="changeMenu(index,item.id)">{{item.name}}
                     </li>
-
                 </ul>
             </div>
-            <a class="search-btn J_search-btn  aui-border-b" @click="go_search()"><i
-                    class="iconfont icon-sousuo"></i></a>
+            <a class="search-btn J_search-btn  aui-border-b" @click="go_search()">
+                <i class="iconfont icon-sousuo"></i>
+            </a>
         </div>
         <scroll ref="lyf_scroll" class="index-scroll page-content" style="top: 1.07rem;" :on-infinite="onInfinite"
                 v-show="page_show">
-            <div class="goods-list clear" v-for="(items,indexs) in goods_class" v-if="active == indexs">
+            <div class="goods-list clear">
                 <div class="hm-list hm-flex" style="flex-wrap:wrap">
-                    <div style="width: 49.4%;margin:0.3%;background: #fff;" v-for="(item,index) in goods">
-                        <div class="hm-list-item" style="padding:0" @click="goodsClick(item.goods_id)">
+                    <div style="width: 49.4%;margin:0.3%;background: #fff;" v-for="item in goods">
+                        <div class="hm-list-item" style="padding:0" @click="goodsClick(item.id)">
                             <div class="hm-list-inner" style="padding:0">
-                                <img v-lazy="item.goods_image" style="width: 100%;">
+                                <img v-lazy="item.cover" style="width: 100%;">
                                 <div style="padding:.13rem .08rem .13rem .08rem;">
                                     <div class="hm-list-title-2 goods-name"
                                          style=" height:1.17rem; line-height:.59rem; font-size:.37rem; color:#333;">
-                                        {{item.goods_name}}
+                                        {{item.name}}
                                     </div>
                                     <div class="hm-list-price hm-flex"
                                          style=" margin-top:.07rem;justify-content: space-between;">
                                         <div class="" style="color: #ee2e3a;font-weight: 700;">
                                             <!--<span>￥<b><big style="font-size:.48rem;">{{item.goods_price}}</big></b></span>-->
-                                            <span>￥<b><big
-                                                    style="font-size:.48rem;">{{item.goods_price|price_yuan}}</big></b>{{item.goods_price|price_jiao}}</span>
+                                            <span>￥
+                                                <b><strong
+                                                        style="font-size:.48rem;">{{item.price|price_yuan}}</strong></b>
+                                                {{item.price|price_jiao}}
+                                            </span>
                                         </div>
                                         <div class="hm-color-gray" style="color:#9c9c9c;">
                                             <small>已售</small>
-                                            {{item.goods_salenum}}
+                                            {{item.sale}}
                                             <small>件</small>
                                         </div>
                                     </div>
@@ -70,7 +73,7 @@
         },
         data() {
             return {
-                goods_class: [],
+                category: [],
                 goods: [],
                 m_w: 0,
                 page: 1,
@@ -97,9 +100,9 @@
                     this.page_show = false;
                     this.$refs.lyf_scroll.setscrollTop(0);
                     $loading.show();
-                    this.getData(() => {
-
-                    })
+                    // this.getData(() => {
+                    //
+                    // })
                 }
             }
         },
@@ -116,38 +119,44 @@
         methods: {
             getData(done) {
                 this.is_load = true;
-                this.$api.userGet('goods_list?category_id=' + this.cat_goods_list_class_id + '&page=' + this.page, res => {
-                    if (res.data.data.goods_list.current_page === 1) {
-                        if (!this.cat_goods_list_class_init_menu) {
-
-                            this.goods_class = res.data.data.goods_class
+                // let category = this.$api.s_get("category_cache") || [],
+                //     categoryCurrent = category.length ? category.find(item => {
+                //         return item.id == this.cat_goods_list_class_id || 0;
+                //     }) : {id: this.cat_goods_list_class_id};
+                // categoryCurrent = categoryCurrent ? categoryCurrent : category[0];
+                // if (!category.length)
+                //     $router.replace("/home");
+                this.$api.userGet('goods/page_goods_category?categoryId=' + this.cat_goods_list_class_id + '&page=' + this.page, rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        if (data.goods.page == 1) {
+                            if (!this.cat_goods_list_class_init_menu) {
+                                this.category = data.category;
+                            }
+                            this.goods = data.goods.list;
+                        } else {
+                            for (let index in data.goods.list) {
+                                this.goods.push(data.goods.list[index])
+                            }
                         }
-                        this.goods = res.data.data.goods_list.data
-
-
-                    } else {
-                        for (let index in res.data.data.goods_list.data) {
-                            this.goods.push(res.data.data.goods_list.data[index])
+                        if (this.page === data.goods.pageCount || data.goods.count === 0) {
+                            this.load_more = false
                         }
-                    }
-                    if (this.page === res.data.data.goods_list.last_page || res.data.data.goods_list.total === 0) {
-                        this.load_more = false
-                    }
 
-                    this.$nextTick(() => {
-                        if (!this.cat_goods_list_class_init_menu) {
-                            this._initScroll();
-                            this._setMenuW();
-                            this.$store.commit('UPDATE_COMMON_DATA', {
-                                cat_goods_list_class_init_menu: true
-                            })
-                        }
-                        $loading.hide();
-                        done();
-                        this.$refs.lyf_scroll.infiniteDone();
-                        this.is_load = false;
-                        this.page_show = true
-                    })
+                        this.$nextTick(() => {
+                            if (!this.cat_goods_list_class_init_menu) {
+                                this._initScroll();
+                                this._setMenuW();
+                                this.$store.commit('UPDATE_COMMON_DATA', {
+                                    cat_goods_list_class_init_menu: true
+                                })
+                            }
+                            $loading.hide();
+                            done();
+                            this.$refs.lyf_scroll.infiniteDone();
+                            this.is_load = false;
+                            this.page_show = true
+                        })
+                    });
                 }, error => {
                     $toast.show(error.message);
                     this.$refs.lyf_scroll.infiniteDone();
@@ -180,7 +189,8 @@
                 })
             },
             changeMenu(index, category_id) {
-                if (this.active == index) return;
+                if (this.active == index)
+                    return;
                 this.$store.commit('UPDATE_COMMON_DATA', {
                     cat_goods_list_class_id: category_id,
                     cat_goods_list_class_active: index
@@ -230,11 +240,11 @@
             },
         },
         beforeRouteEnter(to, from, next) {
-            console.log('catgoods beforeRouteEnter from=', from.name)
+            console.log('catgoods beforeRouteEnter from=', from.name);
             next(vm => {
                 //从首页进入则要刷新分类
                 if (from.name == 'home') {
-                    console.log('cat_goods_list_class_init_menu: false')
+                    console.log('cat_goods_list_class_init_menu: false');
                     vm.$store.commit('UPDATE_COMMON_DATA', {
                         cat_goods_list_class_init_menu: false
                     })

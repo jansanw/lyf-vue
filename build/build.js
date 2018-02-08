@@ -1,3 +1,4 @@
+"use strict";
 require('./check-versions')();
 
 process.env.NODE_ENV = 'production';
@@ -18,10 +19,10 @@ let assetsPath = path.join(config.build.assetsRoot, config.build.assetsSubDirect
 shell.rm('-rf', assetsPath);
 shell.mkdir('-p', assetsPath);
 shell.config.silent = true;
-shell.cp('-R', 'static/*', assetsPath);
+shell.cp('-R', 'asset/*', assetsPath);
 
 // vonic assets
-let vonicAssetsPath = path.join(config.build.assetsRoot, 'static', 'vonic');
+let vonicAssetsPath = path.join(config.build.assetsRoot, 'asset', 'vonic');
 shell.mkdir('-p', vonicAssetsPath);
 shell.cp('-R', 'node_modules/vonic/dist/*', vonicAssetsPath);
 shell.config.silent = false;

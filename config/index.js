@@ -6,7 +6,7 @@ module.exports = {
         env: require('./prod.env'),
         index: path.resolve(__dirname, '../dist/index.html'),
         assetsRoot: path.resolve(__dirname, '../dist'),
-        assetsSubDirectory: 'static',
+        assetsSubDirectory: 'asset',
         assetsPublicPath: '/',
         productionSourceMap: true,
         // Gzip off by default as many popular static hosts such as
@@ -25,11 +25,11 @@ module.exports = {
         env: require('./dev.env'),
         port: 8080,
         autoOpenBrowser: true,
-        assetsSubDirectory: 'static',
+        assetsSubDirectory: 'asset',
         assetsPublicPath: '/',
         proxyTable: {
             "/api": {target: 'http://shop.lab', changeOrigin: true},
-            "/uploads": {target: 'http://shop.lab', changeOrigin: true},
+            "/uploads": {target: 'http://comet.xxbgxt.com', changeOrigin: true},
             // "/api": {target: 'https://api2.gxlyf.cn', changeOrigin: true}
         },
         // CSS Sourcemaps off by default because relative paths are "buggy"

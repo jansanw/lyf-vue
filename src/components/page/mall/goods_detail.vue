@@ -9,7 +9,7 @@
             <scroll>
                 <swiper ref="goods_swiper" :options="swiperOption" v-bind:style="{height: swipe_height+'px'}"
                         style="position: relative;z-index: 1;">
-                    <template v-for="(slide,index) in data.goods_image">
+                    <template v-for="(slide,index) in data.slide">
                         <swiper-slide>
                             <img :src="slide" v-show="init" alt="" style="background-color:#ffffff; width:100%;"
                                  @click="goods_img_show(index)">
@@ -21,7 +21,8 @@
                 <div class="infos">
                     <div class="area">
                         <div class="prices" style="display: flex;align-items: center;width:100%;">
-                            <div class="price theme-txt" style="color:#e02e24">¥<i>{{data.goods_info.goods_price|price_yuan}}</i><b><big>{{data.goods_info.goods_price|price_jiao}}</big></b>
+                            <div class="price theme-txt" style="color:#e02e24">¥<i>{{data.price|price_yuan}}</i>
+                                <b><strong>{{data.price|price_jiao}}</strong></b>
                             </div>
                             <div class="price-old">¥268</div>
                             <div style="padding-left: .27rem;">
@@ -37,9 +38,9 @@
                     </div>
                     <div class="product hm-flex" style="padding-top: .16rem;">
                         <h3 class="hm-flex-1">
-                            <span>{{data.goods_info.goods_name}}</span>
+                            <span>{{data.name}}</span>
                         </h3>
-                        <div class="hm-flex" @click="collect(data.goods_info.goods_id)"
+                        <div class="hm-flex" @click="collect(data.id)"
                              style="width: 1.2rem;flex-direction: column;align-items:center;font-size: .27rem;padding-left: .13rem;">
                             <i class="iconfont icon-favorite" :class="{'color-theme':collected}"
                                style="font-size: .59rem;"></i>
@@ -57,7 +58,7 @@
                 <!--</div>-->
                 <!--</div>-->
 
-                <ul class="aui-list" v-if="data.voucher_list != ''">
+                <ul class="aui-list" v-if="data.voucher_list">
                     <li class="aui-list-item aui-list-item-middle" style="height:1.07rem; min-height:1.07rem;"
                         @click="neck_voucher()">
                         <div class="aui-list-item-inner " style="height:1.07rem; min-height:1.07rem;">
@@ -77,9 +78,9 @@
                     <li class="aui-list-item aui-list-item-middle">
                         <div class="aui-list-item-inner ">
                             已选
-                            <template v-if="data.goods_info.goods_spec">
+                            <template v-if="data.goods_spec">
                                 <template v-for="value in cur_spec_namex">
-                                    <!--data.goods_info.goods_spec-->
+                                    <!--data.goods_spec-->
                                     "{{value}}"
                                 </template>
                             </template>
@@ -90,7 +91,7 @@
                 </ul>
 
                 <ul class="aui-list ">
-                    <li class="aui-list-item aui-list-item-middle" @click="go_comment(goods_id)">
+                    <li class="aui-list-item aui-list-item-middle" @click="go_comment(id)">
                         <div class="aui-list-item-inner ">
                             买家口碑
                             <i class="icon ion-ios-arrow-right" style="color: #DDD;"></i>
@@ -121,71 +122,71 @@
                 </div>
 
 
-                <div class="hm-flex" @click="go_store(data.store_info.store_id)"
-                     style="background: #fff;padding: .4rem .4rem 0;">
-                    <img v-lazy="data.store_info.store_label"
-                         style="width:.93rem; height:.93rem; margin-right:.13rem; border-radius:.05rem;"
-                         class="aui-border">
-                    <div class="text-14" style="flex:1">{{data.store_info.store_name}}</div>
-                    <div class="join-store-btn" id="instore"> 进店逛逛</div>
-                </div>
+                <!--<div class="hm-flex" @click="go_store(data.store_info.store_id)"-->
+                <!--style="background: #fff;padding: .4rem .4rem 0;">-->
+                <!--<img v-lazy="data.store_info.store_label"-->
+                <!--style="width:.93rem; height:.93rem; margin-right:.13rem; border-radius:.05rem;"-->
+                <!--class="aui-border">-->
+                <!--<div class="text-14" style="flex:1">{{data.store_info.store_name}}</div>-->
+                <!--<div class="join-store-btn" id="instore"> 进店逛逛</div>-->
+                <!--</div>-->
 
-                <ul class="event-list hm-margin-b">
-                    <li class="event-item aui-border-r">
-                        <span class="event-item-num">{{data.store_info.goods_count}}件</span>
-                        <span class="event-item-text">全部商品</span>
-                    </li>
-                    <li class="event-item aui-border-r">
-                        <span class="event-item-num">{{data.store_info.buy_count}}</span>
-                        <span class="event-item-text">购买人数</span>
-                    </li>
-                    <li class="event-item">
-                        <span class="event-item-num">{{data.store_info.collect_count}}</span>
-                        <span class="event-item-text">收藏人数</span>
-                    </li>
-                    <li class="event-item  aui-border-l" style="flex:1.5;" v-if="data.store_info.store_credit.length>1">
-                        <ul class="logis-list">
-                            <li>
-                                <span>{{data.store_info.store_credit.store_deliverycredit.text}}评价</span>
-                                <span style="color: #FF4965" class="logis-score">{{data.store_info.store_credit.store_deliverycredit.credit}}</span>
-                                <span style="color: #FF4965" class="logis-val">{{data.store_info.store_credit.store_deliverycredit.percent_text}}</span>
-                            </li>
-                            <li>
-                                <span>{{data.store_info.store_credit.store_servicecredit.text}}评价</span>
-                                <span style="color: #8F8F8F" class="logis-score">{{data.store_info.store_credit.store_servicecredit.credit}}</span>
-                                <span style="color: #8F8F8F" class="logis-val">{{data.store_info.store_credit.store_servicecredit.percent_text}}</span>
-                            </li>
-                            <li>
-                                <span>{{data.store_info.store_credit.store_desccredit.text}}评价</span>
-                                <span style="color: #8F8F8F" class="logis-score">{{data.store_info.store_credit.store_desccredit.credit}}</span>
-                                <span style="color: #8F8F8F" class="logis-val">{{data.store_info.store_credit.store_desccredit.percent_text}}</span>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+                <!--<ul class="event-list hm-margin-b">-->
+                <!--<li class="event-item aui-border-r">-->
+                <!--<span class="event-item-num">{{data.store_info.goods_count}}件</span>-->
+                <!--<span class="event-item-text">全部商品</span>-->
+                <!--</li>-->
+                <!--<li class="event-item aui-border-r">-->
+                <!--<span class="event-item-num">{{data.store_info.buy_count}}</span>-->
+                <!--<span class="event-item-text">购买人数</span>-->
+                <!--</li>-->
+                <!--<li class="event-item">-->
+                <!--<span class="event-item-num">{{data.store_info.collect_count}}</span>-->
+                <!--<span class="event-item-text">收藏人数</span>-->
+                <!--</li>-->
+                <!--<li class="event-item  aui-border-l" style="flex:1.5;" v-if="data.store_info.store_credit.length>1">-->
+                <!--<ul class="logis-list">-->
+                <!--<li>-->
+                <!--<span>{{data.store_info.store_credit.store_deliverycredit.text}}评价</span>-->
+                <!--<span style="color: #FF4965" class="logis-score">{{data.store_info.store_credit.store_deliverycredit.credit}}</span>-->
+                <!--<span style="color: #FF4965" class="logis-val">{{data.store_info.store_credit.store_deliverycredit.percent_text}}</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<span>{{data.store_info.store_credit.store_servicecredit.text}}评价</span>-->
+                <!--<span style="color: #8F8F8F" class="logis-score">{{data.store_info.store_credit.store_servicecredit.credit}}</span>-->
+                <!--<span style="color: #8F8F8F" class="logis-val">{{data.store_info.store_credit.store_servicecredit.percent_text}}</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<span>{{data.store_info.store_credit.store_desccredit.text}}评价</span>-->
+                <!--<span style="color: #8F8F8F" class="logis-score">{{data.store_info.store_credit.store_desccredit.credit}}</span>-->
+                <!--<span style="color: #8F8F8F" class="logis-val">{{data.store_info.store_credit.store_desccredit.percent_text}}</span>-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--</li>-->
+                <!--</ul>-->
 
 
-                <div class="text-14" style="background: #fff;padding: .27rem .27rem .16rem;">店铺推荐</div>
-                <div style="background: #fff;" ref="store_hot_scl">
-                    <div class="hm-flex" :style="'width:'+store_hot_list_w+'px'">
-                        <template v-for="goods in data.store_hot">
-                            <div ref="store_hot_scl_item" @click="go_goods(goods.goods_id)">
+                <div class="text-14" style="background: #fff;padding: .27rem .27rem .16rem;">推 荐</div>
+                <div style="background: #fff;" ref="recommend_scl">
+                    <div class="hm-flex" :style="'width:'+recommend_list_w+'px'">
+                        <template v-for="item in data.recommend">
+                            <div ref="recommend_scl_item" @click="go_goods(goods.id)">
                                 <div style="width:130px; margin:5px;">
-                                    <img v-lazy="goods.goods_image" style="background-color:#ffffff; width:100%;">
-                                    <p class="aui-ellipsis-2">{{goods.goods_name}}</p>
+                                    <img v-lazy="item.cover" style="background-color:#ffffff; width:100%;">
+                                    <p class="aui-ellipsis-2">{{item.name}}</p>
                                 </div>
                             </div>
                         </template>
                     </div>
-
                 </div>
 
                 <div class="mobile_body">
                     <div class="text-14" style="background: #fff;padding: .27rem .27rem .16rem;">商品详情</div>
-                    <template v-for="item in data.goods_info.mobile_body">
-                        <img v-if="item.type=='image'" v-lazy="item.value" alt="">
-                        <p v-else-if="item.type=='text'" v-html="item.value"></p>
-                    </template>
+                    <div v-html="data.content"></div>
+                    <!--<template v-for="item in data.mobile_body">-->
+                    <!--<img v-if="item.type=='image'" v-lazy="item.value" alt="">-->
+                    <!--<p v-else-if="item.type=='text'" v-html="item.value"></p>-->
+                    <!--</template>-->
                 </div>
 
             </scroll>
@@ -214,12 +215,12 @@
         </div>
 
         {{/*属性选择*/}}
-        <actionsheet :data="data" :goodsid="goods_id" :init_spec="init_spec" :init_spec_name="init_spec_name"
-                     @refresh_goods_data="refreshGoodsData"></actionsheet>
+        <!--<actionsheet :data="data" :goodsid="id" :init_spec="init_spec" :init_spec_name="init_spec_name"-->
+        <!--@refresh_goods_data="refreshGoodsData"></actionsheet>-->
 
         {{/*店铺优惠券*/}}
-        <voucher-list :popupVisible="voucherPopupVisible" :voucherlist="data.voucher_list"
-                      :storename="data.store_info.store_name" :from="'goods'"></voucher-list>
+        <!--<voucher-list :popupVisible="voucherPopupVisible" :voucherlist="data.voucher_list"-->
+        <!--:storename="data.store_info.store_name" :from="'goods'"></voucher-list>-->
     </div>
 </template>
 
@@ -243,28 +244,26 @@
         return {
             voucherPopupVisible: false,
             init: false,
-            goods_id: null,
+            id: null,
             data: {
-                goods_image: [],
-                goods_info: {
-                    goods_price: 0,
-                    color_id: 0,
-                    goods_name: '',
-                    spec_name: [],
-                    spec_value: [],
-                    goods_spec: [],
-                },
+                slide: [],
+                price: 0,
+                color_id: 0,
+                name: '',
+                spec_name: [],
+                spec_value: [],
+                goods_spec: [],
                 spec_image: {},
-                store_info: {
-                    buy_count: '',
-                    collect_count: '',
-                    goods_count: '',
-                    store_credit: {
-                        store_deliverycredit: {},
-                        store_desccredit: {},
-                        store_servicecredit: {}
-                    }
-                },
+                // store_info: {
+                //     buy_count: '',
+                //     collect_count: '',
+                //     goods_count: '',
+                //     store_credit: {
+                //         store_deliverycredit: {},
+                //         store_desccredit: {},
+                //         store_servicecredit: {}
+                //     }
+                // },
             },
             swipe_height: 100,
             cartNumber: 5,
@@ -280,7 +279,7 @@
 //      pagination: '.swiper-pagination',
 //    },
             collected: false, //已收藏
-            store_hot_list_w: 0
+            recommend_list_w: 0
         }
     }
 
@@ -304,16 +303,16 @@
         },
         methods: {
             _initScroll() {
-                let items = this.$refs.store_hot_scl_item;
-                this.store_hot_list_w = 0;
+                this.recommend_list_w = 0;
+                let items = this.$refs.recommend_scl_item || [];
                 items.map(a => {
-                    this.store_hot_list_w += a.clientWidth
+                    this.recommend_list_w += a.clientWidth
                 });
                 this.$nextTick(() => {
-                    if (this.store_hot_scl) {
-                        this.store_hot_scl.refresh()
+                    if (this.recommend_scl) {
+                        this.recommend_scl.refresh()
                     } else {
-                        this.store_hot_scl = new BScroll(this.$refs.store_hot_scl, {
+                        this.recommend_scl = new BScroll(this.$refs.recommend_scl, {
                             scrollX: true,
                             scrollY: false,
                             click: false
@@ -323,32 +322,49 @@
             },
             getData() {
                 $loading.show("");
-                this.$api.userGet('goods_info?goods_id=' + this.goods_id, res => {
-                    //console.log(JSON.stringify(res.data));
-                    this.data = res.data.data;
-                    this.init = true;
-                    $loading.hide();
-                    //更新init_spec，init_spec_name至vuex
-                    this.$store.commit('ACTIONSHEET_UPDATE', {
-                        key: 'cur_specx',
-                        value: this.init_spec
-                    });
-                    this.$store.commit('ACTIONSHEET_UPDATE', {
-                        key: 'cur_spec_namex',
-                        value: this.init_spec_name
-                    });
-                    this.$nextTick(() => {
-                        this.goTop();
-                        this._initScroll()
+                this.$api.userGet('goods/detail?id=' + this.id, rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        this.data = data;
+                        this.init = true;
+                        $loading.hide();
+                        //更新init_spec，init_spec_name至vuex
+                        this.$store.commit('ACTIONSHEET_UPDATE', {
+                            key: 'cur_specx',
+                            value: this.init_spec
+                        });
+                        this.$store.commit('ACTIONSHEET_UPDATE', {
+                            key: 'cur_spec_namex',
+                            value: this.init_spec_name
+                        });
+                        this.$nextTick(() => {
+                            this.goTop();
+                            this._initScroll()
 
-                    })
-                }, err => {
-                    //$toast(err)
+                        })
+                    });
+                    //console.log(JSON.stringify(res.data));
+                    // this.data = res.data.data;
+                    // this.init = true;
+                    // $loading.hide();
+                    // //更新init_spec，init_spec_name至vuex
+                    // this.$store.commit('ACTIONSHEET_UPDATE', {
+                    //     key: 'cur_specx',
+                    //     value: this.init_spec
+                    // });
+                    // this.$store.commit('ACTIONSHEET_UPDATE', {
+                    //     key: 'cur_spec_namex',
+                    //     value: this.init_spec_name
+                    // });
+                    // this.$nextTick(() => {
+                    //     this.goTop();
+                    //     this._initScroll()
+                    //
+                    // })
                 })
             },
             refreshGoodsData(id) {
-                console.log('refreshGoodsData(id)..', this.goods_id);
-                this.$api.userGet('goods_info?goods_id=' + id, res => {
+                console.log('refreshGoodsData(id)..', this.id);
+                this.$api.userGet('goods/detail?id=' + id, res => {
                     this.data = res.data.data;
                     //更新init_spec，init_spec_name至vuex
                     this.$store.commit('ACTIONSHEET_UPDATE', {
@@ -367,7 +383,7 @@
             },
             collect(id) {
                 $loading.show();
-                this.$api.userAuthGet('favorites_add_goods?goods_id=' + id, res => {
+                this.$api.userAuthGet('favorite/' + id, res => {
                     this.collected = true;
                     $loading.hide();
                     $toast.show('收藏成功', 3000)
@@ -390,7 +406,7 @@
                 })
             },
             go_goods(id) {
-                this.goods_id = id;
+                this.id = id;
                 $router.push({
                     name: 'goods_detail',
                     params: {
@@ -449,8 +465,8 @@
             goods_img_show(index) {
                 if (typeof WeixinJSBridge !== "undefined") {
                     WeixinJSBridge.invoke('imagePreview', {
-                        'current': this.data.goods_image[index],
-                        'urls': this.data.goods_image
+                        'current': this.data.slide[index],
+                        'urls': this.data.slide
                     });
                 }
             },
@@ -468,8 +484,8 @@
 
             init_spec() { //默认属性id数组
                 //            console.log('init_spec_keys')
-                let goods_spec = this.data.goods_info.goods_spec;
-                let spec_value = this.data.goods_info.spec_value;
+                let goods_spec = {};//this.data.goods_spec;
+                let spec_value = this.data.spec_value;
                 let spec_key = {};
                 let spec_arr = [];
                 for (let goodsKey in goods_spec) {
@@ -491,8 +507,8 @@
             },
             init_spec_name() { //默认属性名数组
                 //            console.log('init_spec_keys')
-                let goods_spec = this.data.goods_info.goods_spec;
-                let spec_value = this.data.goods_info.spec_value;
+                let goods_spec = this.data.goods_spec;
+                let spec_value = this.data.spec_value;
                 let spec_key = {};
                 let spec_name = {};
                 let spec_arr = [];
@@ -503,7 +519,7 @@
                         //                    console.log(goodsKey,JSON.stringify(spec_value[valueKey]))
                         let valueJson = spec_value[valueKey];
                         for (let keyValueJson in valueJson) {
-                            if (keyValueJson == goodsKey) {
+                            if (keyValueJson === goodsKey) {
                                 //                            console.log(valueKey,keyValueJson)
                                 spec_key[valueKey] = valueJson[keyValueJson] //仅此处与init_spec有区别
                             }
@@ -525,9 +541,9 @@
             }
         },
         watch: {
-            goods_id(val, newVal) {
+            id(val, newVal) {
                 console.log('watch', val, newVal);
-                //      this.goods_id = val
+                //      this.id = val
                 this.getData()
             }
         },
@@ -537,8 +553,8 @@
                 let id = vm.$route.params.id;
                 //            vm.data=dataInit()
                 console.log('beforeRouteEnter id=', id);
-                if (vm.goods_id != id) {
-                    vm.goods_id = id;
+                if (vm.id !== id) {
+                    vm.id = id;
                 } else {
                     vm.init = true;
                 }

@@ -27,16 +27,16 @@
                 <div class="hm-content" v-show="sub_category.length>0" style="margin-bottom: 0.1rem;">
                     <ul class="category hm-flex" style="flex-wrap:wrap;">
                         <li style="width: 25%;" v-for="item in sub_category">
-                            <div @click="go_cat(item.category_id)">
+                            <div @click="go_cat(item.id)">
                                 <img :src="item.icon">
                                 <span>{{item.name}}</span>
                             </div>
                         </li>
                         <li style="width: 25%;">
-                            <div @click="go_cat(category[active].category_id)">
+                            <div @click="go_cat(category[active].id, sub_category)">
                                 <!-- <a v-link="{name:'categorylist',params:{id:item.cat_id,name:item.cat_name}}"> -->
                                 <img src="../../../assets/images/more_cat.png">
-                                <span>进入分类</span>
+                                <span>更多...</span>
                                 <!-- </a> -->
                             </div>
                         </li>
@@ -188,14 +188,14 @@
             },
             _setMenuW() {
                 let items = this.$refs.top_menu_item;
-                let a = 0;
+                let tmp = 0;
                 this.menu_item_width = items[0].clientWidth;
                 this.menu_len = items.length;
 
                 for (let index in items) {
-                    a = a + items[index].clientWidth
+                    tmp += items[index].clientWidth
                 }
-                this.m_w = a;
+                this.m_w = tmp + 50;
 
                 this.$nextTick(() => {
                     this.initScroll()
@@ -241,11 +241,24 @@
                     }
                 });
             },
-            go_cat(category_id) {
+            go_cat(categoryId, category) {
+                // let cate = [];
+                // if (category) {
+                //     cate.push({
+                //         id: categoryId,
+                //         name: this.category[this.active].name,
+                //         icon: null
+                //     });
+                //     cate[0].id = category.map(v => {
+                //         cate.push(v);
+                //         return v.id
+                //     }).join(",")
+                // }
+                // this.$api.s_set("category_cache", cate);
                 $router.push({
                     name: 'catgoods',
                     params: {
-                        category_id: category_id,
+                        category_id: categoryId,
                     }
                 });
             },
@@ -299,6 +312,11 @@
 
 <style lang="scss">
     @import "../../../assets/config.scss";
+
+    .swiper-container {
+        height: 150px;
+        overflow: hidden;
+    }
 
     .search-btn {
         line-height: 1.07rem;

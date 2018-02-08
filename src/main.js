@@ -115,7 +115,7 @@ let routes = [{
             component: comment_list
         },
         {
-            path: '/catgoods/:category_id',
+            path: '/category/:category_id',
             name: 'catgoods',
             meta: {title: '分类'},
             component: catgoods
