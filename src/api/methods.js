@@ -112,7 +112,7 @@ export default {
     },
     errorFilter(error, err) {
         $loading.hide();
-        console.log(error.response);
+        console.log(error);
         if (error.response.status && error.response.status === 401) {
             $toast.show("登录信息已过期");
             this.l_remove("token");

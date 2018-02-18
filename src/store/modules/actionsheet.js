@@ -14,15 +14,11 @@ const mutations = {
         state[payload.key] = [];
         for (let i in payload.value) {
             state[payload.key].push(payload.value[i])
-
         }
     },
-
     ['ACTIONSHEET_CLEAN'](state) {
         state.showpicksheet = false;
     },
-
-
 };
 
 export default {

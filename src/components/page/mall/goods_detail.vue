@@ -90,7 +90,7 @@
                     </li>
                 </ul>
 
-                <ul class="aui-list ">
+                <ul class="aui-list " v-if="false">
                     <li class="aui-list-item aui-list-item-middle" @click="go_comment(id)">
                         <div class="aui-list-item-inner ">
                             买家口碑
@@ -170,7 +170,7 @@
                 <div style="background: #fff;" ref="recommend_scl">
                     <div class="hm-flex" :style="'width:'+recommend_list_w+'px'">
                         <template v-for="item in data.recommend">
-                            <div ref="recommend_scl_item" @click="go_goods(goods.id)">
+                            <div ref="recommend_scl_item" @click="go_goods(item.id)">
                                 <div style="width:130px; margin:5px;">
                                     <img v-lazy="item.cover" style="background-color:#ffffff; width:100%;">
                                     <p class="aui-ellipsis-2">{{item.name}}</p>
@@ -188,10 +188,7 @@
                     <!--<p v-else-if="item.type=='text'" v-html="item.value"></p>-->
                     <!--</template>-->
                 </div>
-
             </scroll>
-
-
         </div>
         <!--固定不动的元素 要放到page-content的外面-->
         <div class="submit-order">
@@ -215,8 +212,8 @@
         </div>
 
         {{/*属性选择*/}}
-        <!--<actionsheet :data="data" :goodsid="id" :init_spec="init_spec" :init_spec_name="init_spec_name"-->
-        <!--@refresh_goods_data="refreshGoodsData"></actionsheet>-->
+        <actionsheet :data="data" :id="id" :init_spec="init_spec" :init_spec_name="init_spec_name"
+                     @refresh_goods_data="refreshGoodsData"></actionsheet>
 
         {{/*店铺优惠券*/}}
         <!--<voucher-list :popupVisible="voucherPopupVisible" :voucherlist="data.voucher_list"-->
@@ -297,7 +294,7 @@
         },
         mounted() {
             bus.$on("onVoucherState", res => {
-                console.log(res);
+                // console.log(res);
                 this.voucherPopupVisible = res
             })
         },
@@ -501,8 +498,8 @@
                 for (let i in spec_key) {
                     spec_arr.push(spec_key[i])
                 }
-                //            console.log('spec_key=',JSON.stringify(spec_key))
-                //            console.log('spec_arr=',spec_arr)
+                console.log('spec_key=', JSON.stringify(spec_key));
+                console.log('spec_arr=', spec_arr);
                 return spec_arr
             },
             init_spec_name() { //默认属性名数组

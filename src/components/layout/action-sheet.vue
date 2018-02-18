@@ -4,17 +4,17 @@
             <i class="icon_closed ion-ios-close-outline" @click="quit()"></i>
             <div class="container_sku">
                 <div class="head">
-                    <template v-show="this.data.goods_info.color_id">
+                    <template v-show="this.data.color_id">
                         <img :src="goods_sku_img" @click="sku_show_pic(goodsid_choose)"><!--init_color_id  -->
                     </template>
                     <div class="infos">
-                        <p class="price">¥<strong id="J_sku-price">{{data.goods_info.goods_price}}</strong><span
+                        <p class="price">¥<strong id="J_sku-price">{{data.price}}</strong><span
                                 id="J_sku-stock"></span>
                         </p>
-                        <p class="text">库存：{{data.goods_info.goods_storage}}</p>
+                        <p class="text">库存：{{data.stock}}</p>
                         <p class="text">已选
-                            <template v-if="data.goods_info.goods_spec">
-                                <template v-for="value in cur_spec_name"><!--data.goods_info.goods_spec-->
+                            <template v-if="data.spec">
+                                <template v-for="value in cur_spec_name"><!--data.goods_spec-->
                                     "{{value}}"
                                 </template>
                             </template>
@@ -24,18 +24,17 @@
                 <div ref="sku_scroll" class="scroll-container">
                     <div class="">
                         <div class="prop-mainer">
-                            <template v-if="data.goods_info.spec_name">
-                                <section v-for="(spec,key,index) in data.goods_info.spec_name">
+                            <template v-if="data.spec_name">
+                                <section v-for="(spec,key,index) in data.spec_name">
                                     <h3>{{spec}}</h3>
                                     <ul class="J_sku-list">
                                         <li class="sku-item" @click="choose_spec(index,key,keys)"
                                             :class="{'active':keys==cur_spec[index]}"
-                                            v-for="(item,keys,indexs) in data.goods_info.spec_value[key]">{{item}}
+                                            v-for="(item,keys,indexs) in data.spec_value[key]">{{item}}
                                         </li>
                                     </ul>
                                 </section>
                             </template>
-
                         </div>
                         <div class="quantity-info">
                             <div class="sku-quantity">
@@ -53,14 +52,12 @@
                     </div>
                 </div>
 
-
                 <div class="sku-btns">
                     <div class="sku-btn addcart" @click="add_cart">加入购物车</div>
                     <div class="sku-btn gobuy" @click="buy_now">立即购买</div>
                 </div>
             </div>
         </div>
-
     </mt-popup>
 </template>
 <script>
@@ -85,7 +82,7 @@
                 type: Object,
                 default: null,
             },
-            goodsid: {
+            id: {
                 type: [String, Number],
                 default: null,
             },
@@ -104,7 +101,7 @@
                 firstTimeOpenSheet: state => state.actionsheet.firstTimeOpenSheet,
             }),
             init_color_id() {
-                return this.data.goods_info.color_id
+                return this.data.color_id
             },
             spec_string() {
                 //复制数组
@@ -123,7 +120,7 @@
                 }
             },
             goods_sku_img() {
-                return this.data.spec_image[this.goodsid_choose]
+                return this.data.cover;//this.data.spec_image[this.goodsid_choose]
             },
             goodsid_choose() {
                 let spec_list = this.data.spec_list;
@@ -133,7 +130,7 @@
                         if (spec_string == key) return spec_list[key]
                     }
                 } else {
-                    return this.goodsid
+                    return this.id
                 }
 
             },
@@ -211,7 +208,7 @@
             },
             choose_spec(index, key1, key2) {
                 this.$set(this.cur_spec, index, key2);
-                this.cur_spec_name[index] = this.data.goods_info.spec_value[key1][key2];
+                this.cur_spec_name[index] = this.data.spec_value[key1][key2];
                 //更新init_spec，init_spec_name至vuex
                 this.$store.commit('ACTIONSHEET_UPDATE_ARR', {key: 'cur_specx', value: this.cur_spec});
                 this.$store.commit('ACTIONSHEET_UPDATE_ARR', {key: 'cur_spec_namex', value: this.cur_spec_name})

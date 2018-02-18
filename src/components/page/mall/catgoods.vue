@@ -113,20 +113,15 @@
                     cat_goods_list_class_id: this.category_id
                 })
             }
-            this.getData(() => {
-            })
+            // this.getData(() => {
+            // })
         },
         methods: {
             getData(done) {
                 this.is_load = true;
-                // let category = this.$api.s_get("category_cache") || [],
-                //     categoryCurrent = category.length ? category.find(item => {
-                //         return item.id == this.cat_goods_list_class_id || 0;
-                //     }) : {id: this.cat_goods_list_class_id};
-                // categoryCurrent = categoryCurrent ? categoryCurrent : category[0];
-                // if (!category.length)
-                //     $router.replace("/home");
-                this.$api.userGet('goods/page_goods_category?categoryId=' + this.cat_goods_list_class_id + '&page=' + this.page, rps => {
+                this.$api.userGet('goods/page_goods_category?categoryId='
+                    + this.cat_goods_list_class_id + '&page=' + this.page + '&category='
+                    + (!this.cat_goods_list_class_init_menu ? 1 : 0), rps => {
                     this.$api.responseFilter(rps.data, data => {
                         if (data.goods.page == 1) {
                             if (!this.cat_goods_list_class_init_menu) {

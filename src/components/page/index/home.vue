@@ -314,7 +314,7 @@
     @import "../../../assets/config.scss";
 
     .swiper-container {
-        height: 150px;
+        height: 140px;
         overflow: hidden;
     }
 

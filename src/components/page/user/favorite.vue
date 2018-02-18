@@ -1,5 +1,10 @@
 <template lang="html">
     <div class="page">
+        <!--固定不动的元素 要放到page-content的外面-->
+        <div class="download-app">
+            <i class="iconfont icon-houtui2" @click="$router.go(-1);"></i>
+        </div>
+
         <div class="order-manage list">
             <div class="top-fixed">
                 <div class="nav-tab-top">
@@ -26,13 +31,16 @@
                                 <div class="hm-flex-1" style="position:relative;">
                                     <i class="iconfont icon-xuanze choose-btn" :class="{'del-active':choose_arr[index]}"
                                        @click="choose_del(index)" v-show="edit_status"></i>
-                                    <img :src="item.goods.goods_image">
+                                    <img :src="item.cover">
                                 </div>
-                                <div class="hm-flex-2 hm-flex" @click="open_goods(item.goods.goods_id)"
+                                <div class="hm-flex-2 hm-flex" @click="open_goods(item.id)"
                                      style="flex-direction: column;justify-content: space-between;padding-left: 10px">
-                                    <div>{{item.goods_name}}</div>
+                                    <div>{{item.name}}</div>
                                     <div style="color: #ee2e3a;font-weight: 700;">
-                                        <span>￥<b><strong style="font-size:.48rem;">{{item.log_price|price_yuan}}</strong></b>{{item.log_price|price_jiao}}</span>
+                                        <span>￥
+                                            <b><strong style="font-size:.48rem;">{{item.price|price_yuan}}</strong></b>
+                                            {{item.price|price_jiao}}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -61,18 +69,18 @@
                 choose_arr: [],
 
                 goods_list: [{
-                    goods_name: '',
+                    name: '',
                     store_name: '',
-                    log_price: '',
+                    price: '',
                     goods: {
-                        goods_image: '',
+                        cover: '',
                     },
                 }],
                 page: 1,
                 load_more: true,
                 loading: false,
-                tabs: ['商品', '店铺'],
-                type: ['goods', 'store'],
+                tabs: ['商品'],//, '店铺'
+                type: ['goods'],//, 'store'
                 active: 0,
 
             }
@@ -82,14 +90,13 @@
 //    $loading.show()
             this.getData(() => {
             })
-
         },
         computed: {
             fav_id_arr() {
                 let choose_ids = [];
                 for (let i in this.choose_arr) {
                     if (this.choose_arr[i]) {
-                        choose_ids.push(this.goods_list[i].fav_id)
+                        choose_ids.push(this.goods_list[i].id)
                     }
                 }
                 return choose_ids.join()
@@ -99,68 +106,103 @@
 
         methods: {
             getData(done) {
-
                 if (!this.load_more) return;
                 $loading.show();
-                console.log('!load_more=', !this.load_more, 'loading=', this.loading, 'pages=', this.page)
+                // console.log('!load_more=', !this.load_more, 'loading=', this.loading, 'pages=', this.page);
 //      if (this.page == 1) {
 //        $loading.show()
 //      }
-
                 let condition = '&type=' + this.type[this.active];
                 //console.log('this.active=',this.active,'condition=',condition)
-                this.$api.userAuthGet("favorites_list?page=" + this.page + condition, res => {
-                    console.log(res);
-
-
-                    if (res.data.status_code == 1) {
-
-                        if (this.page == 1) {
-                            if (this.active == 0) {
-                                this.goods_list = res.data.data.data;
+                this.$api.userAuthGet("favorite/page?page=" + this.page + condition, rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        if (this.page === 1) {
+                            if (this.active === 0) {
+                                this.goods_list = data.list;
                                 this.$nextTick(() => {
                                     this.init = true;
-                                    $loading.hide();
+                                    // $loading.hide();
                                 });
 
                                 //选择数组初始化
-                                for (let i in res.data.data.data) {
+                                for (let i in data.list) {
                                     this.choose_arr.push(false)
                                 }
-
                             } else {
-                                this.store_list = res.data.data.data
+                                this.store_list = []
                             }
-
                         } else {
-                            if (this.active == 0) {
-                                for (let i in res.data.data.data) {
-                                    this.goods_list.push(res.data.data.data[i]);
-                                    for (let i in res.data.data.data) {
+                            if (this.active === 0) {
+                                for (let i in data.list) {
+                                    this.goods_list.push(data.list[i]);
+                                    for (let i in data.list) {
                                         this.choose_arr.push(false)
                                     }
                                 }
                             } else {
-                                for (let i in res.data.data.data) {
-                                    this.store_list.push(res.data.data.data[i]);
+                                for (let i in data.list) {
+                                    this.store_list.push(data.list[i]);
                                 }
                             }
                         }
-                        if (res.data.data.last_page == res.data.data.current_page) {
-                            this.$set(this.load_more, this.active, false)
+                        if (data.page === data.pageCount) {
+                            this.load_more = false;
+                            // this.$set(this.load_more, this.active, false)
                         } else {
-                            this.$set(this.load_more, this.active, true)
+                            this.load_more = true;
+                            // this.$set(this.load_more, this.active, true)
                         }
-                    }
+                        // this.loading = false;
+                        this.$nextTick(() => {
+                            $loading.hide();
+                            done()
+                        })
+                    });
+                    //     return;
+                    //     if (res.data.status_code == 1) {
+                    //         if (this.page == 1) {
+                    //             if (this.active == 0) {
+                    //                 this.goods_list = res.data.data.data;
+                    //                 this.$nextTick(() => {
+                    //                     this.init = true;
+                    //                     $loading.hide();
+                    //                 });
+                    //
+                    //                 //选择数组初始化
+                    //                 for (let i in res.data.data.data) {
+                    //                     this.choose_arr.push(false)
+                    //                 }
+                    //             } else {
+                    //                 this.store_list = res.data.data.data
+                    //             }
+                    //
+                    //         } else {
+                    //             if (this.active == 0) {
+                    //                 for (let i in res.data.data.data) {
+                    //                     this.goods_list.push(res.data.data.data[i]);
+                    //                     for (let i in res.data.data.data) {
+                    //                         this.choose_arr.push(false)
+                    //                     }
+                    //                 }
+                    //             } else {
+                    //                 for (let i in res.data.data.data) {
+                    //                     this.store_list.push(res.data.data.data[i]);
+                    //                 }
+                    //             }
+                    //         }
+                    //         if (res.data.data.last_page == res.data.data.current_page) {
+                    //             this.$set(this.load_more, this.active, false)
+                    //         } else {
+                    //             this.$set(this.load_more, this.active, true)
+                    //         }
+                    //     }
                     this.loading = false;
                     this.$nextTick(() => {
-                        $loading.hide();
+                        // $loading.hide();
                         done()
                     })
-                }, error => {
-
+                    // }, error => {
                 })
-
             },
             onRefresh(done) {
                 if (this.loading) return;
@@ -212,11 +254,12 @@
                     return;
                 }
                 $loading.show('删除中');
-                this.$api.userAuthPost('favorites_del', {
-                    fav_id: this.fav_id_arr,
-                    fav_type: this.type[this.active]
-                }, res => {
-                    if (res.data.status_code == 1) {
+                this.$api.userAuthPost('favorite/delete', {
+                    id: this.fav_id_arr//,
+                    // fav_type: this.type[this.active]
+                }, rps => {
+                    // if (res.data.status_code == 1) {
+                    this.$api.responseFilter(rps.data, data => {
                         $loading.hide();
                         $toast.show('删除成功', 2000);
 //          this.edit_status=false
@@ -225,9 +268,10 @@
                         }
                         this.getData(() => {
                         })
-                    }
-
-                }, err => {
+                    })
+                    //     }
+                    //
+                    // }, err => {
 
                 })
             },
@@ -250,8 +294,8 @@
         },
         beforeRouteEnter(to, from, next) {
             next(vm => {
-                vm.getData(() => {
-                })
+                // vm.getData(() => {
+                // })
             })
         }
 
