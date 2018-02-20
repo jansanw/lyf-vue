@@ -4,9 +4,22 @@ const state = {
     cur_specx: [],
     cur_spec_namex: [],
     quantityx: 1,
+    stock_choose: {
+        id: -1,
+        name: '',
+        price: 0,
+        stock: 0,
+        quantity: 1,
+        cover: ''
+    }
 };
 
 const mutations = {
+    ['ACTION_SHEET_STOCK'](state, payload) {
+        for (let k in payload) {
+            state.stock_choose[k] = payload[k];
+        }
+    },
     ['ACTIONSHEET_UPDATE'](state, payload) {
         state[payload.key] = payload.value;
     },

@@ -77,14 +77,18 @@
                 <ul class="aui-list hm-margin-b mt-10" @click="add">
                     <li class="aui-list-item aui-list-item-middle">
                         <div class="aui-list-item-inner ">
-                            已选
-                            <template v-if="data.goods_spec">
-                                <template v-for="value in cur_spec_namex">
-                                    <!--data.goods_spec-->
-                                    "{{value}}"
-                                </template>
+                            已 选
+                            <template v-if="stock_choose.name">："{{stock_choose.name}}" / 数
+                                量："{{stock_choose.quantity}}"
                             </template>
-                            "数量:{{quantityx}}"
+                            <!--已选-->
+                            <!--<template v-if="data.goods_spec">-->
+                            <!--<template v-for="value in cur_spec_namex">-->
+                            <!--&lt;!&ndash;data.goods_spec&ndash;&gt;-->
+                            <!--"{{value}}"-->
+                            <!--</template>-->
+                            <!--</template>-->
+                            <!--"数量:{{quantityx}}"-->
                             <i class="icon ion-ios-arrow-right" style="color: #DDD;"></i>
                         </div>
                     </li>
@@ -120,7 +124,6 @@
 
                     </ul>
                 </div>
-
 
                 <!--<div class="hm-flex" @click="go_store(data.store_info.store_id)"-->
                 <!--style="background: #fff;padding: .4rem .4rem 0;">-->
@@ -165,7 +168,6 @@
                 <!--</li>-->
                 <!--</ul>-->
 
-
                 <div class="text-14" style="background: #fff;padding: .27rem .27rem .16rem;">推 荐</div>
                 <div style="background: #fff;" ref="recommend_scl">
                     <div class="hm-flex" :style="'width:'+recommend_list_w+'px'">
@@ -199,8 +201,9 @@
                 </div>
                 <div class="hm-flex-1 icon-align hm-border-l" @click="gocart" style="position: relative;">
                     <i class="iconfont icon-gouwuche1"></i>
-                    <div v-show="cartNumber>0" class="cart-badge">{{cartNumber}}</div>
+                    <span v-show="cartNumber>0" class="cart-badge"></span>
                 </div>
+                <!--{{cartNumber}}-->
                 <div style="flex:0.15"></div>
                 <div class="hm-flex-2 buy-align cart" style="flex:2.5" @click="add">
                     <span>加入购物车</span>
@@ -212,8 +215,8 @@
         </div>
 
         {{/*属性选择*/}}
-        <actionsheet :data="data" :id="id" :init_spec="init_spec" :init_spec_name="init_spec_name"
-                     @refresh_goods_data="refreshGoodsData"></actionsheet>
+        <!-- :init_spec="init_spec" :init_spec_name="init_spec_name"-->
+        <actionsheet :data="data" :id="id" @refresh_goods_data="refreshGoodsData"></actionsheet>
 
         {{/*店铺优惠券*/}}
         <!--<voucher-list :popupVisible="voucherPopupVisible" :voucherlist="data.voucher_list"-->
@@ -222,67 +225,57 @@
 </template>
 
 <script>
-    import {
-        swiper,
-        swiperSlide
-    }
-        from 'vue-awesome-swiper';
+    import {swiper, swiperSlide} from 'vue-awesome-swiper';
     import actionsheet from '../../layout/action-sheet.vue';
-    import {
-        mapState,
-        mapActions
-    }
-        from 'vuex';
+    import {mapState, mapActions} from 'vuex';
     import VoucherList from '../../layout/voucher-list.vue';
     import bus from "../../../bus.js";
     import BScroll from 'better-scroll';
 
-    function dataInit() {
-        return {
-            voucherPopupVisible: false,
-            init: false,
-            id: null,
-            data: {
-                slide: [],
-                price: 0,
-                color_id: 0,
-                name: '',
-                spec_name: [],
-                spec_value: [],
-                goods_spec: [],
-                spec_image: {},
-                // store_info: {
-                //     buy_count: '',
-                //     collect_count: '',
-                //     goods_count: '',
-                //     store_credit: {
-                //         store_deliverycredit: {},
-                //         store_desccredit: {},
-                //         store_servicecredit: {}
-                //     }
-                // },
-            },
-            swipe_height: 100,
-            cartNumber: 5,
-            swiperOption: {
-                autoplay: 4000,
-                initialSlide: 0,
-                loop: true,
-                pagination: '.swiper-pagination',
-            },
-//    swiperOption2: {
-//      initialSlide: 0,
-//      loop: true,
-//      pagination: '.swiper-pagination',
-//    },
-            collected: false, //已收藏
-            recommend_list_w: 0
-        }
-    }
-
     export default {
         name: 'goods_detail',
-        data: dataInit,
+        data() {
+            return {
+                voucherPopupVisible: false,
+                init: false,
+                id: null,
+                data: {
+                    slide: [],
+                    price: 0,
+                    // color_id: 0,
+                    name: '',
+                    // spec_name: [],
+                    // spec_value: [],
+                    // goods_spec: [],
+                    // spec_image: {},
+                    // store_info: {
+                    //     buy_count: '',
+                    //     collect_count: '',
+                    //     goods_count: '',
+                    //     store_credit: {
+                    //         store_deliverycredit: {},
+                    //         store_desccredit: {},
+                    //         store_servicecredit: {}
+                    //     }
+                    // },
+                },
+                swipe_height: 100,
+                cartNumber: 0,
+                swiperOption: {
+                    autoplay: 4000,
+                    initialSlide: 0,
+                    loop: true,
+                    pagination: '.swiper-pagination',
+                },
+                // swiperOption2: {
+                //     initialSlide: 0,
+                //     loop: true,
+                //     pagination: '.swiper-pagination',
+                // },
+                collected: false, //已收藏
+                recommend_list_w: 0
+            }
+        },
         components: {
             swiper,
             swiperSlide,
@@ -296,7 +289,7 @@
             bus.$on("onVoucherState", res => {
                 // console.log(res);
                 this.voucherPopupVisible = res
-            })
+            });
         },
         methods: {
             _initScroll() {
@@ -317,6 +310,17 @@
                     }
                 })
             },
+            getCart() {
+                this.$api.userAuthGet("/goods/cart?goods_id=" + this.id, rps => {
+                    if (rps.data.code !== 0)
+                        return;
+                    this.collected = rps.data.data.favorite;
+                    if (rps.data.data.cart[0]) {
+                        this.cartNumber = rps.data.data.cart.length;
+                        this.$store.commit('ACTION_SHEET_STOCK', rps.data.data.cart[0]);
+                    }
+                });
+            },
             getData() {
                 $loading.show("");
                 this.$api.userGet('goods/detail?id=' + this.id, rps => {
@@ -325,14 +329,14 @@
                         this.init = true;
                         $loading.hide();
                         //更新init_spec，init_spec_name至vuex
-                        this.$store.commit('ACTIONSHEET_UPDATE', {
-                            key: 'cur_specx',
-                            value: this.init_spec
-                        });
-                        this.$store.commit('ACTIONSHEET_UPDATE', {
-                            key: 'cur_spec_namex',
-                            value: this.init_spec_name
-                        });
+                        // this.$store.commit('ACTIONSHEET_UPDATE', {
+                        //     key: 'cur_specx',
+                        //     value: this.init_spec
+                        // });
+                        // this.$store.commit('ACTIONSHEET_UPDATE', {
+                        //     key: 'cur_spec_namex',
+                        //     value: this.init_spec_name
+                        // });
                         this.$nextTick(() => {
                             this.goTop();
                             this._initScroll()
@@ -380,12 +384,14 @@
             },
             collect(id) {
                 $loading.show();
-                this.$api.userAuthGet('favorite/' + id, res => {
-                    this.collected = true;
-                    $loading.hide();
-                    $toast.show('收藏成功', 3000)
-                }, err => {
-                    $toast.show(err)
+                this.$api.userAuthGet('favorite/create?goods_id=' + id, rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        this.collected = true;
+                        $loading.hide();
+                        $toast.show('收藏成功', 3000)
+                    })
+                    // }, err => {
+                    //     $toast.show(err)
                 })
             },
             goback() {
@@ -412,7 +418,6 @@
                 })
             },
             goTop() {
-
                 document.querySelector(".scroll").scrollTop = 0
             },
             go_comment(id) {
@@ -475,61 +480,62 @@
             ...mapState({
                 showpicksheet: state => state.actionsheet.showpicksheet,
                 firstTimeOpenSheet: state => state.actionsheet.firstTimeOpenSheet,
-                cur_spec_namex: state => state.actionsheet.cur_spec_namex,
-                quantityx: state => state.actionsheet.quantityx,
+                // cur_spec_namex: state => state.actionsheet.cur_spec_namex,
+                // quantityx: state => state.actionsheet.quantityx,
+                stock_choose: state => state.actionsheet.stock_choose
             }),
 
-            init_spec() { //默认属性id数组
-                //            console.log('init_spec_keys')
-                let goods_spec = {};//this.data.goods_spec;
-                let spec_value = this.data.spec_value;
-                let spec_key = {};
-                let spec_arr = [];
-                for (let goodsKey in goods_spec) {
-                    for (let valueKey in spec_value) {
-                        let valueJson = spec_value[valueKey];
-                        for (let keyValueJson in valueJson) {
-                            if (keyValueJson === goodsKey) {
-                                spec_key[valueKey] = keyValueJson
-                            }
-                        }
-                    }
-                }
-                for (let i in spec_key) {
-                    spec_arr.push(spec_key[i])
-                }
-                console.log('spec_key=', JSON.stringify(spec_key));
-                console.log('spec_arr=', spec_arr);
-                return spec_arr
-            },
-            init_spec_name() { //默认属性名数组
-                //            console.log('init_spec_keys')
-                let goods_spec = this.data.goods_spec;
-                let spec_value = this.data.spec_value;
-                let spec_key = {};
-                let spec_name = {};
-                let spec_arr = [];
-
-                for (let goodsKey in goods_spec) {
-                    //                console.log(goodsKey)
-                    for (let valueKey in spec_value) {
-                        //                    console.log(goodsKey,JSON.stringify(spec_value[valueKey]))
-                        let valueJson = spec_value[valueKey];
-                        for (let keyValueJson in valueJson) {
-                            if (keyValueJson === goodsKey) {
-                                //                            console.log(valueKey,keyValueJson)
-                                spec_key[valueKey] = valueJson[keyValueJson] //仅此处与init_spec有区别
-                            }
-                        }
-                    }
-                }
-                for (let i in spec_key) {
-                    spec_arr.push(spec_key[i])
-                }
-                //            console.log('spec_key=',JSON.stringify(spec_key))
-                //            console.log('spec_arr=',spec_arr)
-                return spec_arr
-            },
+            // init_spec() { //默认属性id数组
+            //     //            console.log('init_spec_keys')
+            //     let goods_spec = {};//this.data.goods_spec;
+            //     let spec_value = this.data.spec_value;
+            //     let spec_key = {};
+            //     let spec_arr = [];
+            //     for (let goodsKey in goods_spec) {
+            //         for (let valueKey in spec_value) {
+            //             let valueJson = spec_value[valueKey];
+            //             for (let keyValueJson in valueJson) {
+            //                 if (keyValueJson === goodsKey) {
+            //                     spec_key[valueKey] = keyValueJson
+            //                 }
+            //             }
+            //         }
+            //     }
+            //     for (let i in spec_key) {
+            //         spec_arr.push(spec_key[i])
+            //     }
+            //     console.log('spec_key=', JSON.stringify(spec_key));
+            //     console.log('spec_arr=', spec_arr);
+            //     return spec_arr
+            // },
+            // init_spec_name() { //默认属性名数组
+            //     //            console.log('init_spec_keys')
+            //     let goods_spec = this.data.goods_spec;
+            //     let spec_value = this.data.spec_value;
+            //     let spec_key = {};
+            //     let spec_name = {};
+            //     let spec_arr = [];
+            //
+            //     for (let goodsKey in goods_spec) {
+            //         //                console.log(goodsKey)
+            //         for (let valueKey in spec_value) {
+            //             //                    console.log(goodsKey,JSON.stringify(spec_value[valueKey]))
+            //             let valueJson = spec_value[valueKey];
+            //             for (let keyValueJson in valueJson) {
+            //                 if (keyValueJson === goodsKey) {
+            //                     //                            console.log(valueKey,keyValueJson)
+            //                     spec_key[valueKey] = valueJson[keyValueJson] //仅此处与init_spec有区别
+            //                 }
+            //             }
+            //         }
+            //     }
+            //     for (let i in spec_key) {
+            //         spec_arr.push(spec_key[i])
+            //     }
+            //     //            console.log('spec_key=',JSON.stringify(spec_key))
+            //     //            console.log('spec_arr=',spec_arr)
+            //     return spec_arr
+            // },
             swipe2_height() {
                 return this.swipe_height / 3 + 80
             },
@@ -539,9 +545,10 @@
         },
         watch: {
             id(val, newVal) {
-                console.log('watch', val, newVal);
+                // console.log('watch', val, newVal);
                 //      this.id = val
-                this.getData()
+                this.getData();
+                this.getCart();
             }
         },
         beforeRouteEnter(to, from, next) {
@@ -557,10 +564,10 @@
                 }
                 //      vm.getData();
                 //还原默认购买数量
-                vm.$store.commit('ACTIONSHEET_UPDATE', {
-                    key: 'quantityx',
-                    value: 1
-                })
+                // vm.$store.commit('ACTIONSHEET_UPDATE', {
+                //     key: 'quantityx',
+                //     value: 1
+                // })
 
 
             })

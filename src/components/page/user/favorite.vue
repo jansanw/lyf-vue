@@ -241,7 +241,7 @@
                 this.edit_status = false;
             },
             choose_del(index) {
-                if (this.choose_arr[index] == false) {
+                if (this.choose_arr[index] === false) {
                     this.$set(this.choose_arr, index, true)
                 } else {
                     this.$set(this.choose_arr, index, false)

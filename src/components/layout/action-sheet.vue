@@ -5,36 +5,48 @@
             <div class="container_sku">
                 <div class="head">
                     <template v-show="this.data.color_id">
-                        <img :src="goods_sku_img" @click="sku_show_pic(goodsid_choose)"><!--init_color_id  -->
+                        <img :src="goods_sku_img"><!--init_color_id @click="sku_show_pic()"  -->
                     </template>
                     <div class="infos">
-                        <p class="price">¥<strong id="J_sku-price">{{data.price}}</strong><span
+                        <p class="price">¥<strong id="J_sku-price">{{stock_choose.price}}</strong><span
                                 id="J_sku-stock"></span>
                         </p>
-                        <p class="text">库存：{{data.stock}}</p>
+                        <p class="text">库存：{{stock_choose.stock}}</p>
                         <p class="text">已选
-                            <template v-if="data.spec">
-                                <template v-for="value in cur_spec_name"><!--data.goods_spec-->
-                                    "{{value}}"
-                                </template>
-                            </template>
+                            <template v-if="stock_choose.name">：{{stock_choose.name}}</template>
+                            <!--<template v-if="data.spec">-->
+                            <!--<template v-for="value in cur_spec_name">&lt;!&ndash;data.goods_spec&ndash;&gt;-->
+                            <!--"{{value}}"-->
+                            <!--</template>-->
+                            <!--</template>-->
                         </p>
                     </div>
                 </div>
                 <div ref="sku_scroll" class="scroll-container">
                     <div class="">
                         <div class="prop-mainer">
-                            <template v-if="data.spec_name">
-                                <section v-for="(spec,key,index) in data.spec_name">
-                                    <h3>{{spec}}</h3>
+                            <template v-if="data.stock">
+                                <section v-for="stock in data.stock">
+                                    <h3>{{stock.attribute}}</h3>
                                     <ul class="J_sku-list">
-                                        <li class="sku-item" @click="choose_spec(index,key,keys)"
-                                            :class="{'active':keys==cur_spec[index]}"
-                                            v-for="(item,keys,indexs) in data.spec_value[key]">{{item}}
+                                        <li class="sku-item" @click="choose_stock(item)"
+                                            :class="{'active':item.id==stock_choose.id}"
+                                            v-for="item in stock.list">{{item.name}}
                                         </li>
                                     </ul>
                                 </section>
                             </template>
+                            <!--<template v-if="data.spec_name">-->
+                            <!--<section v-for="(spec,key,index) in data.spec_name">-->
+                            <!--<h3>{{spec}}</h3>-->
+                            <!--<ul class="J_sku-list">-->
+                            <!--<li class="sku-item" @click="choose_spec(index,key,keys)"-->
+                            <!--:class="{'active':keys==cur_spec[index]}"-->
+                            <!--v-for="(item,keys,indexs) in data.spec_value[key]">{{item}}-->
+                            <!--</li>-->
+                            <!--</ul>-->
+                            <!--</section>-->
+                            <!--</template>-->
                         </div>
                         <div class="quantity-info">
                             <div class="sku-quantity">
@@ -61,8 +73,8 @@
     </mt-popup>
 </template>
 <script>
-    import {mapState, mapActions} from 'vuex'
-    import BScroll from 'better-scroll'
+    import {mapState, mapActions} from 'vuex';
+    import BScroll from 'better-scroll';
 
     export default {
         data() {
@@ -71,11 +83,10 @@
                 cur_spec: [],
                 cur_spec_name: [],
                 quantity: 1,
-
             }
         },
         mounted() {
-
+            this.quantity = this.stock_choose.quantity;
         },
         props: {
             data: {
@@ -86,60 +97,59 @@
                 type: [String, Number],
                 default: null,
             },
-            init_spec: {
-                type: Array,
-                default: null,
-            },
-            init_spec_name: {
-                type: Array,
-                default: null,
-            },
+            // init_spec: {
+            //     type: Array,
+            //     default: null,
+            // },
+            // init_spec_name: {
+            //     type: Array,
+            //     default: null,
+            // },
         },
         computed: {
             ...mapState({
                 showpicksheet: state => state.actionsheet.showpicksheet,
                 firstTimeOpenSheet: state => state.actionsheet.firstTimeOpenSheet,
+                stock_choose: state => state.actionsheet.stock_choose
             }),
-            init_color_id() {
-                return this.data.color_id
-            },
-            spec_string() {
-                //复制数组
-                let cur_spec2 = this.cur_spec.slice(0, this.cur_spec.length);
-
-                if (cur_spec2) {
-                    let cur_spec_sort = cur_spec2.sort((a, b) => {
-                        return a - b
-                    });
-                    let str = '';
-                    for (let i in cur_spec_sort) {
-                        str += cur_spec_sort[i] + '|';
-                    }
-                    str = str.substring(0, str.length - 1);
-                    return str;
-                }
-            },
+            // init_color_id() {
+            //     return this.data.color_id
+            // },
+            // spec_string() {
+            //     //复制数组
+            //     let cur_spec2 = this.cur_spec.slice(0, this.cur_spec.length);
+            //
+            //     if (cur_spec2) {
+            //         let cur_spec_sort = cur_spec2.sort((a, b) => {
+            //             return a - b
+            //         });
+            //         let str = '';
+            //         for (let i in cur_spec_sort) {
+            //             str += cur_spec_sort[i] + '|';
+            //         }
+            //         str = str.substring(0, str.length - 1);
+            //         return str;
+            //     }
+            // },
             goods_sku_img() {
-                return this.data.cover;//this.data.spec_image[this.goodsid_choose]
+                return this.stock_choose.cover || this.data.cover;//this.data.spec_image[this.goodsid_choose]
             },
-            goodsid_choose() {
-                let spec_list = this.data.spec_list;
-                let spec_string = this.spec_string;
-                if (spec_string) {
-                    for (let key in spec_list) {
-                        if (spec_string == key) return spec_list[key]
-                    }
-                } else {
-                    return this.id
-                }
-
-            },
-
+            // goodsid_choose() {
+            //     let spec_list = this.data.spec_list;
+            //     let spec_string = this.spec_string;
+            //     if (spec_string) {
+            //         for (let key in spec_list) {
+            //             if (spec_string == key) return spec_list[key]
+            //         }
+            //     } else {
+            //         return this.id
+            //     }
+            // },
         },
-        deactivated() {
-            console.log('~~actionsheet.vue deactivated~~');
-            this.quantity = 1;
-        },
+        // deactivated() {
+        //     // console.log('~~actionsheet.vue deactivated~~');
+        //     this.quantity = 1;
+        // },
         watch: {
             //同步showpicksheet=popupVisible
             showpicksheet(val, oldVal) {
@@ -153,71 +163,71 @@
             popupVisible(val, oldVal) {
                 this.$store.commit('ACTIONSHEET_UPDATE', {key: 'showpicksheet', value: val})
             },
-            quantity(val, oldVal) {
-                this.$store.commit('ACTIONSHEET_UPDATE', {key: 'quantityx', value: val})
-            },
-            cur_spec(val, oldVal) {
-
-            },
-            spec_string(val, oldVal) {
-
-            },
-            firstTimeOpenSheet(val, oldVal) {
-                console.log('firstTimeOpenSheet set this.cur_spec');
-                if (val) {
-                    this.cur_spec = [];
-                    this.cur_spec_name = [];
-                    for (let i in this.init_spec) {
-                        this.cur_spec.push(this.init_spec[i])
-                    }
-                    for (let i in this.init_spec_name) {
-                        this.cur_spec_name.push(this.init_spec_name[i])
-                    }
-
-                }
-            },
-            goodsid_choose(val, oldVal) {
-                //打开action-sheet时，选择参数导致goodsid_choose变更，触发详情页刷新
-                if (val && oldVal && val != oldVal && this.showpicksheet) {
-                    console.log('goodsid_choose=', val, oldVal, ' refresh_goods_data()');
-                    this.$emit('refresh_goods_data', val)
-
-                }
-            }
-
+            // quantity(val, oldVal) {
+            //     this.$store.commit('ACTIONSHEET_UPDATE', {key: 'quantityx', value: val})
+            // },
+            // cur_spec(val, oldVal) {
+            //
+            // },
+            // spec_string(val, oldVal) {
+            //
+            // },
+            // firstTimeOpenSheet(val, oldVal) {
+            //     console.log('firstTimeOpenSheet set this.cur_spec');
+            //     if (val) {
+            //         this.cur_spec = [];
+            //         this.cur_spec_name = [];
+            //         for (let i in this.init_spec) {
+            //             this.cur_spec.push(this.init_spec[i])
+            //         }
+            //         for (let i in this.init_spec_name) {
+            //             this.cur_spec_name.push(this.init_spec_name[i])
+            //         }
+            //
+            //     }
+            // },
+            // goodsid_choose(val, oldVal) {
+            //     //打开action-sheet时，选择参数导致goodsid_choose变更，触发详情页刷新
+            //     if (val && oldVal && val != oldVal && this.showpicksheet) {
+            //         console.log('goodsid_choose=', val, oldVal, ' refresh_goods_data()');
+            //         this.$emit('refresh_goods_data', val)
+            //
+            //     }
+            // }
         },
-
         methods: {
-            sku_show_pic(goods_id) {
-                let spec_image = this.data.spec_image;
-                let current = spec_image[goods_id].replace("!310x310", "");
-                let urls = [];
-                urls.push(current);
-                for (let key in spec_image) {
-                    let img = spec_image[key].replace("!310x310", "");
-                    if (current !== img)
-                        urls.push(img)
-                }
-                urls = this.$api.unique_arr(urls);
-                if (typeof WeixinJSBridge != "undefined") {
-                    WeixinJSBridge.invoke('imagePreview', {
-                        'current': current,
-                        'urls': urls
-                    });
-                }
+            // sku_show_pic(goods_id) {
+            //     let spec_image = this.data.spec_image;
+            //     let current = spec_image[goods_id].replace("!310x310", "");
+            //     let urls = [];
+            //     urls.push(current);
+            //     for (let key in spec_image) {
+            //         let img = spec_image[key].replace("!310x310", "");
+            //         if (current !== img)
+            //             urls.push(img)
+            //     }
+            //     urls = this.$api.unique_arr(urls);
+            //     if (typeof WeixinJSBridge != "undefined") {
+            //         WeixinJSBridge.invoke('imagePreview', {
+            //             'current': current,
+            //             'urls': urls
+            //         });
+            //     }
+            // },
+            choose_stock(item) {
+                this.$store.commit('ACTION_SHEET_STOCK', item);
             },
-            choose_spec(index, key1, key2) {
-                this.$set(this.cur_spec, index, key2);
-                this.cur_spec_name[index] = this.data.spec_value[key1][key2];
-                //更新init_spec，init_spec_name至vuex
-                this.$store.commit('ACTIONSHEET_UPDATE_ARR', {key: 'cur_specx', value: this.cur_spec});
-                this.$store.commit('ACTIONSHEET_UPDATE_ARR', {key: 'cur_spec_namex', value: this.cur_spec_name})
-
-            },
+            // choose_spec(index, key1, key2) {
+            //     this.$set(this.cur_spec, index, key2);
+            //     this.cur_spec_name[index] = this.data.spec_value[key1][key2];
+            //     //更新init_spec，init_spec_name至vuex
+            //     this.$store.commit('ACTIONSHEET_UPDATE_ARR', {key: 'cur_specx', value: this.cur_spec});
+            //     this.$store.commit('ACTIONSHEET_UPDATE_ARR', {key: 'cur_spec_namex', value: this.cur_spec_name})
+            // },
             add_cart() {
                 $loading.show("提交中");
                 this.$store.commit('ACTIONSHEET_UPDATE', {key: 'showpicksheet', value: false});
-                this.$api.userAuthGet('add_cart?goods_id=' + this.goodsid_choose + '&quantity=' + this.quantity, res => {
+                this.$api.userAuthGet('cart/create?goods_id=' + this.id + '&number=' + this.quantity + '&stock_id=' + this.stock_choose.id, res => {
                     console.log(JSON.stringify(res.data));
                     //              this.$store.commit('ACTIONSHEET_UPDATE', { key: 'showpicksheet', value: false })
                     //              $loading.hide()
@@ -225,7 +235,6 @@
                     this.$store.commit('UPDATE_COMMON_DATA', {
                         cart_view_data_reload: true
                     })
-
                 }, err => {
                     //$toast(err)
                     console.log(JSON.stringify(err));
@@ -273,18 +282,20 @@
                 }
             },
             add() {
-                if (this.quantity < 999)
-                    this.quantity = this.quantity + 1;
-
+                if (this.quantity < this.stock_choose.stock) {
+                    this.quantity += 1;
+                    this.$store.commit('ACTION_SHEET_STOCK', {quantity: this.quantity});
+                }
             },
             decline() {
-                if (this.quantity > 1)
-                    this.quantity = this.quantity - 1;
+                if (this.quantity > 1) {
+                    this.quantity -= 1;
+                    this.$store.commit('ACTION_SHEET_STOCK', {quantity: this.quantity});
+                }
             },
             quit() {
                 this.popupVisible = false
             },
-
         }
     }
 </script>
