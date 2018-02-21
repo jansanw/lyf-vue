@@ -21,12 +21,12 @@
                 <!--:on-refresh="onRefresh" :on-infinite="onInfinite"-->
                 <div class="">
                     <div class="hm-flex" style="justify-content: space-between;padding: 10px;">
-                        全部商品 ({{goods_list.length}})
+                        <strong>全部商品 ({{goods_list.length}})</strong>
                         <div v-if="!edit_status" @click="edit">编辑</div>
                         <div v-else @click="edit_done">完成</div>
                     </div>
                     <ul>
-                        <li v-for="(item,index) in goods_list" style="margin-bottom:.27rem;" class="fav-good-item">
+                        <li v-for="(item,index) in goods_list" class="fav-good-item">
                             <div class="hm-flex">
                                 <div class="hm-flex-1" style="position:relative;">
                                     <i class="iconfont icon-xuanze choose-btn" :class="{'del-active':choose_arr[index]}"
@@ -38,7 +38,7 @@
                                     <div>{{item.name}}</div>
                                     <div style="color: #ee2e3a;font-weight: 700;">
                                         <span>￥
-                                            <b><strong style="font-size:.48rem;">{{item.price|price_yuan}}</strong></b>
+                                            <b><strong style="font-size:16px;">{{item.price|price_yuan}}</strong></b>
                                             {{item.price|price_jiao}}
                                         </span>
                                     </div>
@@ -305,6 +305,29 @@
 <style lang="scss">
     @import "../../../assets/config.scss";
 
+    .download-app {
+        height: 0;
+    }
+
+    .hm-flex {
+        font-size: 12px;
+    }
+
+    .hm-flex-1 {
+        width: 107px;
+        height: 107px;
+    }
+
+    .hm-flex-1 img {
+        /*max-width: 100%;*/
+        /*width: 100%;*/
+        width: 107px;
+    }
+
+    .page .page-content {
+        background-color: white;
+    }
+
     .top-fixed {
         position: fixed;
         top: 0;
@@ -339,6 +362,7 @@
     .fav-good-item {
         background: #fff;
         padding: 10px;
+        border-top: 1px solid #e7e7e7;
     }
 
     .del-fav-btn {

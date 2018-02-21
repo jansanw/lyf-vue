@@ -14,8 +14,16 @@
             footnav
         },
         mounted() {
-            this.$store.commit('UPDATE_PAGE_LOAD_STATE_DATA', {
-                cart: true,
+            // this.$store.commit('UPDATE_PAGE_LOAD_STATE_DATA', {
+            //     cart: true,
+            // });
+        },
+        beforeRouteEnter(to, from, next) {
+            // console.log('to:' + to.path, 'from:' + from.path);
+            next(vm => {
+                $loading.hide();
+                if (from.path === "/login")
+                    vm.$store.commit('UPDATE_COMMON_DATA', {cart_view_data_reload: true});
             })
         }
     }

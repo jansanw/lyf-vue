@@ -7,9 +7,11 @@ const state = {
     stock_choose: {
         id: -1,
         name: '',
-        price: 0,
-        stock: 0,
+        goods_id: 0,
+        price: '',
+        stock: '',
         quantity: 1,
+        number: 0,
         cover: ''
     }
 };

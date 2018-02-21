@@ -131,11 +131,11 @@ export default {
         if (!token) {
             $loading.hide();
             //记录登录前地址
-            this.s_set("login_back", window.location.hash.replace(/#/g, ''));
+            this.s_set("login_back", window.location.hash.replace(/#\//g, ''));
             // let login_url = "http://lyf.aoyi.com/home/wx/login_v2?back=" + encodeURIComponent("http://" + window.location.host + "/#/auth");
             // login_url
             // window.location.href = "/#/login";
-            $router.replace("/login");
+            $router.push("login");
             return false
         } else {
             return true

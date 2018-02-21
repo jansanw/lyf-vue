@@ -24,16 +24,16 @@
                             <div class="price theme-txt" style="color:#e02e24">¥<i>{{data.price|price_yuan}}</i>
                                 <b><strong>{{data.price|price_jiao}}</strong></b>
                             </div>
-                            <div class="price-old">¥268</div>
-                            <div style="padding-left: .27rem;">
-                                <div class="aui-label aui-label-danger"
-                                     style="font-size: .27rem;height:.37rem;line-height: .4rem;padding: 0px .08rem;margin:0 .13rem;">
-                                    拼团价
-                                </div>
-                                <div class="aui-label aui-label-danger"
-                                     style="font-size: .27rem;height:.37rem;line-height: .4rem;padding: 0px .08rem;">包邮
-                                </div>
-                            </div>
+                            <div class="price-old" v-show="data.price_market">¥{{data.price_market | price_yuan}}</div>
+                            <!--<div style="padding-left: .27rem;">-->
+                            <!--<div class="aui-label aui-label-danger"-->
+                            <!--style="font-size: .27rem;height:.37rem;line-height: .4rem;padding: 0px .08rem;margin:0 .13rem;">-->
+                            <!--拼团价-->
+                            <!--</div>-->
+                            <!--<div class="aui-label aui-label-danger"-->
+                            <!--style="font-size: .27rem;height:.37rem;line-height: .4rem;padding: 0px .08rem;">包邮-->
+                            <!--</div>-->
+                            <!--</div>-->
                         </div>
                     </div>
                     <div class="product hm-flex" style="padding-top: .16rem;">
@@ -58,21 +58,20 @@
                 <!--</div>-->
                 <!--</div>-->
 
-                <ul class="aui-list" v-if="data.voucher_list">
-                    <li class="aui-list-item aui-list-item-middle" style="height:1.07rem; min-height:1.07rem;"
-                        @click="neck_voucher()">
-                        <div class="aui-list-item-inner " style="height:1.07rem; min-height:1.07rem;">
-                            <div class="goods-voucher">
-                                <div class="goods-voucher-name">领券</div>
-                                <div class="goods-voucher-list">
-                                    <span v-if="index<3" v-for="(item,index) in data.voucher_list">满{{item.voucher_t_limit}}减{{item.voucher_t_price}}</span>
-                                </div>
-                            </div>
-                            <i class="icon ion-android-more-horizontal color-royal"></i>
-                        </div>
-                    </li>
-                </ul>
-
+                <!--<ul class="aui-list" v-if="data.voucher_list">-->
+                <!--<li class="aui-list-item aui-list-item-middle" style="height:1.07rem; min-height:1.07rem;"-->
+                <!--@click="neck_voucher()">-->
+                <!--<div class="aui-list-item-inner " style="height:1.07rem; min-height:1.07rem;">-->
+                <!--<div class="goods-voucher">-->
+                <!--<div class="goods-voucher-name">领券</div>-->
+                <!--<div class="goods-voucher-list">-->
+                <!--<span v-if="index<3" v-for="(item,index) in data.voucher_list">满{{item.voucher_t_limit}}减{{item.voucher_t_price}}</span>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<i class="icon ion-android-more-horizontal color-royal"></i>-->
+                <!--</div>-->
+                <!--</li>-->
+                <!--</ul>-->
 
                 <ul class="aui-list hm-margin-b mt-10" @click="add">
                     <li class="aui-list-item aui-list-item-middle">
@@ -103,27 +102,26 @@
                     </li>
                 </ul>
 
-                <div class="reviews hm-margin-b">
-                    <ul class="review-list">
-                        <li class="review-item aui-border-b" v-for="item in data.goods_eval_list">
-                            <p style="margin-bottom: 0;">
-                                <img v-lazy="item.avatar" class="head-img lazyimg b-lazy b-loaded">
-                                <span class="nick">{{item.nick}}</span>
-                                <!--<span class="join-time">在贝贝188天</span>-->
-                                <span class="score">
-              <i class="iconfont icon-favorite active " v-for="i in item.geval_scores"></i>
-            </span>
-                            </p>
+                <!--<div class="reviews hm-margin-b">-->
+                <!--<ul class="review-list">-->
+                <!--<li class="review-item aui-border-b" v-for="item in data.goods_eval_list">-->
+                <!--<p style="margin-bottom: 0;">-->
+                <!--<img v-lazy="item.avatar" class="head-img lazyimg b-lazy b-loaded">-->
+                <!--<span class="nick">{{item.nick}}</span>-->
+                <!--&lt;!&ndash;<span class="join-time">在贝贝188天</span>&ndash;&gt;-->
+                <!--<span class="score">-->
+                <!--<i class="iconfont icon-favorite active " v-for="i in item.geval_scores"></i>-->
+                <!--</span>-->
+                <!--</p>-->
 
-                            <p class="content">{{item.geval_content}}</p>
+                <!--<p class="content">{{item.geval_content}}</p>-->
 
-                            <p class="sku-info" v-if="item.geval_goodsspec != null">
-                                <span>{{item.geval_goodsspec}}</span>
-                            </p>
-                        </li>
-
-                    </ul>
-                </div>
+                <!--<p class="sku-info" v-if="item.geval_goodsspec != null">-->
+                <!--<span>{{item.geval_goodsspec}}</span>-->
+                <!--</p>-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--</div>-->
 
                 <!--<div class="hm-flex" @click="go_store(data.store_info.store_id)"-->
                 <!--style="background: #fff;padding: .4rem .4rem 0;">-->
@@ -201,7 +199,7 @@
                 </div>
                 <div class="hm-flex-1 icon-align hm-border-l" @click="gocart" style="position: relative;">
                     <i class="iconfont icon-gouwuche1"></i>
-                    <span v-show="cartNumber>0" class="cart-badge"></span>
+                    <span v-show="stock_choose.number > 0" class="cart-badge">{{ stock_choose.number }}</span>
                 </div>
                 <!--{{cartNumber}}-->
                 <div style="flex:0.15"></div>
@@ -216,7 +214,7 @@
 
         {{/*属性选择*/}}
         <!-- :init_spec="init_spec" :init_spec_name="init_spec_name"-->
-        <actionsheet :data="data" :id="id" @refresh_goods_data="refreshGoodsData"></actionsheet>
+        <actionsheet :data="data" :id="id" :cart="cart" @refresh_goods_data="refreshGoodsData"></actionsheet>
 
         {{/*店铺优惠券*/}}
         <!--<voucher-list :popupVisible="voucherPopupVisible" :voucherlist="data.voucher_list"-->
@@ -239,6 +237,7 @@
                 voucherPopupVisible: false,
                 init: false,
                 id: null,
+                cart: [],
                 data: {
                     slide: [],
                     price: 0,
@@ -311,13 +310,26 @@
                 })
             },
             getCart() {
+                this.$store.commit('ACTION_SHEET_STOCK', {
+                    id: -1,
+                    name: '',
+                    goods_id: 0,
+                    price: '',
+                    stock: '',
+                    quantity: 1,
+                    cover: ''
+                });
+                // return;
                 this.$api.userAuthGet("/goods/cart?goods_id=" + this.id, rps => {
                     if (rps.data.code !== 0)
                         return;
                     this.collected = rps.data.data.favorite;
                     if (rps.data.data.cart[0]) {
-                        this.cartNumber = rps.data.data.cart.length;
+                        this.cart = rps.data.data.cart;
                         this.$store.commit('ACTION_SHEET_STOCK', rps.data.data.cart[0]);
+                        // this.cartNumber = rps.data.data.cart.reduce(function (sum, item) {
+                        //     return sum + item.number;
+                        // }, 0);
                     }
                 });
             },
@@ -340,7 +352,6 @@
                         this.$nextTick(() => {
                             this.goTop();
                             this._initScroll()
-
                         })
                     });
                     //console.log(JSON.stringify(res.data));
@@ -568,8 +579,6 @@
                 //     key: 'quantityx',
                 //     value: 1
                 // })
-
-
             })
         },
         beforeRouteLeave(to, from, next) {

@@ -1,5 +1,4 @@
 <style lang="css" scoped>
-
     .fx {
         position: fixed;
         top: 0;
@@ -87,7 +86,6 @@
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -115,7 +113,7 @@
                 }), rps => {
                     this.$api.responseFilter(rps.data, function (data) {
                         this.$api.l_set('token', data.token);
-                        $router.back(this.$api.s_get("login_back") || "/home");
+                        $router.replace(this.$api.s_get("login_back") || "home");
                     }.bind(this));
                 });
             }

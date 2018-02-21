@@ -113,8 +113,6 @@
             })
         },
         methods: {
-
-
             changeMenu(index) {
                 //设置当前滚动距离(不准确)
                 let o_scrol = this.$refs.lyf_scroll.$el.scrollTop;

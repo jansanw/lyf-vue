@@ -244,7 +244,7 @@
                     b = b + items_r[index].clientHeight;
                     this.listHeight.push(b);
                 }
-                console.log(this.listHeight);
+                // console.log(this.listHeight);
                 this.r_h = b;
                 this.$nextTick(() => {
                     this._initScroll()

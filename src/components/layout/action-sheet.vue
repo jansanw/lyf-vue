@@ -80,8 +80,8 @@
         data() {
             return {
                 popupVisible: false,
-                cur_spec: [],
-                cur_spec_name: [],
+                // cur_spec: [],
+                // cur_spec_name: [],
                 quantity: 1,
             }
         },
@@ -96,6 +96,10 @@
             id: {
                 type: [String, Number],
                 default: null,
+            },
+            cart: {
+                type: Array,
+                default: [],
             },
             // init_spec: {
             //     type: Array,
@@ -215,7 +219,11 @@
             //     }
             // },
             choose_stock(item) {
-                this.$store.commit('ACTION_SHEET_STOCK', item);
+                let _item = this.cart.find(v => {
+                    return v.id === item.id;
+                });
+                // console.log(_item);
+                this.$store.commit('ACTION_SHEET_STOCK', _item || item);
             },
             // choose_spec(index, key1, key2) {
             //     this.$set(this.cur_spec, index, key2);
@@ -227,18 +235,23 @@
             add_cart() {
                 $loading.show("提交中");
                 this.$store.commit('ACTIONSHEET_UPDATE', {key: 'showpicksheet', value: false});
-                this.$api.userAuthGet('cart/create?goods_id=' + this.id + '&number=' + this.quantity + '&stock_id=' + this.stock_choose.id, res => {
-                    console.log(JSON.stringify(res.data));
-                    //              this.$store.commit('ACTIONSHEET_UPDATE', { key: 'showpicksheet', value: false })
-                    //              $loading.hide()
-                    $toast.show('加入购物车成功', 3000);
-                    this.$store.commit('UPDATE_COMMON_DATA', {
-                        cart_view_data_reload: true
+                this.$api.userAuthGet('cart/create?goods_id=' + this.id + '&number=' + this.quantity + '&stock_id=' + this.stock_choose.id,
+                    rps => {
+                        this.$api.responseFilter(rps.data, data => {
+                            this.$store.commit('ACTION_SHEET_STOCK', {number: this.stock_choose.number + this.quantity});
+                        })
+                        //     res => {
+                        //     console.log(JSON.stringify(res.data));
+                        //     //              this.$store.commit('ACTIONSHEET_UPDATE', { key: 'showpicksheet', value: false })
+                        //     //              $loading.hide()
+                        //     $toast.show('加入购物车成功', 3000);
+                        //     this.$store.commit('UPDATE_COMMON_DATA', {
+                        //         cart_view_data_reload: true
+                        //     })
+                        // }, err => {
+                        //     //$toast(err)
+                        //     console.log(JSON.stringify(err));
                     })
-                }, err => {
-                    //$toast(err)
-                    console.log(JSON.stringify(err));
-                })
             },
             buy_now() {
                 $loading.show("提交中");

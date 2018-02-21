@@ -65,7 +65,7 @@
                     <div class="hm-list hm-flex" v-if="goods.length>0" style="flex-wrap:wrap">
                         <div style="width: 49.4%;margin:0.3%;background: #fff;"
                              v-for="(item,index) in goods[active].goods">
-                            <div class="hm-list-item" style="padding:0" @click="goodsClick(item.id)">
+                            <div class="hm-list-item" style="padding:0" @click="go_goods(item.id)">
                                 <div class="hm-list-inner" style="padding:0">
                                     <img v-lazy="item.cover" style="width: 100%;">
                                     <div style="padding:.13rem .08rem .13rem .08rem;">
@@ -233,7 +233,7 @@
                     })
                 }
             },
-            goodsClick(id) {
+            go_goods(id) {
                 $router.push({
                     name: 'goods_detail',
                     params: {

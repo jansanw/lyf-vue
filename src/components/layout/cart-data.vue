@@ -1,23 +1,56 @@
 <style lang="css">
+    .cartbuy .bundlev2 .itemv2 {
+        border-top: 1px solid #e7e7e7;
+    }
+
+    .nav-tab-top ul {
+        display: flex;
+        background: #fff;
+        border-bottom: 0.01rem solid #e7e7e7;
+    }
+
+    .nav-tab-top ul li {
+        height: 1.067rem;
+        line-height: 1.067rem;
+        margin-bottom: -0.01rem;
+        text-align: center;
+        font-size: 0.37rem;
+        font-weight: 400;
+        flex-grow: 1;
+        flex-shrink: 0;
+    }
+
+    .nav-tab-top ul .cur {
+        border-bottom: 0.08rem solid #ea5a49;
+        box-sizing: border-box;
+        color: #ea5a49;
+    }
 </style>
 <template lang="html">
     <div v-if="show_page">
-        <div class="page-content" style="margin-bottom:2.64rem;">
+        <div class="page-content">
+            <div class="nav-tab-top">
+                <ul>
+                    <li class="cur">商品</li>
+                </ul>
+            </div>
             <div class="cartbuy" style="margin-bottom: 1.32rem;">
-                <div class="allItemv2" v-for="(store,key,s_index) in list" v-if="store.goods.length > 0">
+                <div class="allItemv2" v-for="(store,key) in list" v-if="store.goods.length > 0">
                     <div class="bundlev2" style="margin-top: 0">
                         <div class="shop">
                             <div class="o-t-title-shop">
                                 <div class="tcont">
-                                    <!--<div class="shopcb">-->
-                                    <!--<p>-->
-                                    <!--<input :id="'cb-s-'+store.store_id" :value="store.store_id"-->
-                                    <!--v-model="store_check_all" class="o-t-cb" type="checkbox">-->
-                                    <!--<label :for="'cb-s-'+store.store_id"></label>-->
-                                    <!--</p>-->
+                                    <div class="shopcb">
+                                        <!--<p>-->
+                                        <!--<input :id="'cb-s-'+store.store_id" :value="store.store_id"-->
+                                        <!--v-model="store_check_all" class="o-t-cb" type="checkbox">-->
+                                        <!--<label :for="'cb-s-'+store.store_id"></label>-->
+                                        <!--</p>-->
+                                        <strong>全部商品({{list.length}})</strong>
+                                    </div>
+                                    <!--<div class="ico">-->
+                                    <!--<span class="shopIco_B"></span>-->
                                     <!--</div>-->
-                                    <div class="ico">
-                                        <span class="shopIco_B"></span></div>
                                     <div class="contact">
                                         <a>
                                             <p class="title">{{store.store_name}}</p>
@@ -70,7 +103,7 @@
                                         <div class="item-detail">
                                             <div>
                                                 <div class="item-img">
-                                                    <a>
+                                                    <a @click="go_goods(goods.id)">
                                                         <img class="lazy" :src="goods.cover">
                                                     </a>
                                                     <div class="icoTxt" v-if="false">
@@ -81,7 +114,8 @@
                                                 </div>
                                                 <div class="item-info">
                                                     <a>
-                                                        <h3 class="title">{{goods.name}}</h3>
+                                                        <h3 class="title" @click="go_goods(goods.id)">
+                                                            {{goods.name}}</h3>
                                                         <div class="sku" style="min-height: 1.12rem;">
                                                             <p>{{goods.stock_name}}</p>
                                                         </div>
@@ -102,7 +136,9 @@
                                                             </div>
                                                             <div class="originPrice">
                                                                 <p>
-                                                                    <del>￥{{goods.price_market}}</del>
+                                                                    <del v-show="goods.price_market">
+                                                                        ￥{{goods.price_market}}
+                                                                    </del>
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -151,7 +187,7 @@
                                                 </div>
                                                 <div class="edit-sku">
                                                     <div>
-                                                        <p>{{goods.goods_spec_text}}</p>
+                                                        <p>{{goods.stock_name}}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -265,7 +301,8 @@
                     }
                 }
             },
-            cart_view_data_reload: function (val, oldVal) {
+            cart_view_data_reload(val, oldVal) {
+                // console.log(val);
                 if (val) {
                     this.getList()
                 }
@@ -337,10 +374,10 @@
                 $loading.show("");
                 this.getList();
             }
-            bus.$on("onVoucherStateByCart", res => {
-                console.log(res);
-                this.popupVisible = res
-            })
+            // bus.$on("onVoucherStateByCart", res => {
+            //     // console.log(res);
+            //     this.popupVisible = res
+            // })
         },
         methods: {
             getList() {
@@ -396,9 +433,8 @@
                 //     cart_view_data_reload: false
                 // });
                 // return;
-
-
                 this.$api.userAuthGet('cart/page', rps => {
+                    this.$store.commit('UPDATE_COMMON_DATA', {cart_view_data_reload: false});
                     this.$api.responseFilter(rps.data, data => {
                         // console.log(rps);
                         for (let i in data.list) {
@@ -412,14 +448,11 @@
                         this.count = data.count;
                         this.show_page = true;
                         $loading.hide();
-                        this.$store.commit('UPDATE_COMMON_DATA', {
-                            cart_view_data_reload: false
-                        });
                     });
-                }, error => {
-                    this.$store.commit('UPDATE_COMMON_DATA', {
-                        cart_view_data_reload: false
-                    });
+                    // }, error => {
+                    //     this.$store.commit('UPDATE_COMMON_DATA', {
+                    //         cart_view_data_reload: false
+                    //     });
                 })
             },
             edit_cart(key) {
@@ -551,6 +584,14 @@
                 this.voucher_list = list;
                 this.voucher_store_name = name;
                 this.popupVisible = true
+            },
+            go_goods(id) {
+                $router.push({
+                    name: 'goods_detail',
+                    params: {
+                        id: id,
+                    }
+                });
             }
         }
     }
