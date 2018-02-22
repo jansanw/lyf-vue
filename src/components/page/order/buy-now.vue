@@ -95,16 +95,16 @@
             <div class="pay-type" style="margin-bottom: .27rem;">
                 <h5>支付方式<span class="needMoney fr"></span></h5>
                 <ul class="type" id="pay-type-list">
-                    <li data-pay-type="12" class="active">
+                    <li :class="{'active' : pay.type === 'wechat'}" @click="pay.type = 'wechat'">
                         <img src="//jp.juancdn.com/jpwebapp/images/shopping/icon_wx.png">
-                        <span>微信支付</span>
+                        <span>微信</span>
                         <span class="payway-tips-ad">推荐</span>
                         <i class="pay-type-radio"></i>
                     </li>
-                    <li data-pay-type="5" class="">
+                    <li :class="{'active' : pay.type === 'alipay'}" @click="pay.type = 'alipay'">
                         <img src="//jp.juancdn.com/jpwebapp/images/shopping/icon_ali.png">
-                        <span>支付宝支付</span>
-                        <span class="payway-tips-text"></span>
+                        <span>支付宝</span>
+                        <!--<span class="payway-tips-text"></span>-->
                         <i class="pay-type-radio"></i>
                     </li>
                 </ul>
@@ -142,6 +142,9 @@
             return {
                 page_show: false,
                 goods: '',
+                pay: {
+                    type: 'alipay'//wechat
+                },
                 data: {
                     total: 0,
                     freight: 0,
@@ -250,85 +253,84 @@
         methods: {
             getData() {
                 $loading.show();
-
                 //mock
-                let step1_data = {
-                    "status_code": 1,
-                    "message": "",
-                    "data": {
-                        "store_cart_list": {
-                            "1": {
-                                "goods_list": [{
-                                    "goods_num": 1,
-                                    "goods_id": 1168,
-                                    "goods_commonid": 557,
-                                    "gc_id": 54,
-                                    "store_id": 1,
-                                    "commis_rate": "20.00",
-                                    "goods_name": "2017\u65b0\u6b3e\u5973\u88c5\u6c14\u8d28\u906e\u809a\u5b50\u96ea\u7eba\u886b\u77ed\u8896\u590f\u88c5\u97e9\u7248\u788e\u82b1\u886c\u886b\u5bbd\u677e\u8d85\u957f\u4e0a\u8863 \u5bbd\u6761 S",
-                                    "goods_price": "150.00",
-                                    "goods_marketprice": "169.00",
-                                    "goods_spec": {"1107": "\u5bbd\u6761", "487": "S"},
-                                    "goods_spec_text": "\u5bbd\u6761;S",
-                                    "store_name": "\u8001\u53cb\u7c89",
-                                    "goods_image": "goods_image\/ydJrzExB4zqZ0e6brn0sAra4gb54fHAm4cHqKRD8.jpeg",
-                                    "transport_id": 0,
-                                    "goods_freight": "0.00",
-                                    "goods_vat": 0,
-                                    "goods_storage": 73,
-                                    "goods_storage_alarm": 0,
-                                    "is_fcode": 0,
-                                    "have_gift": 0,
-                                    "state": true,
-                                    "storage_state": true,
-                                    "groupbuy_info": null,
-                                    "xianshi_info": null,
-                                    "cart_id": 1168,
-                                    "bl_id": 0,
-                                    "goods_total": "150.00",
-                                    "goods_image_url": "http:\/\/lyfimg.gxlyf.cn\/goods_image\/ydJrzExB4zqZ0e6brn0sAra4gb54fHAm4cHqKRD8.jpeg!310x310"
-                                }],
-                                "store_goods_total": "150.00",
-                                "store_mansong_rule_list": null,
-                                "store_voucher_info": [],
-                                "store_voucher_list": [],
-                                "store_name": "\u8001\u53cb\u7c89",
-                                "store_id": 1
-                            }
-                        },
-                        "freight_hash": "eyJpdiI6IlNJdXRnd1NvOGkra3I1dXNqWnA2elE9PSIsInZhbHVlIjoieW9yUWEwNXNCMUhIYlJyZWdiV3VNQnNlZEFMVkJEQnQyTGJkaWtvaVdRQmpJTmNEUlJzSWx6SzBZVHQxWGM5TVwvTGd4SlwvMTZRelpTSVVaZWVJZ0RhUT09IiwibWFjIjoiOWNhNDdjZmJhY2Q5OGU5N2FkYzI4ZGE1OWRmMGEwZjcwMDQyZDRmOWUyZDViOWIxYzljNWM5OGVmNDlkMTY1OSJ9",
-                        "address": null,
-                        "ifshow_offpay": null,
-                        "vat_hash": null,
-                        "inv_info": null,
-                        "available_predeposit": null,
-                        "available_rc_balance": null,
-                        "rpt_list": [],
-                        "zk_list": null,
-                        "order_amount": "150.00",
-                        "rpt_info": [],
-                        "address_api": "",
-                        "store_final_total_list": {"1": "150.00"}
-                    }
-                };
-                let user_address = {
-                    "status_code": 1,
-                    "message": "",
-                    "data": [{
-                        "address_id": 95,
-                        "member_id": 289150,
-                        "true_name": "\u5c71",
-                        "area_id": 3036,
-                        "city_id": 289,
-                        "province_id": 19,
-                        "area_info": "\u5e7f\u4e1c\u5e7f\u5dde\u5e02\u841d\u5c97\u533a",
-                        "address": "\u79d1\u5b66\u57ce",
-                        "tel_phone": "15889933997",
-                        "mob_phone": "15889933997",
-                        "is_default": 1,
-                        "dlyp_id": 0
-                    }]
-                };
+                // let step1_data = {
+                //     "status_code": 1,
+                //     "message": "",
+                //     "data": {
+                //         "store_cart_list": {
+                //             "1": {
+                //                 "goods_list": [{
+                //                     "goods_num": 1,
+                //                     "goods_id": 1168,
+                //                     "goods_commonid": 557,
+                //                     "gc_id": 54,
+                //                     "store_id": 1,
+                //                     "commis_rate": "20.00",
+                //                     "goods_name": "2017\u65b0\u6b3e\u5973\u88c5\u6c14\u8d28\u906e\u809a\u5b50\u96ea\u7eba\u886b\u77ed\u8896\u590f\u88c5\u97e9\u7248\u788e\u82b1\u886c\u886b\u5bbd\u677e\u8d85\u957f\u4e0a\u8863 \u5bbd\u6761 S",
+                //                     "goods_price": "150.00",
+                //                     "goods_marketprice": "169.00",
+                //                     "goods_spec": {"1107": "\u5bbd\u6761", "487": "S"},
+                //                     "goods_spec_text": "\u5bbd\u6761;S",
+                //                     "store_name": "\u8001\u53cb\u7c89",
+                //                     "goods_image": "goods_image\/ydJrzExB4zqZ0e6brn0sAra4gb54fHAm4cHqKRD8.jpeg",
+                //                     "transport_id": 0,
+                //                     "goods_freight": "0.00",
+                //                     "goods_vat": 0,
+                //                     "goods_storage": 73,
+                //                     "goods_storage_alarm": 0,
+                //                     "is_fcode": 0,
+                //                     "have_gift": 0,
+                //                     "state": true,
+                //                     "storage_state": true,
+                //                     "groupbuy_info": null,
+                //                     "xianshi_info": null,
+                //                     "cart_id": 1168,
+                //                     "bl_id": 0,
+                //                     "goods_total": "150.00",
+                //                     "goods_image_url": "http:\/\/lyfimg.gxlyf.cn\/goods_image\/ydJrzExB4zqZ0e6brn0sAra4gb54fHAm4cHqKRD8.jpeg!310x310"
+                //                 }],
+                //                 "store_goods_total": "150.00",
+                //                 "store_mansong_rule_list": null,
+                //                 "store_voucher_info": [],
+                //                 "store_voucher_list": [],
+                //                 "store_name": "\u8001\u53cb\u7c89",
+                //                 "store_id": 1
+                //             }
+                //         },
+                //         "freight_hash": "eyJpdiI6IlNJdXRnd1NvOGkra3I1dXNqWnA2elE9PSIsInZhbHVlIjoieW9yUWEwNXNCMUhIYlJyZWdiV3VNQnNlZEFMVkJEQnQyTGJkaWtvaVdRQmpJTmNEUlJzSWx6SzBZVHQxWGM5TVwvTGd4SlwvMTZRelpTSVVaZWVJZ0RhUT09IiwibWFjIjoiOWNhNDdjZmJhY2Q5OGU5N2FkYzI4ZGE1OWRmMGEwZjcwMDQyZDRmOWUyZDViOWIxYzljNWM5OGVmNDlkMTY1OSJ9",
+                //         "address": null,
+                //         "ifshow_offpay": null,
+                //         "vat_hash": null,
+                //         "inv_info": null,
+                //         "available_predeposit": null,
+                //         "available_rc_balance": null,
+                //         "rpt_list": [],
+                //         "zk_list": null,
+                //         "order_amount": "150.00",
+                //         "rpt_info": [],
+                //         "address_api": "",
+                //         "store_final_total_list": {"1": "150.00"}
+                //     }
+                // };
+                // let user_address = {
+                //     "status_code": 1,
+                //     "message": "",
+                //     "data": [{
+                //         "address_id": 95,
+                //         "member_id": 289150,
+                //         "true_name": "\u5c71",
+                //         "area_id": 3036,
+                //         "city_id": 289,
+                //         "province_id": 19,
+                //         "area_info": "\u5e7f\u4e1c\u5e7f\u5dde\u5e02\u841d\u5c97\u533a",
+                //         "address": "\u79d1\u5b66\u57ce",
+                //         "tel_phone": "15889933997",
+                //         "mob_phone": "15889933997",
+                //         "is_default": 1,
+                //         "dlyp_id": 0
+                //     }]
+                // };
 
                 this.$api.userAuthPost("order/resolve", {
                     goods: this.goods,

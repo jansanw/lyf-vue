@@ -3,7 +3,7 @@ const state = {
     cat_goods_list_class_id: 0,
     cat_goods_list_class_init_menu: false,
     cat_goods_list_class_active: 0,
-    default_address: false
+    // default_address: false
     //     {
     //     id: 2,
     //     province_id: 19,
@@ -28,9 +28,9 @@ const mutations = {
             state[key] = payload[key]
         }
     },
-    ['DEFAULT_ADDRESS'](state, payload) {
-        state.default_address = payload;
-    }
+    // ['DEFAULT_ADDRESS'](state, payload) {
+    //     state.default_address = payload;
+    // }
 };
 export default {
     state,

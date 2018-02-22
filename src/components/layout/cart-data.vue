@@ -243,27 +243,23 @@
                 </div>
             </div>
         </div>
-        <voucher-list :popupVisible="popupVisible" :voucherlist="voucher_list" :storename="voucher_store_name"
-                      :from="'cart'"></voucher-list>
+        <!--<voucher-list :popupVisible="popupVisible" :voucherlist="voucher_list" :storename="voucher_store_name"-->
+        <!--:from="'cart'"></voucher-list>-->
     </div>
 </template>
 
 <script>
-    import '../../assets/cart.scss'
-
-    import CartNoData from './cart-no-data'
-    import bus from '../../bus.js'
-    import VoucherList from '../layout/voucher-list.vue'
-    import {
-        mapState,
-        mapActions
-    } from 'vuex'
+    import '../../assets/cart.scss';
+    import CartNoData from './cart-no-data';
+    import bus from '../../bus.js';
+    // import VoucherList from '../layout/voucher-list.vue';
+    import {mapState, mapActions} from 'vuex';
 
     export default {
         name: "cart_data",
         components: {
             CartNoData,
-            VoucherList
+            // VoucherList
         },
         data() {
             return {
@@ -571,20 +567,31 @@
                             return item.is_check === true;
                         }).map(function (item) {
                             // let c_p = item.id + '|' + item.number;
-                            goods.push(item)
+                            // goods.push({
+                            //     cart_id: item.id,
+                            //     goods_id: item.goods_id,
+                            //     stock_id: item.stock_id,
+                            // });
+                            // goods.push([
+                            //     item.id,
+                            //     // item.goods_id,
+                            //     item.stock_id,
+                            //     item.number
+                            // ]);item.id + '|' + item.number + '|' + item.stock_id
+                            goods.push(item.id)
                         })
                     }
                     $router.push({
                         name: 'order_buynow',
-                        params: {id: JSON.stringify(goods), ifcart: true},
+                        params: {goods: goods.join(','), is_cart: 1},
                     })
                 }
             },
-            neck_voucher(list, name) {
-                this.voucher_list = list;
-                this.voucher_store_name = name;
-                this.popupVisible = true
-            },
+            // neck_voucher(list, name) {
+            //     this.voucher_list = list;
+            //     this.voucher_store_name = name;
+            //     this.popupVisible = true
+            // },
             go_goods(id) {
                 $router.push({
                     name: 'goods_detail',
