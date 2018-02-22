@@ -5,37 +5,35 @@
                 <img alt="" v-lazy="user.user.avatar">
                 <div class="p-head-info">
                     <p class="p-nickname">{{user.user.name}}</p>
-                    <p class="p-platform" v-if="user.user.user_wx != ''">已绑定微信</p>
-                    <p class="p-platform" v-else>未绑定微信</p>
+                    <!--<p class="p-platform" v-if="user.user.user_wx != ''">已绑定微信</p>-->
+                    <!--<p class="p-platform" v-else>未绑定微信</p>-->
                 </div>
             </div>
 
             <div class="personal-numbers hm-margin-b">
                 <div class="personal-numbers-item" @click='this.$router.push({name:"message_list"})'>
                     <div class="number"><span>￥</span>2486.0</div>
-                    <div class="number-title">营业额</div>
+                    <div class="number-title">消费</div>
                 </div>
                 <div class="personal-numbers-item" @click='this.$router.push({name:"wallet"})'>
                     <div class="number"><span>￥</span>253.0</div>
                     <div class="number-title">钱包</div>
                 </div>
-                <div class="personal-numbers-item" id="friend" @click='go_friend_list(0)'>
-                    <div class="number">256</div>
-                    <div class="number-title">好友</div>
-                </div>
-
+                <!--<div class="personal-numbers-item" id="friend" @click='go_friend_list(0)'>-->
+                    <!--<div class="number">256</div>-->
+                    <!--<div class="number-title">好友</div>-->
+                <!--</div>-->
             </div>
 
 
             <ul class="aui-list aui-list-in">
                 <li class="aui-list-item " style="min-height: 44px;">
                     <div class="aui-list-item-inner">
-                        <div class="aui-list-item-title">我的订单</div>
-                        <div class="aui-list-item-right" @click="go_order_list(0)"
-                             style="color: #aaa;display: flex;align-items: center;">查看更多 <i class="ion-ios-arrow-right"
-                                                                                            style="color: #DDD;margin-left: 5px;"></i>
-                        </div>
-
+                        <div class="aui-list-item-title">订 单</div>
+                        <!--<div class="aui-list-item-right" @click="go_order_list(0)"-->
+                             <!--style="color: #aaa;display: flex;align-items: center;">查看更多 -->
+                            <!--<i class="ion-ios-arrow-right" style="color: #DDD;margin-left: 5px;"></i>-->
+                        <!--</div>-->
                     </div>
                 </li>
             </ul>
@@ -58,7 +56,6 @@
                             v-if="user.order_count.order_no_pay_count >0">{{user.order_count.order_no_pay_count}}</span>
                     </div>
                     <p class="p-wrap-1-title">
-
                         待付款
                     </p>
                 </div>
@@ -88,31 +85,30 @@
                 </div>
             </div>
 
-            <ul class="aui-list aui-list-in">
-                <li class="aui-list-item " style="min-height: 44px;">
-                    <div class="aui-list-item-inner">
-                        <div class="aui-list-item-title">必备工具</div>
-                        <div class="aui-list-item-right" @click="go_order_list(0)"
-                             style="color: #aaa;display: flex;align-items: center;">查看更多 <i class="ion-ios-arrow-right"
-                                                                                            style="color: #DDD;margin-left: 5px;"></i>
-                        </div>
-
-                    </div>
-                </li>
-            </ul>
+            <!--<ul class="aui-list aui-list-in">-->
+                <!--<li class="aui-list-item " style="min-height: 44px;">-->
+                    <!--<div class="aui-list-item-inner">-->
+                        <!--<div class="aui-list-item-title">工 具</div>-->
+                        <!--<div class="aui-list-item-right" @click="go_order_list(0)"-->
+                             <!--style="color: #aaa;display: flex;align-items: center;">查看更多 -->
+                            <!--<i class="ion-ios-arrow-right" style="color: #DDD;margin-left: 5px;"></i>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+            <!--</ul>-->
 
             <div class="personal-wrapper-2" style="margin-top: 0">
-                <div class="p-wrapper-2-item" @click='this.$router.push({name:"message_list"})'>
-                    <div class="p-messages"><i class="iconfont icon-xiaoxi1 color-assertive"></i></div>
-                    <p class="p-wrap-2-title">我的消息</p>
-                </div>
+                <!--<div class="p-wrapper-2-item" @click='this.$router.push({name:"message_list"})'>-->
+                    <!--<div class="p-messages"><i class="iconfont icon-xiaoxi1 color-assertive"></i></div>-->
+                    <!--<p class="p-wrap-2-title">我的消息</p>-->
+                <!--</div>-->
                 <!--<div class="p-wrapper-2-item" @click='this.$router.push({name:"my_voucher"})'>-->
                 <!--<div class="p-coupons"><i class="iconfont icon-coupon color-positive"></i></div>-->
                 <!--<p class="p-wrap-2-title">我的优惠券</p>-->
                 <!--</div>-->
                 <div class="p-wrapper-2-item" @click='this.$router.push({name:"favorite"})'>
                     <div class="p-likes"><i class="iconfont icon-ai-mark color-calm"></i></div>
-                    <p class="p-wrap-2-title">我的收藏</p>
+                    <p class="p-wrap-2-title">收藏夹</p>
                 </div>
                 <div class="p-wrapper-2-item" @click='this.$router.push({name:"order_refund_list"})'>
                     <div class="p-after-sales"><i class="iconfont icon-tuikuan1 color-balanced"></i></div>

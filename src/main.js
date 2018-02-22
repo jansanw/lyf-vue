@@ -128,7 +128,7 @@ let routes = [{
         },
         {
             //（购物车，快速购买）下单第一步  参数格式  :cart_id（产品ID|购买数量）  :ifcart  (true or false) 是否从购物车
-            path: '/order_buynow/:cart_id-:ifcart',
+            path: '/order_buynow/:goods-:is_cart',
             name: 'order_buynow',
             meta: {title: '下单'},
             component: order_buynow
@@ -328,6 +328,6 @@ import filters from './api/filter'
 import store from './store'
 
 Vue.use(Vonic.app, {
-    store: store,
-    routes: routes,
+    store,
+    routes
 });

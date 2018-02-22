@@ -1,9 +1,9 @@
 <template>
     <div class="page">
         <!--固定不动的元素 要放到page-content的外面-->
-        <div class="download-app">
-            <i class="iconfont icon-houtui2" @click="goback"></i>
-        </div>
+        <!--<div class="download-app">-->
+        <!--<i class="iconfont icon-houtui2" @click="goback"></i>-->
+        <!--</div>-->
         <div class="page-content" v-show="init" style="padding-bottom: 1.87rem;">
             <!-- 页面内容 -->
             <scroll>
@@ -181,7 +181,7 @@
                 </div>
 
                 <div class="mobile_body">
-                    <div class="text-14" style="background: #fff;padding: .27rem .27rem .16rem;">商品详情</div>
+                    <div class="text-14" style="background: #fff;padding: .27rem .27rem .16rem;">详 情</div>
                     <div v-html="data.content"></div>
                     <!--<template v-for="item in data.mobile_body">-->
                     <!--<img v-if="item.type=='image'" v-lazy="item.value" alt="">-->
@@ -317,6 +317,7 @@
                     price: '',
                     stock: '',
                     quantity: 1,
+                    number: 0,
                     cover: ''
                 });
                 // return;
@@ -600,8 +601,6 @@
         deactivated() {
             console.log('~~deactivated~~')
         }
-
-
     }
 </script>
 <style lang="scss">

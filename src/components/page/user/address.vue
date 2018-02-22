@@ -260,7 +260,6 @@
 </style>
 
 <template lang="html">
-
     <div class="page">
         <div class="page-content">
             <div>
@@ -302,8 +301,9 @@
 </template>
 
 <script>
-    import address_from from './address-from.vue'
-    import bus from '../../../bus.js'
+    import address_from from './address-from.vue';
+    import bus from '../../../bus.js';
+    // import {mapState, mapActions} from 'vuex';
 
     export default {
         name: "address_list",
@@ -317,6 +317,11 @@
             if (this.edit_address_modal)
                 $modal.destroy(this.edit_address_modal)
         },
+        // computed: {
+        //     ...mapState({
+        //         address: state => state.common.default_address
+        //     })
+        // },
         mounted() {
             $loading.show();
             this.getData();
@@ -337,6 +342,12 @@
                 this.$api.userAuthGet("address/page", rps => {
                     $loading.hide();
                     this.$api.responseFilter(rps.data, data => {
+                        let default_address = data.list.find(item => {
+                            return item.is_default === 1;
+                        }) || false;
+                        bus.$emit("onChangeAddress", default_address);
+                        // console.log(default_address);
+                        // this.$store.commit('DEFAULT_ADDRESS', default_address);
                         this.address_list = data.list;
                     });
                 })

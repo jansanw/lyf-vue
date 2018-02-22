@@ -239,6 +239,7 @@
                     rps => {
                         this.$api.responseFilter(rps.data, data => {
                             this.$store.commit('ACTION_SHEET_STOCK', {number: this.stock_choose.number + this.quantity});
+                            this.$store.commit('UPDATE_COMMON_DATA', {cart_view_data_reload: true});
                         })
                         //     res => {
                         //     console.log(JSON.stringify(res.data));
@@ -256,31 +257,39 @@
             buy_now() {
                 $loading.show("提交中");
                 this.$store.commit('ACTIONSHEET_UPDATE', {key: 'showpicksheet', value: false});
-                this.$api.userAuthPost('buy_step1', {
-                    cart_id: this.goodsid_choose + '|' + this.quantity,
-                    ifcart: 0,
-                    address_id: 0
-                }, res => {
-                    console.log(JSON.stringify(res.data));
-                    $router.push({
-                        name: 'order_buynow',
-                        params: {
-                            cart_id: this.goodsid_choose + '|' + this.quantity,
-                            ifcart: 0,
-                            address_id: 0
-                        }
-                    })
-                    //              this.$store.commit('ACTIONSHEET_UPDATE', { key: 'showpicksheet', value: false })
-                    //
-                    //              $toast.show('加入购物车成功', 3000)
-                    //              this.$store.commit('UPDATE_COMMON_DATA', {
-                    //                  cart_view_data_reload:true
-                    //              })
-
-                }, err => {
-                    //$toast(err)
-                    console.log(JSON.stringify(err));
-                })
+                $router.push({
+                    name: 'order_buynow',
+                    params: {
+                        goods: this.id + '|' + this.quantity + '|' + this.stock_choose.id,
+                        is_cart: 0,
+                        address_id: 0
+                    }
+                });
+                // this.$api.userAuthPost('buy_step1', {
+                //     cart_id: this.goodsid_choose + '|' + this.quantity,
+                //     ifcart: 0,
+                //     address_id: 0
+                // }, res => {
+                //     console.log(JSON.stringify(res.data));
+                //     $router.push({
+                //         name: 'order_buynow',
+                //         params: {
+                //             cart_id: this.goodsid_choose + '|' + this.quantity,
+                //             ifcart: 0,
+                //             address_id: 0
+                //         }
+                //     })
+                //     //              this.$store.commit('ACTIONSHEET_UPDATE', { key: 'showpicksheet', value: false })
+                //     //
+                //     //              $toast.show('加入购物车成功', 3000)
+                //     //              this.$store.commit('UPDATE_COMMON_DATA', {
+                //     //                  cart_view_data_reload:true
+                //     //              })
+                //
+                // }, err => {
+                //     //$toast(err)
+                //     console.log(JSON.stringify(err));
+                // })
 
             },
             _initScroll() {

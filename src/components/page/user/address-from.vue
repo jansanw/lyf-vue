@@ -121,7 +121,7 @@
                     })
                 }
             },
-            choseAdd: function () {
+            choseAdd() {
                 if (this.info.length <= 0) {
                     $loading.show();
                     this.getData()
@@ -132,7 +132,7 @@
                     })
                 }
             },
-            closeAdd: function () {
+            closeAdd() {
                 this.showChose = false;
             },
             _filter(add, name, code) {
@@ -144,7 +144,7 @@
                 }
                 return result;
             },
-            getProvinceId: function (code, input, index) {
+            getProvinceId(code, input, index) {
                 this.province_id = code;
                 this.Province = input;
                 this.showProvince = false;
@@ -160,7 +160,7 @@
                 })
 
             },
-            provinceSelected: function () {
+            provinceSelected() {
                 // 清除市级和区级列表
                 this.showCityList = false;
                 this.showDistrictList = false;
@@ -179,7 +179,7 @@
                     this._initScroll()
                 })
             },
-            getCityId: function (code, input, index) {
+            getCityId(code, input, index) {
                 this.city_id = code;
                 this.City = input;
                 this.showProvince = false;
@@ -193,7 +193,7 @@
                     this._initScroll()
                 ])
             },
-            citySelected: function () {
+            citySelected() {
                 this.showProvince = false;
                 this.showCity = true;
                 this.showDistrict = false;
@@ -207,7 +207,7 @@
                     this._initScroll()
                 ])
             },
-            getDistrictId: function (code, input, index) {
+            getDistrictId(code, input, index) {
                 this.district_id = code;
                 this.District = input;
                 // 选择当前添加active
@@ -219,7 +219,7 @@
                     this._initScroll()
                 })
             },
-            districtSelected: function () {
+            districtSelected() {
                 this.showProvince = false;
                 this.showCity = false;
                 this.showDistrict = true;
@@ -228,19 +228,19 @@
                 ])
             },
             getData() {
-                this.$api.userAuthGet("area.json", res => {
+                this.$api.userGet("area.json", res => {
                     this.info = res.data.data;
-                    if (this.id === 0) {
+                    if (this.id === 0)
                         this.showChose = true;
-                    } else {
-                        this.init_address()
-                    }
+                    else
+                        this.init_address();
                     $loading.hide();
                     this.$nextTick(() => {
-                        this._initScroll()
-                    })
+                        this._initScroll();
+                        this.choseAdd();
+                    });
                 }, error => {
-
+                    $dialog.alert({content: "网络异常，请重试"});
                 })
             },
             init_address() {
@@ -366,7 +366,7 @@
         color: #EA5A49;
     }
 
-    .title.aui-border-b{
+    .title.aui-border-b {
         text-align: center;
     }
 
