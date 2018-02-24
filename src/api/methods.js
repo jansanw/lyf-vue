@@ -135,7 +135,7 @@ export default {
             // let login_url = "http://lyf.aoyi.com/home/wx/login_v2?back=" + encodeURIComponent("http://" + window.location.host + "/#/auth");
             // login_url
             // window.location.href = "/#/login";
-            $router.push("login");
+            $router.replace("login");
             return false
         } else {
             return true
