@@ -20,16 +20,14 @@ const mutations = {
     ['ORDERLIST_GETDATA_CALLBACK'](state, payload) {
         state.list[state.active].init = true;
         if (state.list[state.active].page === 1) {
-            state.list[state.active].order_list = payload.ret.data.data.data
-
+            state.list[state.active].order_list = payload.data.list
         } else {
-            state.list[state.active].page = payload.ret.data.data.current_page;
-            for (let i = 0; i < payload.ret.data.data.data.length; i++) {
-                state.list[state.active].order_list.push(payload.ret.data.data.data[i]);
+            state.list[state.active].page = payload.page;
+            for (let i = 0; i < payload.data.list.length; i++) {
+                state.list[state.active].order_list.push(payload.data.list[i]);
             }
-
         }
-        state.list[state.active].load_more = !(payload.ret.data.data.current_page >= payload.ret.data.data.last_page);
+        state.list[state.active].load_more = !(payload.page >= payload.pageCount);
         state.list[state.active].init = true;
 
         //state.list[state.active].is_load = false;

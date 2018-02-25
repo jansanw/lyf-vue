@@ -107,11 +107,17 @@
                         <!--<span class="payway-tips-text"></span>-->
                         <i class="pay-type-radio"></i>
                     </li>
+                    <li :class="{'active' : pay.type === 'balance'}" @click="pay.type = 'balance'">
+                        <img src="//jp.juancdn.com/jpwebapp/images/shopping/icon_ali.png">
+                        <span>余额</span>
+                        <!--<span class="payway-tips-text"></span>-->
+                        <i class="pay-type-radio"></i>
+                    </li>
                 </ul>
             </div>
             <div class="order_total order-amount-total">
-                <div class="total-title">应付金额<span>¥：{{total}}</span></div>
-                <p class="clear"><span class="sp1">商品总额</span><span class="sp2">¥：{{total_market}}</span></p>
+                <div class="total-title">应付金额<span>¥：{{data.total}}</span></div>
+                <p class="clear"><span class="sp1">商品总额</span><span class="sp2">¥：{{data.total_market}}</span></p>
                 <p class="clear"><span class="sp1">总运费</span><span class="sp2">¥：{{data.freight}}</span></p>
             </div>
         </div>
@@ -129,15 +135,15 @@
     import "../../../assets/buy-now.scss";
     import 'lib-flexible/flexible';
     import address_modal from "../user/address.vue";
-    import orderStoreVoucherList from "../../layout/order-store-voucher-list.vue";
+    // import orderStoreVoucherList from "../../layout/order-store-voucher-list.vue";
     import bus from "../../../bus.js";
     // import {mapState, mapActions} from 'vuex';
 
     export default {
         name: "order_buynow",
-        components: {
-            orderStoreVoucherList
-        },
+        // components: {
+        //     orderStoreVoucherList
+        // },
         data() {
             return {
                 page_show: false,
@@ -153,18 +159,18 @@
                 },
                 is_cart: false,
                 note: '',
-                voucher: {},
+                // voucher: {},
                 address: false,
-                store_cart_list: [],
+                // store_cart_list: [],
                 // address_api: [],
-                store_final_total_list: [],
+                // store_final_total_list: [],
                 order_amount: 0,
                 pay_massage: [],
                 modal: undefined,
-                order_store_voucher_list_data: [],
-                order_store_voucher_info: null,
-                order_store_voucher_list_show: false,
-                order_store_voucher_list_name: "店铺优惠",
+                // order_store_voucher_list_data: [],
+                // order_store_voucher_info: null,
+                // order_store_voucher_list_show: false,
+                // order_store_voucher_list_name: "店铺优惠",
             }
         },
         filters: {
@@ -208,16 +214,16 @@
             // })
         },
         computed: {
-            total() {
-                return this.data.goods.reduce((sum, item) => {
-                    return sum + parseFloat(item.price) * item.quantity;
-                }, 0);
-            },
-            total_market() {
-                return this.data.goods.reduce((sum, item) => {
-                    return sum + parseFloat(item.price_market || item.price) * item.quantity;
-                }, 0);
-            }
+            // total() {
+            //     return this.data.goods.reduce((sum, item) => {
+            //         return sum + parseFloat(item.price) * item.quantity;
+            //     }, 0);
+            // },
+            // total_market() {
+            //     return this.data.goods.reduce((sum, item) => {
+            //         return sum + parseFloat(item.price_market || item.price) * item.quantity;
+            //     }, 0);
+            // }
             //     ...mapState({
             //         address: state => state.common.default_address
             //     })
@@ -335,8 +341,8 @@
                 this.$api.userAuthPost("order/resolve", {
                     goods: this.goods,
                     is_cart: this.is_cart,
-                    address_id: this.address.address_id,
-                    voucher: JSON.stringify(this.voucher)
+                    // address_id: this.address.address_id,
+                    // voucher: JSON.stringify(this.voucher)
                 }, rps => {
                     this.$api.responseFilter(rps.data, data => {
                         this.data = data;
@@ -379,36 +385,43 @@
                     $toast.show("请选择收货地址");
                     return
                 }
-                let msg = [];
-                for (let store_id in this.pay_massage) {
-                    let c_p = store_id + '|' + this.pay_massage[store_id];
-                    msg.push(c_p)
-                }
+                // let msg = [];
+                // for (let store_id in this.pay_massage) {
+                //     let c_p = store_id + '|' + this.pay_massage[store_id];
+                //     msg.push(c_p)
+                // }msg.join(",")
                 $loading.show();
-                this.$api.userAuthPost("buy_step2", {
+                this.$api.userAuthPost("/order/create", {
                     goods: this.goods,
                     is_cart: this.is_cart,
-                    voucher: JSON.stringify(this.voucher),
-                    address_id: this.address.address_id,
-                    pay_message: msg.join(",")
-                }, res => {
-                    this.$store.commit('UPDATE_COMMON_DATA', {
-                        cart_view_data_reload: true
-                    });
-                    if (res.data.status_code === 1) {
-                        $loading.hide();
-                        window.location.href = res.data.data
-                    } else {
-                        $toast.show(res.data.message);
-                        setTimeout(function () {
-                            $router.go(-1)
-                        }, 1500);
-                    }
-                }, error => {
-                    $toast.show("支付失败");
-                    setTimeout(function () {
-                        $router.go(-1)
-                    }, 1500);
+                    // voucher: JSON.stringify(this.voucher),
+                    address_id: this.address.id,
+                    note: this.note
+                }, rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        this.$store.commit('UPDATE_COMMON_DATA', {
+                            cart_view_data_reload: true
+                        });
+                        $toast.show("下单成功，正在启动支付");
+                    })
+                    // }, res => {
+                    //     this.$store.commit('UPDATE_COMMON_DATA', {
+                    //         cart_view_data_reload: true
+                    //     });
+                    //     if (res.data.status_code === 1) {
+                    //         $loading.hide();
+                    //         window.location.href = res.data.data
+                    //     } else {
+                    //         $toast.show(res.data.message);
+                    //         setTimeout(function () {
+                    //             $router.go(-1)
+                    //         }, 1500);
+                    //     }
+                    // }, error => {
+                    //     $toast.show("支付失败");
+                    //     setTimeout(function () {
+                    //         $router.go(-1)
+                    //     }, 1500);
                 })
             },
             // select_order_voucger(list, store_voucher_info, store_id, store_name) {

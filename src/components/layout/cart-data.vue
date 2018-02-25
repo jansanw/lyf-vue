@@ -95,9 +95,9 @@
                                     <div class="item-list o-t-item undefined">
                                         <div class="item-cb">
                                             <p>
-                                                <input :id="'cb-'+goods.id" type="checkbox"
+                                                <input :id="'cb-'+goods.cart_id" type="checkbox"
                                                        v-model="goods.is_check" class="cb o-t-cb">
-                                                <label :for="'cb-'+goods.id"></label>
+                                                <label :for="'cb-'+goods.cart_id"></label>
                                             </p>
                                         </div>
                                         <div class="item-detail">
@@ -157,9 +157,9 @@
                                      v-if="store.is_edit">
                                     <div class="item-cb">
                                         <p>
-                                            <input :id="'cb-'+goods.id" type="checkbox" class="cb o-t-cb"
+                                            <input :id="'cb-'+goods.cart_id" type="checkbox" class="cb o-t-cb"
                                                    v-model="goods.is_check">
-                                            <label :for="'cb-'+goods.id"></label>
+                                            <label :for="'cb-'+goods.cart_id"></label>
                                         </p>
                                     </div>
                                     <div class="item-detail">
@@ -198,7 +198,7 @@
                                         </div>
                                     </div>
                                     <div class="item-del c-edit-delshow"
-                                         @click="del_cart(goods.id,key,index)">
+                                         @click="del_cart(goods.cart_id,key,index)">
                                         <p>删除</p>
                                     </div>
                                 </div>
@@ -464,7 +464,7 @@
                 $loading.show("");
                 this.list[key].goods[index].number++;
                 let number = this.list[key].goods[index].number;
-                let id = this.list[key].goods[index].id;
+                let id = this.list[key].goods[index].cart_id;
                 if (number < 1) {
                     $toast.show("受不鸟了，宝贝不能再减少了哦");
                     return
@@ -492,7 +492,7 @@
                 this.list[key].goods[index].number--;
                 $loading.show("");
                 let number = this.list[key].goods[index].number;
-                let id = this.list[key].goods[index].id;
+                let id = this.list[key].goods[index].cart_id;
                 if (number < 1) {
                     $toast.show("受不鸟了，宝贝不能再减少了哦");
                     this.list[key].goods[index].number = 1;
@@ -514,7 +514,7 @@
             },
             changeCount(key, index) {
                 let number = this.list[key].goods[index].number;
-                let id = this.list[key].goods[index].id;
+                let id = this.list[key].goods[index].cart_id;
                 if (number < 1) {
                     $toast.show("受不鸟了，宝贝不能再减少了哦");
                     this.list[key].goods[index].number = 1;
@@ -566,19 +566,19 @@
                         this.list[key].goods.filter(function (item) {
                             return item.is_check === true;
                         }).map(function (item) {
-                            // let c_p = item.id + '|' + item.number;
+                            // let c_p = item.cart_id + '|' + item.number;
                             // goods.push({
-                            //     cart_id: item.id,
+                            //     cart_id: item.cart_id,
                             //     goods_id: item.goods_id,
                             //     stock_id: item.stock_id,
                             // });
                             // goods.push([
-                            //     item.id,
+                            //     item.cart_id,
                             //     // item.goods_id,
                             //     item.stock_id,
                             //     item.number
-                            // ]);item.id + '|' + item.number + '|' + item.stock_id
-                            goods.push(item.id)
+                            // ]);item.cart_id + '|' + item.number + '|' + item.stock_id
+                            goods.push(item.cart_id)
                         })
                     }
                     $router.push({

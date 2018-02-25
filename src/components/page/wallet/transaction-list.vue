@@ -332,23 +332,23 @@
             }
         },
         filters: {
-            order_stae(val, typr = 1) {
+            order_status(val, typr = 1) {
                 let text = '';
                 let class_name = '';
                 switch (val) {
                     case 0:
                         text = '交易关闭';
                         break;
-                    case 10:
+                    case 1:
                         text = '等待买家付款';
                         break;
-                    case 20:
+                    case 2:
                         text = '等待卖家发货';
                         break;
-                    case 30:
+                    case 3:
                         text = '卖家已发货';
                         break;
-                    case 40:
+                    case 4:
                         text = '交易成功';
                         break;
                 }
