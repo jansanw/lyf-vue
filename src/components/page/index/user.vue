@@ -2,21 +2,22 @@
     <div class="page has-tabbar">
         <scroll class="page-content" style="top: -1.1rem;" :on-refresh="onRefresh" v-if="page_show">
             <div class="personal-head head-bg-img">
-                <img alt="" v-lazy="user.user.avatar">
+                <img alt="" v-lazy="data.user.avatar">
                 <div class="p-head-info">
-                    <p class="p-nickname">{{user.user.name}}</p>
-                    <!--<p class="p-platform" v-if="user.user.user_wx != ''">已绑定微信</p>-->
+                    <p class="p-nickname">{{data.user.name}}</p>
+                    <!--<p class="p-platform" v-if="data.user.user_wx != ''">已绑定微信</p>-->
                     <!--<p class="p-platform" v-else>未绑定微信</p>-->
                 </div>
             </div>
 
             <div class="personal-numbers hm-margin-b">
-                <div class="personal-numbers-item" @click='this.$router.push({name:"message_list"})'>
-                    <div class="number"><span>￥</span>2486.0</div>
+                <!-- @click='this.$router.push({name:"message_list"})'-->
+                <div class="personal-numbers-item">
+                    <div class="number"><span>￥</span>{{data.user.consume}}</div>
                     <div class="number-title">消费</div>
                 </div>
                 <div class="personal-numbers-item" @click='this.$router.push({name:"wallet"})'>
-                    <div class="number"><span>￥</span>253.0</div>
+                    <div class="number"><span>￥</span>{{data.user.balance}}</div>
                     <div class="number-title">钱包</div>
                 </div>
                 <!--<div class="personal-numbers-item" id="friend" @click='go_friend_list(0)'>-->
@@ -52,32 +53,36 @@
                     </p>
                 </div>
                 <div class="p-wrapper-1-item" @click="go_order_list(1)">
-                    <div class="p-unpaid"><i class="iconfont icon-daifukuan"></i><span
-                            v-if="user.order_count.order_no_pay_count >0">{{user.order_count.order_no_pay_count}}</span>
+                    <div class="p-unpaid">
+                        <i class="iconfont icon-daifukuan"></i>
+                        <span v-if="data.order_count[1] > 0">{{data.order_count[1]}}</span>
                     </div>
                     <p class="p-wrap-1-title">
                         待付款
                     </p>
                 </div>
                 <div class="p-wrapper-1-item" @click="go_order_list(2)">
-                    <div class="p-unshipping"><i class="iconfont icon-wuliu"></i><span
-                            v-if="user.order_count.order_no_send_count >0">{{user.order_count.order_no_send_count}}</span>
+                    <div class="p-unshipping">
+                        <i class="iconfont icon-wuliu"></i>
+                        <span v-if="data.order_count[2] > 0">{{data.order_count[2]}}</span>
                     </div>
                     <p class="p-wrap-1-title">
                         待发货
                     </p>
                 </div>
                 <div class="p-wrapper-1-item" @click="go_order_list(3)">
-                    <div class="p-unreceived"><i class="iconfont icon-daishouhuo"></i><span
-                            v-if="user.order_count.order_no_receipt_count >0">{{user.order_count.order_no_receipt_count}}</span>
+                    <div class="p-unreceived">
+                        <i class="iconfont icon-daishouhuo"></i>
+                        <span v-if="data.order_count[3] > 0">{{data.order_count[3]}}</span>
                     </div>
                     <p class="p-wrap-1-title">
                         待收货
                     </p>
                 </div>
                 <div class="p-wrapper-1-item" @click="go_order_list(4)">
-                    <div class="p-unrated"><i class="iconfont icon-daipingjia"></i><span
-                            v-if="user.order_count.order_no_eval_count >0">{{user.order_count.order_no_eval_count}}</span>
+                    <div class="p-unrated">
+                        <i class="iconfont icon-daipingjia"></i>
+                        <span v-if="data.order_count[4] > 0">{{data.order_count[4]}}</span>
                     </div>
                     <p class="p-wrap-1-title">
                         待评价
@@ -175,7 +180,7 @@
         },
         data() {
             return {
-                user: {
+                data: {
                     user: {},
                     order_count: {},
                 },
@@ -212,14 +217,11 @@
                 // };
                 // this.user = _user;
                 //  return;
-
-
                 this.$api.userAuthGet("user/info", rps => {
                     this.$api.responseFilter(rps.data, function (data) {
                         if (!data.user.avatar)
                             data.user.avatar = "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg";
-                        this.user = data;
-
+                        this.data = data;
                         $loading.hide();
                         this.is_load = false;
                         this.page_show = true;

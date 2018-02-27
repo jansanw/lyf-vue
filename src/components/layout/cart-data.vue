@@ -31,7 +31,7 @@
         <div class="page-content">
             <div class="nav-tab-top">
                 <ul>
-                    <li class="cur">商品</li>
+                    <li class="cur">购物车</li>
                 </ul>
             </div>
             <div class="cartbuy" style="margin-bottom: 1.32rem;">

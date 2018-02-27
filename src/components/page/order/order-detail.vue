@@ -14,7 +14,7 @@
                             <div class="module status">
                                 <div class="seller-state" style="background: #EA5A49;">
                                     <div class="state-cont">
-                                        <p class="h text-0" v-if="!order_info.if_lock">{{order_info.order_text}} </p>
+                                        <p class="h text-0" v-if="!order_info.if_lock">{{status_text[order_info.status]}}</p>
                                         <p class="h text-0" v-else>
                                             退款退货中..
                                         </p>
@@ -22,6 +22,7 @@
                                 </div>
                             </div>
 
+                            <!--快递-->
                             <div class="module logisticsholder" v-if="false">
                                 <div class="o-t-contmsg express">
                                     <div class="ico"><span class="ion-planet"></span></div>
@@ -38,55 +39,57 @@
                                 </div>
                             </div>
 
-                            <div class="module address" style="position:none;">
+                            <div class="module address">
                                 <div class="o-t-contmsg">
                                     <div class="ico"><span class="ion-location"></span></div>
                                     <div class="cont">
                                         <h5 class="">
-                                            <span>收货人：{{order_info.reciver_name}}</span>
-                                            <span>{{order_info.reciver_phone}}</span>
+                                            <span>收货人：{{order_info.address.name}}</span>
+                                            <span>{{order_info.address.mobile}}</span>
                                         </h5>
-                                        <div class="submsg">收货地址：{{order_info.reciver_addr}}</div>
+                                        <div class="submsg">收货地址：{{order_info.address.area}} {{order_info.address.street}}</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="module seller">
-                                <div class="o-t-title-shop">
-                                    <div class="tcont">
-                                        <div class="ico"><img :src="order_info.store_info.store_avatar"></div>
-                                        <div class="contact">
-                                            <a>
-                                                <p class="title">{{order_info.store_info.store_name}}</p>
-                                                <p class="" style="margin-left:.13rem;"><span
-                                                        class="ion-chevron-right"></span></p>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <!--<div class="module seller">-->
+                                <!--<div class="o-t-title-shop">-->
+                                    <!--<div class="tcont">-->
+                                        <!--<div class="ico">-->
+                                            <!--<img :src="order_info.store_info.store_avatar">-->
+                                        <!--</div>-->
+                                        <!--<div class="contact">-->
+                                            <!--<a>-->
+                                                <!--<p class="title">{{order_info.store_info.store_name}}</p>-->
+                                                <!--<p class="" style="margin-left:.13rem;"><span-->
+                                                        <!--class="ion-chevron-right"></span></p>-->
+                                            <!--</a>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
 
                             <div class="module o_item">
-                                <div class="item-list o-t-item" v-for="goods in order_info.order_goods">
+                                <div class="item-list o-t-item" v-for="goods in order_info.goods">
                                     <div class="item-img">
-                                        <p><img class="" v-lazy="goods.goods_image_url" data-src-checked="true"></p>
+                                        <p><img class="" v-lazy="goods.cover" data-src-checked="true"></p>
                                     </div>
                                     <div class="item-info">
-                                        <h3 class="title">{{goods.goods_name}}</h3>
-                                        <p class="sku">{{goods.goods_spec}}</p>
+                                        <h3 class="title">{{goods.name}}</h3>
+                                        <p class="sku">{{goods.stock_name}}</p>
                                     </div>
                                     <div class="item-pay">
                                         <div class="item-pay-data">
-                                            <p class="price">￥{{goods.goods_price}}</p>
+                                            <p class="price">￥{{goods.price}}</p>
                                             <p class="price">
-                                                <del class="">￥{{goods.goods_marketprice}}</del>
+                                                <del class="">￥{{goods.price_market}}</del>
                                             </p>
-                                            <p class="nums">x{{goods.goods_num}}</p>
+                                            <p class="nums">x{{goods.number}}</p>
                                         </div>
                                         <div class="item-pay-btn">
                                             <!--<a class="h" v-if="order_info.status==20" @click="go_refund_start(order_info.id,goods.goods_id,'tuikuan')"> 退款 </a>-->
-                                            <a class="h" v-if="order_info.status==30"
-                                               @click="go_refund_start(order_info.id,goods.goods_id,'tuihuo')">
+                                            <a class="h" v-if="order_info.status==3"
+                                               @click="go_refund_start(order_info.id,goods.id,'tuihuo')">
                                                 退货 </a>
                                         </div>
                                     </div>
@@ -96,32 +99,37 @@
                             <div class="module  paydetail">
                                 <div class="order-price-freight">
                                     <dl>
-                                        <dt>运费</dt>
-                                        <dd>￥{{order_info.shipping_fee}}</dd>
+                                        <dt>运费：</dt>
+                                        <dd>￥{{order_info.freight}}</dd>
                                     </dl>
                                     <dl>
-                                        <dt>实付款（含运费）</dt>
-                                        <dd class="h">￥{{order_info.order_amount}}</dd>
+                                        <dt>实付款（含运费）：</dt>
+                                        <dd class="h">￥{{order_info.total}}</dd>
+                                    </dl>
+                                    <dl>
+                                        <dt style="width: 10%">备注：</dt>
+                                        <dd style="text-align: left">{{order_info.note_buy}}</dd>
                                     </dl>
                                 </div>
                             </div>
 
-                            <div class="module  talkseller" v-if="false">
-                                <div class="order-tablink o-t-tablink">
-                                    <div class="cont ww" data-nick="">
-                                        <p><span class="ico ion-chatbubbles"></span></p>
-                                        <p><span>联系卖家</span></p>
-                                    </div>
-                                    <a class="cont phone" href="tel:">
-                                        <p><span class="ico ion-ipad"></span></p>
-                                        <p><span>卖家电话</span></p>
-                                    </a>
-                                </div>
-                            </div>
+                            <!--<div class="module  talkseller" v-if="false">-->
+                                <!--<div class="order-tablink o-t-tablink">-->
+                                    <!--<div class="cont ww" data-nick="">-->
+                                        <!--<p><span class="ico ion-chatbubbles"></span></p>-->
+                                        <!--<p><span>联系卖家</span></p>-->
+                                    <!--</div>-->
+                                    <!--<a class="cont phone" href="tel:">-->
+                                        <!--<p><span class="ico ion-ipad"></span></p>-->
+                                        <!--<p><span>卖家电话</span></p>-->
+                                    <!--</a>-->
+                                <!--</div>-->
+                            <!--</div>-->
 
                             <div class="module  orderinfo" style="padding-bottom: 70px;">
                                 <div class="order-box order-message">
                                     <p class="">订单编号：{{order_info.order_number}}</p>
+                                    <p class="">支付方式：{{order_info.trade_no}}</p>
                                     <p class="">交易号：{{order_info.trade_no}}</p>
                                     <p class="">创建时间：{{order_info.create_time}}</p>
                                     <p class="" v-if="order_info.payment_time != ''">
@@ -174,7 +182,8 @@
             return {
                 order_info: [],
                 id: 63,
-                page_show: false
+                page_show: false,
+                status_text: ["交易关闭", "等待买家付款", "等待卖家发货", "卖家已发货", "交易成功"],
             }
         },
         mounted() {
@@ -184,56 +193,62 @@
         },
         methods: {
             getData() {
-                //mock
-
-                this.order_info = {
-
-                    order_number: "6666666",
-                    order_pay: {
-                        pay_sn: "alipay999999999"
-                    },
-                    order_amount: 99,
-                    shipping_fee: 8,
-                    add_time: "09:50",
-                    payment_time: "09:55",
-                    finnshed_time: "09:55",
-                    status: 40,
-                    if_lock: 0,
-                    order_text: "订单完成~",
-                    reciver_name: "收货人",
-                    reciver_phone: "1588********",
-                    reciver_addr: "广州科密...",
-                    store_info: {
-                        store_avatar: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
-                        store_name: "苏宁"
-                    },
-                    order_goods: [
-                        {
-                            goods_image_url: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
-                            goods_name: "抱枕",
-                            goods_spec: "红色，大大的",
-                            goods_price: 99,
-                            goods_marketprice: 999,
-                            goods_num: 1
-                        }
-                    ],
-
-
-                };
-                this.page_show = true;
-                $loading.hide();
-
-
-                return;
-                this.$api.userAuthGet("order_info?id=" + this.id, res => {
-                    if (res.data.status_code === 1) {
-                        this.order_info = res.data.data;
-                        this.page_show = true;
-                    }
-                    $loading.hide();
-                }, error => {
-                    $loading.hide();
-                })
+                // //mock
+                //
+                // this.order_info = {
+                //
+                //     order_number: "6666666",
+                //     order_pay: {
+                //         pay_sn: "alipay999999999"
+                //     },
+                //     order_amount: 99,
+                //     shipping_fee: 8,
+                //     add_time: "09:50",
+                //     payment_time: "09:55",
+                //     finnshed_time: "09:55",
+                //     status: 40,
+                //     if_lock: 0,
+                //     order_text: "订单完成~",
+                //     reciver_name: "收货人",
+                //     reciver_phone: "1588********",
+                //     reciver_addr: "广州科密...",
+                //     store_info: {
+                //         store_avatar: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
+                //         store_name: "苏宁"
+                //     },
+                //     order_goods: [
+                //         {
+                //             goods_image_url: "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg",
+                //             goods_name: "抱枕",
+                //             goods_spec: "红色，大大的",
+                //             goods_price: 99,
+                //             goods_marketprice: 999,
+                //             goods_num: 1
+                //         }
+                //     ],
+                //
+                //
+                // };
+                // this.page_show = true;
+                // $loading.hide();
+                //
+                //
+                // return;
+                this.$api.userAuthGet("order/detail?id=" + this.id,
+                    rps => {
+                        this.$api.responseFilter(rps.data, data => {
+                            this.order_info = data;
+                            this.page_show = true;
+                        });
+                        //     res => {
+                        //     if (res.data.status_code === 1) {
+                        //         this.order_info = res.data.data;
+                        //         this.page_show = true;
+                        //     }
+                        //     $loading.hide();
+                        // }, error => {
+                        $loading.hide();
+                    })
             },
             go_refund(id, goods_id, type) {
                 $router.push({

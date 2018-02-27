@@ -9,7 +9,7 @@
                         </li>
                     </ul>
                 </div>
-                <a class="search-btn J_search-btn  aui-border-b" @click="go_search()">
+                <a class="search-btn J_search-btn  aui-border-b" @click="go_search()" v-if="false">
                     <i class="iconfont icon-sousuo"></i></a><!--ion-search-->
             </div>
             <scroll ref="lyf_scroll" class="index-scroll page-content" style="top: 1.07rem;" :on-infinite="onInfinite"
@@ -85,7 +85,7 @@
                                             </div>
                                             <div class="hm-color-gray" style="color:#9c9c9c;">
                                                 <small>已售</small>
-                                                {{item.price}}
+                                                {{item.sale}}
                                                 <small>件</small>
                                             </div>
                                         </div>

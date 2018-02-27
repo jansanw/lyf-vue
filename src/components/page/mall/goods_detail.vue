@@ -183,7 +183,8 @@
                 <div class="mobile_body">
                     <div class="text-14" style="background: #fff;padding: .27rem .27rem .16rem;">详 情</div>
                     <div v-html="data.content"></div>
-                    <!--<template v-for="item in data.mobile_body">-->
+                    <p style="height: 55px"></p>
+                    <!--<template v-for="item in data.content">-->
                     <!--<img v-if="item.type=='image'" v-lazy="item.value" alt="">-->
                     <!--<p v-else-if="item.type=='text'" v-html="item.value"></p>-->
                     <!--</template>-->

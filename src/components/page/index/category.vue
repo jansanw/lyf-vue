@@ -1,6 +1,6 @@
 <template lang="html">
     <div class="page has-tabbar">
-        <div id="search-bar" @click="search_click()">
+        <div id="search-bar" @click="search_click()" v-if="false">
             <div class="search-container">
                 <div class="search-icon-container">
                     <div class="search-icon-class"></div>
@@ -23,32 +23,32 @@
                         <div class="cancel-button-view" style="line-height:.8rem;" @click="search_click()">取消</div>
                     </div>
                     <div class="submit-container-view" v-show="search_key != ''">
-                        <div class="submit-button-view" style="line-height:.8rem;">搜索</div>
+                        <div class="submit-button-view" style="line-height:.8rem;" @click="go_search()">搜索</div>
                     </div>
                 </div>
-                <div id="search-suggestion-box" v-show="search_key != ''">
-                    <ul class="search-suggestion-container" avalonctrl="suggestion">
-                        <li>
-                            <span data-index="0">123沙发垫</span>
-                        </li>
-                        <li>
-                            <span data-index="1">123组合沙发垫</span>
-                        </li>
-                        <li>
-                            <span data-index="2">123沙发套</span>
-                        </li>
-                        <li>
-                            <span data-index="3">123沙发巾</span>
-                        </li>
-                        <li>
-                            <span data-index="4">123组合沙发套</span>
-                        </li>
-                        <li>
-                            <span data-index="5">123童装</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="search-main-view" v-show="false">
+                <!--<div id="search-suggestion-box" v-show="search_key != ''" v-if="false">-->
+                <!--<ul class="search-suggestion-container" avalonctrl="suggestion">-->
+                <!--<li>-->
+                <!--<span data-index="0">123沙发垫</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<span data-index="1">123组合沙发垫</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<span data-index="2">123沙发套</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<span data-index="3">123沙发巾</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<span data-index="4">123组合沙发套</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<span data-index="5">123童装</span>-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--</div>-->
+                <div class="search-main-view">
                     <div class="search-recent-title-view">历史搜索</div>
                     <div class="search-recent-delete-view">
                         <div class="delete-recent-search"></div>
@@ -56,21 +56,21 @@
                     <div class="search-recent-list-view">
                     </div>
                 </div>
-                <div class="search-main-view" v-show="search_key == ''">
-                    <div class="search-recent-title-view">热门搜索</div>
-                    <div class="search-recent-list-view search-hotquery-list-view">
-                        <span class="recent-history-list">厨房收纳架</span>
-                        <span class="recent-history-list">男士套装</span>
-                        <span class="recent-history-list">小孩睡衣</span>
-                        <span class="recent-history-list">外搭女</span>
-                        <span class="recent-history-list">皮带男</span>
-                        <span class="recent-history-list">手机指环</span>
-                        <span class="recent-history-list">音响低音炮</span>
-                        <span class="recent-history-list">吊带睡衣</span>
-                        <span class="recent-history-list">手表男</span>
-                        <span class="recent-history-list">斜挎包女</span><
-                    </div>
-                </div>
+                <!--<div class="search-main-view" v-show="search_key == ''">-->
+                <!--<div class="search-recent-title-view">热门搜索</div>-->
+                <!--<div class="search-recent-list-view search-hotquery-list-view">-->
+                <!--<span class="recent-history-list">厨房收纳架</span>-->
+                <!--<span class="recent-history-list">男士套装</span>-->
+                <!--<span class="recent-history-list">小孩睡衣</span>-->
+                <!--<span class="recent-history-list">外搭女</span>-->
+                <!--<span class="recent-history-list">皮带男</span>-->
+                <!--<span class="recent-history-list">手机指环</span>-->
+                <!--<span class="recent-history-list">音响低音炮</span>-->
+                <!--<span class="recent-history-list">吊带睡衣</span>-->
+                <!--<span class="recent-history-list">手表男</span>-->
+                <!--<span class="recent-history-list">斜挎包女</span><-->
+                <!--</div>-->
+                <!--</div>-->
             </div>
         </div>
         <div class="page-content" style="top:1.2rem;">
@@ -258,6 +258,9 @@
                 let el = rList[index];
                 //设置滚动时间
                 this.detail_list_scroll.scrollToElement(el, 300);
+            },
+            go_search() {
+                console.log(this.search_key);
             },
             search_click() {
                 this.show_search = !this.show_search

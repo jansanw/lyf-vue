@@ -34,7 +34,7 @@
                                         <div class="state">
                                             <div class="state-cont">
                                                 <p class="h" style="width:auto;" v-if="!order.if_lock">
-                                                    <!--{{status_type[order.status]}}</p>-->
+                                                    <!--{{status_text[order.status]}}</p>-->
                                                     {{order.status|order_status}}</p>
                                                 <p class="h" style="width:auto;" v-else>退款退货中</p>
                                             </div>
@@ -126,9 +126,9 @@
         data() {
             return {
                 //订单状态 1：待支付； 2：待发货； 3：待收货； 4：待评价； 5：已完成； 6：申请退款；7：已退款；
-                tabs: ['全部', '待付款', '待发货', '待收货', '待评价'],
-                state_type: ['all', 'dfk', 'dfh', 'dsh', 'dpj'],
-                status_type: ["交易关闭", "等待买家付款", "等待卖家发货", "卖家已发货", "交易成功"],
+                tabs: ['全部', '待付款', '待发货', '待收货', '待确认'],
+                // state_type: ['all', 'dfk', 'dfh', 'dsh', 'dpj'],
+                status_text: ["交易关闭", "等待买家付款", "等待卖家发货", "卖家已发货", "交易成功"],
 //      active:0,
 //      order_list: [],
 //      pages:[1,1,1,1,1],
@@ -141,7 +141,7 @@
             next(vm => {
                 let id = vm.$route.params.type;
                 // vm.active = id;
-                // vm.$store.commit('ORDERLIST_UPDATE', {active: id});
+                vm.$store.commit('ORDERLIST_UPDATE', {active: id});
 //      vm.loading=true
                 vm.getData(() => {
                     //vm.$refs.lyf_scroll.infiniteDone()
@@ -205,7 +205,7 @@
                 // return;
                 if (!this.load_more) return;
                 $loading.show();
-                console.log('!load_more=', !this.load_more, 'loading=', this.loading, 'pages=', this.page);
+                // console.log('!load_more=', !this.load_more, 'loading=', this.loading, 'pages=', this.page);
 //      if (this.page == 1) {
 //        $loading.show()
 //      }
