@@ -5,7 +5,7 @@ const state = {
     cur_spec_namex: [],
     quantityx: 1,
     stock_choose: {
-        id: -1,
+        id: 0,
         name: '',
         goods_id: 0,
         price: '',

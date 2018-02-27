@@ -11,7 +11,6 @@
                 <div class="order">
                     <ul class="order-list">
                         <li>
-
                             <div class="module status">
                                 <div class="seller-state" style="background: #EA5A49;">
                                     <div class="state-cont">
@@ -44,8 +43,8 @@
                                     <div class="ico"><span class="ion-location"></span></div>
                                     <div class="cont">
                                         <h5 class="">
-                                            <div>收货人：{{order_info.reciver_name}}</div>
-                                            <div>{{order_info.reciver_phone}}</div>
+                                            <span>收货人：{{order_info.reciver_name}}</span>
+                                            <span>{{order_info.reciver_phone}}</span>
                                         </h5>
                                         <div class="submsg">收货地址：{{order_info.reciver_addr}}</div>
                                     </div>
@@ -85,9 +84,9 @@
                                             <p class="nums">x{{goods.goods_num}}</p>
                                         </div>
                                         <div class="item-pay-btn">
-                                            <!--<a class="h" v-if="order_info.order_state==20" @click="go_refund_start(order_info.order_id,goods.goods_id,'tuikuan')"> 退款 </a>-->
-                                            <a class="h" v-if="order_info.order_state==30"
-                                               @click="go_refund_start(order_info.order_id,goods.goods_id,'tuihuo')">
+                                            <!--<a class="h" v-if="order_info.status==20" @click="go_refund_start(order_info.id,goods.goods_id,'tuikuan')"> 退款 </a>-->
+                                            <a class="h" v-if="order_info.status==30"
+                                               @click="go_refund_start(order_info.id,goods.goods_id,'tuihuo')">
                                                 退货 </a>
                                         </div>
                                     </div>
@@ -122,9 +121,9 @@
 
                             <div class="module  orderinfo" style="padding-bottom: 70px;">
                                 <div class="order-box order-message">
-                                    <p class="">订单编号：{{order_info.order_sn}}</p>
-                                    <p class="">交易号：{{order_info.order_pay.pay_sn}}</p>
-                                    <p class="">创建时间：{{order_info.add_time}}</p>
+                                    <p class="">订单编号：{{order_info.order_number}}</p>
+                                    <p class="">交易号：{{order_info.trade_no}}</p>
+                                    <p class="">创建时间：{{order_info.create_time}}</p>
                                     <p class="" v-if="order_info.payment_time != ''">
                                         付款时间：{{order_info.payment_time}}</p>
                                     <p class="" v-if="order_info.finnshed_time != ''">
@@ -135,25 +134,25 @@
                             <div class="module orderop" style="background:#f7f7f7;" v-if="!order_info.if_lock">
                                 <div class="o-tab-btn">
                                     <ul>
-                                        <li class="h" v-if="order_info.order_state==30"
-                                            @click="order_receive(order_info.order_id)"> 确认收货
+                                        <li class="h" v-if="order_info.status==3"
+                                            @click="order_receive(order_info.id)"> 确认收货
                                         </li>
-                                        <li class="h" v-if="order_info.order_state==40"
-                                            @click="$router.push({name:'order_rate',params:{order_id:order_info.order_id}})">
+                                        <li class="h" v-if="order_info.status==4"
+                                            @click="$router.push({name:'order_rate',params:{id:order_info.id}})">
                                             评价订单
                                         </li>
-                                        <li class="" v-if="order_info.order_state==30 || order_info.order_state==40"
-                                            @click="$router.push({name:'order_logistics',params:{order_id:order_info.order_id}})">
+                                        <li class="" v-if="order_info.status==3 || order_info.status==4"
+                                            @click="$router.push({name:'order_logistics',params:{id:order_info.id}})">
                                             查看物流
                                         </li>
-                                        <!--li class="h" v-if="order.order_state==10"> 立即付款 </li-->
-                                        <li class="" v-if="order_info.order_state==20"
-                                            @click="confirm_cancel(order_info.order_id)"> 取消订单全部退款
+                                        <!--li class="h" v-if="order.status==10"> 立即付款 </li-->
+                                        <li class="" v-if="order_info.status==2"
+                                            @click="confirm_cancel(order_info.id)"> 取消订单全部退款
                                         </li>
-                                        <li class="" v-if="order_info.order_state==10"
-                                            @click="order_cancel(order_info.order_id)"> 取消订单
+                                        <li class="" v-if="order_info.status==1"
+                                            @click="order_cancel(order_info.id)"> 取消订单
                                         </li>
-                                        <li class="" v-if="order_info.order_state==0"> 删除订单</li>
+                                        <li class="" v-if="order_info.status==0"> 删除订单</li>
                                     </ul>
                                 </div>
                             </div>
@@ -174,12 +173,12 @@
         data() {
             return {
                 order_info: [],
-                order_id: 63,
+                id: 63,
                 page_show: false
             }
         },
         mounted() {
-            this.order_id = this.$route.params.order_id;
+            this.id = this.$route.params.id;
             $loading.show();
             this.getData()
         },
@@ -189,7 +188,7 @@
 
                 this.order_info = {
 
-                    order_sn: "6666666",
+                    order_number: "6666666",
                     order_pay: {
                         pay_sn: "alipay999999999"
                     },
@@ -198,7 +197,7 @@
                     add_time: "09:50",
                     payment_time: "09:55",
                     finnshed_time: "09:55",
-                    order_state: 40,
+                    status: 40,
                     if_lock: 0,
                     order_text: "订单完成~",
                     reciver_name: "收货人",
@@ -226,7 +225,7 @@
 
 
                 return;
-                this.$api.userAuthGet("order_info?order_id=" + this.order_id, res => {
+                this.$api.userAuthGet("order_info?id=" + this.id, res => {
                     if (res.data.status_code === 1) {
                         this.order_info = res.data.data;
                         this.page_show = true;
@@ -236,11 +235,11 @@
                     $loading.hide();
                 })
             },
-            go_refund(order_id, goods_id, type) {
+            go_refund(id, goods_id, type) {
                 $router.push({
                     name: "order_refund",
                     params: {
-                        order_id: order_id,
+                        id: id,
                         goods_id: goods_id
                     },
                     query: {
@@ -248,11 +247,11 @@
                     }
                 });
             },
-            go_refund_start(order_id, goods_id, type) {
+            go_refund_start(id, goods_id, type) {
                 $router.push({
                     name: "order_refund_start",
                     params: {
-                        order_id: order_id,
+                        id: id,
                         goods_id: goods_id
                     },
                     //        query:{
@@ -260,7 +259,7 @@
                     //        }
                 });
             },
-            confirm_cancel(order_id) {
+            confirm_cancel(id) {
                 $dialog.confirm({
                     theme: 'ios',
                     title: '确定要取消订单全部退款吗？',
@@ -270,14 +269,14 @@
                     console.log('confirm result: ', res);
                     if (res === true) {
                         //取消订单
-                        this.cancel(order_id)
+                        this.cancel(id)
                     }
                 })
             },
-            cancel(order_id) {
+            cancel(id) {
                 $loading.show('');
                 this.$api.userAuthPost("add_refund_all", {
-                    order_id: order_id,
+                    id: id,
                     buyer_message: ''
                 }, res => {
                     $loading.hide();

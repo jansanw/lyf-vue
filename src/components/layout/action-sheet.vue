@@ -233,6 +233,10 @@
             //     this.$store.commit('ACTIONSHEET_UPDATE_ARR', {key: 'cur_spec_namex', value: this.cur_spec_name})
             // },
             add_cart() {
+                if (!this.stock_choose.id) {
+                    $toast.show("请先选择商品型号");
+                    return;
+                }
                 $loading.show("提交中");
                 this.$store.commit('ACTIONSHEET_UPDATE', {key: 'showpicksheet', value: false});
                 this.$api.userAuthGet('cart/create?goods_id=' + this.id + '&number=' + this.quantity + '&stock_id=' + this.stock_choose.id,
@@ -255,6 +259,10 @@
                     })
             },
             buy_now() {
+                if (!this.stock_choose.id) {
+                    $toast.show("请先选择商品型号");
+                    return;
+                }
                 $loading.show("提交中");
                 this.$store.commit('ACTIONSHEET_UPDATE', {key: 'showpicksheet', value: false});
                 $router.push({

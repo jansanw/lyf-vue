@@ -89,7 +89,7 @@
                                             @click="$router.push({name:'order_logistics',params:{id:order.id}})">
                                             查看物流
                                         </li>
-                                        <!--li class="h" v-if="order.order_state==10"> 立即付款 </li-->
+                                        <!--li class="h" v-if="order.status==10"> 立即付款 </li-->
                                         <li class="" v-if="order.status==1" @click="order_cancel(order.id)">
                                             取消订单
                                         </li>
@@ -109,6 +109,7 @@
                     <template v-if="order_list.length>0">
                         没有更多数据
                     </template>
+                    <!--<template v-else>暂无数据...</template>-->
                 </div><!--要放在scroll内最外层-->
             </scroll>
         </div>
@@ -127,7 +128,7 @@
                 //订单状态 1：待支付； 2：待发货； 3：待收货； 4：待评价； 5：已完成； 6：申请退款；7：已退款；
                 tabs: ['全部', '待付款', '待发货', '待收货', '待评价'],
                 state_type: ['all', 'dfk', 'dfh', 'dsh', 'dpj'],
-                status_type: ["交易关闭","等待买家付款","等待卖家发货","卖家已发货","交易成功"],
+                status_type: ["交易关闭", "等待买家付款", "等待卖家发货", "卖家已发货", "交易成功"],
 //      active:0,
 //      order_list: [],
 //      pages:[1,1,1,1,1],
@@ -140,11 +141,11 @@
             next(vm => {
                 let id = vm.$route.params.type;
                 // vm.active = id;
-                vm.$store.commit('ORDERLIST_UPDATE', {active: id});
+                // vm.$store.commit('ORDERLIST_UPDATE', {active: id});
 //      vm.loading=true
-//                 vm.getData(() => {
-//                     //vm.$refs.lyf_scroll.infiniteDone()
-//                 });
+                vm.getData(() => {
+                    //vm.$refs.lyf_scroll.infiniteDone()
+                });
             })
         },
         mounted() {
@@ -159,7 +160,6 @@
                 init: state => state.orderlist.list[state.orderlist.active].init,
             })
         },
-
         methods: {
             getData(done) {
                 // this.loading = false;
@@ -176,7 +176,7 @@
                 //                             store_name: "苏宁"
                 //                         },
                 //                         if_lock: 0,
-                //                         order_state: 20, /*30:确认收货,40:评价订单,10:取消订单,0:删除订单*/
+                //                         status: 20, /*30:确认收货,40:评价订单,10:取消订单,0:删除订单*/
                 //                         id: 666,
                 //                         order_goods: [
                 //                             {
@@ -219,7 +219,7 @@
                             this.$nextTick(() => {
                                 $loading.hide();
                                 done();
-                            })
+                            });
                         });
 //                     res => {
 //                         console.log(res);
@@ -254,13 +254,13 @@
                 if (this.loading) return;
 //      this.page = 1
 //      this.load_more = true
+                this.$store.commit('ORDERLIST_UPDATE_LIST', {page: 1});
                 this.$store.commit('ORDERLIST_UPDATE_LIST', {load_more: true});
                 this.getData(done)
             },
             onInfinite() {
 //      this.$set(this.pages,this.active,this.page+1)
                 this.$store.commit('ORDERLIST_UPDATE_LIST', {page: this.page + 1});
-
                 console.log('pages=', this.page, 'load_more=', this.load_more);
                 if (this.load_more) {
                     this.getData(() => {
@@ -282,7 +282,7 @@
             order_cancel(id, text = '', show = true) { //取消订单
                 if (show) {
                     $actionSheet.show({
-                        theme: 'weixin',
+                        // theme: 'weixin',
                         title: '请点击取消理由',
                         cancelText: '取消',
                         buttons: {
@@ -292,12 +292,12 @@
                             '信息填写错误，重新拍': () => {
                                 this.order_cancel(id, '信息填写错误，重新拍', false)
                             },
-                            '卖家缺货': () => {
-                                this.order_cancel(id, '卖家缺货', false)
-                            },
-                            '同城见面交易': () => {
-                                this.order_cancel(id, '同城见面交易', false)
-                            },
+                            // '卖家缺货': () => {
+                            //     this.order_cancel(id, '卖家缺货', false)
+                            // },
+                            // '同城见面交易': () => {
+                            //     this.order_cancel(id, '同城见面交易', false)
+                            // },
                             '其他原因': () => {
                                 this.order_cancel(id, '其他原因', false)
                             }
@@ -306,22 +306,26 @@
                 } else {
                     $actionSheet.hide();
                     $loading.show();
-                    this.$api.userAuthPost("order_cancel", {
+                    this.$api.userAuthPost("order/cancel", {
                         id: id,
-                        msg: text
-                    }, res => {
-                        if (res.data.status_code == 1) {
-                            $loading.hide();
-                            this.order_list.filter(a => {
-                                return a.id === id
-                            }).map(a => {
-                                a.order_state = 0
-                            })
-                        } else {
-                            $toast.show(res.data.message)
-                        }
-                    }, error => {
-                        $toast.show(error.message)
+                        note: text
+                    }, rps => {
+                        this.$api.responseFilter(rps.data, data => {
+                            this.$store.commit('ORDER_LIST_UPDATE_LIST_STATUS', {id: id, value: 0});
+                        })
+                        // }, res => {
+                        //     if (res.data.status_code == 1) {
+                        //         $loading.hide();
+                        //         this.order_list.filter(a => {
+                        //             return a.id === id
+                        //         }).map(a => {
+                        //             a.status = 0
+                        //         })
+                        //     } else {
+                        //         $toast.show(res.data.message)
+                        //     }
+                        // }, error => {
+                        //     $toast.show(error.message)
                     })
                 }
             },
@@ -334,20 +338,12 @@
                 }).then((res) => {
                     if (res) {
                         $loading.show();
-                        this.$api.userAuthGet("order_receive?id=" + id, res => {
-                            if (res.data.status_code === 1) {
-                                $loading.hide();
-                                this.order_list.filter(a => {
-                                    return a.id === id
-                                }).map(a => {
-                                    a.order_state = 40
+                        this.$api.userAuthGet("order/receive?id=" + id,
+                            rps => {
+                                this.$api.responseFilter(rps.data, data => {
+                                    this.$store.commit('ORDER_LIST_UPDATE_LIST_STATUS', {id: id, value: 5});
                                 })
-                            } else {
-                                $toast.show(res.data.message)
-                            }
-                        }, error => {
-                            $toast.show(error.message)
-                        })
+                            })
                     }
                 })
             },
@@ -369,7 +365,7 @@
                 if (!this.init) {
                     this.loading = true;
                     this.getData(() => {
-                        //this.$refs.lyf_scroll.infiniteDone()
+                        // this.$refs.lyf_scroll.infiniteDone()
                     })
                 }
 
@@ -383,16 +379,16 @@
                     case 0:
                         text = '交易关闭';
                         break;
-                    case 10:
+                    case 1:
                         text = '等待买家付款';
                         break;
-                    case 20:
+                    case 2:
                         text = '等待卖家发货';
                         break;
-                    case 30:
+                    case 3:
                         text = '卖家已发货';
                         break;
-                    case 40:
+                    case 4:
                         text = '交易成功';
                         break;
                 }

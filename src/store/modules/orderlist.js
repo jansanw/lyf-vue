@@ -27,7 +27,7 @@ const mutations = {
                 state.list[state.active].order_list.push(payload.data.list[i]);
             }
         }
-        state.list[state.active].load_more = !(payload.page >= payload.pageCount);
+        state.list[state.active].load_more = payload.page < payload.pageCount;
         state.list[state.active].init = true;
 
         //state.list[state.active].is_load = false;
@@ -37,13 +37,21 @@ const mutations = {
         for (let key in payload) {
             state[key] = payload[key]
         }
-
     },
     ['ORDERLIST_UPDATE_LIST'](state, payload) {
         for (let key in payload) {
             state.list[state.active][key] = payload[key]
         }
-
+    },
+    ['ORDER_LIST_UPDATE_LIST_STATUS'](state, payload) {
+        for (let i = 0; i < catLen; i++) {
+            console.log(state.list[i].order_list, payload);
+            state.list[i].order_list.filter(item => {
+                return item.id === payload.id;
+            }).map(item => {
+                item.status = payload.value;
+            })
+        }
     },
 
 };

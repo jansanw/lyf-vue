@@ -69,7 +69,7 @@ export default {
         }
     },
     //json输出默认弹出消息和动作
-    responseFilter(data, success, error) {
+    responseFilter(data, success, error, msg = true) {
         // console.log(data);
         if (Object.prototype.toString.call(data) !== "[object Object]") {
             $dialog.alert({
@@ -82,7 +82,7 @@ export default {
 
         switch (data.react.type) {
             case "tip": {
-                if (data.msg)
+                if (msg && data.msg)
                     $toast.show(data.msg);
                 // if (data.react.url)
                 // setTimeout(function () {

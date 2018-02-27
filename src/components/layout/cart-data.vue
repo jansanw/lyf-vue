@@ -444,7 +444,12 @@
                         this.count = data.count;
                         this.show_page = true;
                         $loading.hide();
-                    });
+                    }, err => {
+                        this.list = [];
+                        this.count = 0;
+                        this.show_page = true;
+                        $loading.hide();
+                    }, false);
                     // }, error => {
                     //     this.$store.commit('UPDATE_COMMON_DATA', {
                     //         cart_view_data_reload: false

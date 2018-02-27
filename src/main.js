@@ -140,7 +140,7 @@ let routes = [{
             component: order_list
         },
         {
-            path: '/order-detail/:order_id',
+            path: '/order-detail/:id',
             name: 'order_detail',
             meta: {title: '订单详情'},
             component: order_detail

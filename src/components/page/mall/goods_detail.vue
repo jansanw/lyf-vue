@@ -311,7 +311,7 @@
             },
             getCart() {
                 this.$store.commit('ACTION_SHEET_STOCK', {
-                    id: -1,
+                    id: 0,
                     name: '',
                     goods_id: 0,
                     price: '',

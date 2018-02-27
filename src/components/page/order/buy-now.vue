@@ -399,9 +399,7 @@
                     note: this.note
                 }, rps => {
                     this.$api.responseFilter(rps.data, data => {
-                        this.$store.commit('UPDATE_COMMON_DATA', {
-                            cart_view_data_reload: true
-                        });
+                        this.$store.commit('UPDATE_COMMON_DATA', {cart_view_data_reload: true});
                         $toast.show("下单成功，正在启动支付");
                     })
                     // }, res => {
