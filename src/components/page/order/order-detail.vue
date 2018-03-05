@@ -14,7 +14,8 @@
                             <div class="module status">
                                 <div class="seller-state" style="background: #EA5A49;">
                                     <div class="state-cont">
-                                        <p class="h text-0" v-if="!order_info.if_lock">{{status_text[order_info.status]}}</p>
+                                        <p class="h text-0" v-if="!order_info.if_lock">
+                                            {{status_text[order_info.status]}}</p>
                                         <p class="h text-0" v-else>
                                             退款退货中..
                                         </p>
@@ -47,26 +48,28 @@
                                             <span>收货人：{{order_info.address.name}}</span>
                                             <span>{{order_info.address.mobile}}</span>
                                         </h5>
-                                        <div class="submsg">收货地址：{{order_info.address.area}} {{order_info.address.street}}</div>
+                                        <div class="submsg">收货地址：{{order_info.address.area}}
+                                            {{order_info.address.street}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!--<div class="module seller">-->
-                                <!--<div class="o-t-title-shop">-->
-                                    <!--<div class="tcont">-->
-                                        <!--<div class="ico">-->
-                                            <!--<img :src="order_info.store_info.store_avatar">-->
-                                        <!--</div>-->
-                                        <!--<div class="contact">-->
-                                            <!--<a>-->
-                                                <!--<p class="title">{{order_info.store_info.store_name}}</p>-->
-                                                <!--<p class="" style="margin-left:.13rem;"><span-->
-                                                        <!--class="ion-chevron-right"></span></p>-->
-                                            <!--</a>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                <!--</div>-->
+                            <!--<div class="o-t-title-shop">-->
+                            <!--<div class="tcont">-->
+                            <!--<div class="ico">-->
+                            <!--<img :src="order_info.store_info.store_avatar">-->
+                            <!--</div>-->
+                            <!--<div class="contact">-->
+                            <!--<a>-->
+                            <!--<p class="title">{{order_info.store_info.store_name}}</p>-->
+                            <!--<p class="" style="margin-left:.13rem;"><span-->
+                            <!--class="ion-chevron-right"></span></p>-->
+                            <!--</a>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--</div>-->
                             <!--</div>-->
 
                             <div class="module o_item">
@@ -114,16 +117,16 @@
                             </div>
 
                             <!--<div class="module  talkseller" v-if="false">-->
-                                <!--<div class="order-tablink o-t-tablink">-->
-                                    <!--<div class="cont ww" data-nick="">-->
-                                        <!--<p><span class="ico ion-chatbubbles"></span></p>-->
-                                        <!--<p><span>联系卖家</span></p>-->
-                                    <!--</div>-->
-                                    <!--<a class="cont phone" href="tel:">-->
-                                        <!--<p><span class="ico ion-ipad"></span></p>-->
-                                        <!--<p><span>卖家电话</span></p>-->
-                                    <!--</a>-->
-                                <!--</div>-->
+                            <!--<div class="order-tablink o-t-tablink">-->
+                            <!--<div class="cont ww" data-nick="">-->
+                            <!--<p><span class="ico ion-chatbubbles"></span></p>-->
+                            <!--<p><span>联系卖家</span></p>-->
+                            <!--</div>-->
+                            <!--<a class="cont phone" href="tel:">-->
+                            <!--<p><span class="ico ion-ipad"></span></p>-->
+                            <!--<p><span>卖家电话</span></p>-->
+                            <!--</a>-->
+                            <!--</div>-->
                             <!--</div>-->
 
                             <div class="module  orderinfo" style="padding-bottom: 70px;">
@@ -153,10 +156,10 @@
                                             @click="$router.push({name:'order_logistics',params:{id:order_info.id}})">
                                             查看物流
                                         </li>
-                                        <!--li class="h" v-if="order.status==10"> 立即付款 </li-->
                                         <li class="" v-if="order_info.status==2"
                                             @click="confirm_cancel(order_info.id)"> 取消订单全部退款
                                         </li>
+                                        <li class="h" v-if="order_info.status==1" @clik="buy_now(order_info.id)"> 立即付款</li>
                                         <li class="" v-if="order_info.status==1"
                                             @click="order_cancel(order_info.id)"> 取消订单
                                         </li>
@@ -312,6 +315,16 @@
                     $loading.hide()
                 })
             },
+            buy_now(id){
+                $router.push({
+                    name: 'order_buynow',
+                    params: {
+                        goods: this.id,
+                        is_cart: 3,
+                        address_id: 0
+                    }
+                });
+            }
 
         }
     }

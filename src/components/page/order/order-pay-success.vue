@@ -73,9 +73,9 @@
                     </div>
                 </div>
                 <div class="pay-ewm">
-                    <img v-lazy="'http://www.gxlyf.cn/picture/ewm_wx.png'" alt="">
-                    <p class="mt-10 color-dark">如果你还未关注老友粉公众号
-                        <br/>请长按二维码识别关注</p>
+                    <img src="../../../assets/images/3q.png" style="opacity: 0" alt="">
+                    <!--<p class="mt-10 color-dark">如果你还未关注我们的公众号-->
+                        <!--<br/>请长按二维码识别关注</p>-->
                 </div>
 
                 <div class="pay-btn-group">

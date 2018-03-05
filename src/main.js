@@ -128,7 +128,7 @@ let routes = [{
         },
         {
             //（购物车，快速购买）下单第一步  参数格式  :cart_id（产品ID|购买数量）  :ifcart  (true or false) 是否从购物车
-            path: '/order_buynow/:goods-:is_cart',
+            path: '/order_buynow/:goods/:is_cart',
             name: 'order_buynow',
             meta: {title: '下单'},
             component: order_buynow
@@ -182,7 +182,7 @@ let routes = [{
             component: order_refund_list
         },
         {
-            path: "/order-pay-success/:pay_sn",
+            path: "/order-pay-success/:order_number",
             name: "order_pay_success",
             meta: {title: '支付成功'},
             component: order_pay_success
@@ -194,7 +194,7 @@ let routes = [{
             component: store_home
         },
         {
-            path: '/login',
+            path: '/login/:openId?',
             name: 'login',
             meta: {title: '登录'},
             component: login

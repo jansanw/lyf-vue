@@ -46,7 +46,7 @@
                             <!--<span color="#4a4a4a"> 宝贝由{{store.store_name}} 发货</span>-->
                             <!--<span v-if="address_api.content[key] > 0" style="color:#ff464e">运费：￥{{address_api.content[key]}}</span>-->
                             <!--<span v-else>运费：包邮</span>-->
-                            <span>运费：包邮</span>
+                            <span>运费：{{data.freight | price_jiao}}</span>
                         </p>
                         <ul class="bag-list" style="background:#f7f7f7;">
                             <li v-for="item in data.goods">
@@ -95,34 +95,39 @@
             <div class="pay-type" style="margin-bottom: .27rem;">
                 <h5>支付方式<span class="needMoney fr"></span></h5>
                 <ul class="type" id="pay-type-list">
-                    <li :class="{'active' : pay.type === 'wechat'}" @click="pay.type = 'wechat'">
-                        <img src="//jp.juancdn.com/jpwebapp/images/shopping/icon_wx.png">
+                    <li :class="{'active' : payment.channel === 'wxpay'}"
+                        @click="payment_channel('wxpay')">
+                        <img src="../../../assets/images/icon_wx.png">
                         <span>微信</span>
                         <span class="payway-tips-ad">推荐</span>
                         <i class="pay-type-radio"></i>
                     </li>
-                    <li :class="{'active' : pay.type === 'alipay'}" @click="pay.type = 'alipay'">
-                        <img src="//jp.juancdn.com/jpwebapp/images/shopping/icon_ali.png">
+                    <li :class="{'active' : payment.channel === 'alipay'}"
+                        @click="payment_channel('alipay')">
+                        <img src="../../../assets/images/icon_ali.png">
                         <span>支付宝</span>
                         <!--<span class="payway-tips-text"></span>-->
                         <i class="pay-type-radio"></i>
                     </li>
-                    <li :class="{'active' : pay.type === 'balance'}" @click="pay.type = 'balance'">
-                        <img src="//jp.juancdn.com/jpwebapp/images/shopping/icon_ali.png">
-                        <span>余额</span>
-                        <!--<span class="payway-tips-text"></span>-->
+                    <li :class="{'active' : payment.channel === 'wallet'}">
+                        <!-- @click="payment_channel('wallet')"-->
+                        <img style="border-radius: 5px;" src="../../../assets/images/icon_wallet.png">
+                        <span>钱包</span>
+                        <!--<span class="payway-tips-text">(余额：￥)</span>-->
                         <i class="pay-type-radio"></i>
                     </li>
                 </ul>
             </div>
             <div class="order_total order-amount-total">
-                <div class="total-title">应付金额<span>¥：{{data.total}}</span></div>
-                <p class="clear"><span class="sp1">商品总额</span><span class="sp2">¥：{{data.total_market}}</span></p>
-                <p class="clear"><span class="sp1">总运费</span><span class="sp2">¥：{{data.freight}}</span></p>
+                <div class="total-title">应付金额<span>¥：{{data.amount | price_jiao}}</span></div>
+                <p class="clear"><span class="sp1">商品总额</span><span
+                        class="sp2">¥：{{data.total_market | price_jiao}}</span></p>
+                <p class="clear"><span class="sp1">总运费</span><span class="sp2">¥：{{data.freight | price_jiao}}</span>
+                </p>
             </div>
         </div>
         <div class="bag-total order_temai" v-if="page_show">
-            <a href="javascript:;" class="go_pay" @click="go_pay()">去付款</a>
+            <a class="go_pay" @click="go_pay()">去付款</a>
         </div>
 
         <!--<order-store-voucher-list :popupVisible="order_store_voucher_list_show"-->
@@ -148,9 +153,6 @@
             return {
                 page_show: false,
                 goods: '',
-                pay: {
-                    type: 'alipay'//wechat
-                },
                 data: {
                     total: 0,
                     freight: 0,
@@ -171,6 +173,16 @@
                 // order_store_voucher_info: null,
                 // order_store_voucher_list_show: false,
                 // order_store_voucher_list_name: "店铺优惠",
+                payment: {
+                    type: 2,
+                    flag: false,
+                    order_number: '',
+                    channel: 'alipay',
+                    ticket: {
+                        alipay: null,
+                        wxpay: null
+                    }
+                },
             }
         },
         filters: {
@@ -180,8 +192,18 @@
             //     }
             //
             // }
+            price_jiao(value) {
+                return parseFloat(value).toFixed(2);
+            }
         },
         mounted() {
+            //微信需获取openId
+            if (this.is_wechat && !this.$api.l_get('open_id')) {
+                this.$api.l_remove('token');
+                this.$api.ck_login();
+            }
+
+            this.payment_channel(this.is_wechat ? "wxpay" : "alipay");
             this.goods = this.$route.params.goods;
             this.is_cart = this.$route.params.is_cart;
             this.getData();
@@ -214,6 +236,9 @@
             // })
         },
         computed: {
+            is_wechat() {
+                return /MicroMessenger/.test(window.navigator.userAgent);
+            }
             // total() {
             //     return this.data.goods.reduce((sum, item) => {
             //         return sum + parseFloat(item.price) * item.quantity;
@@ -259,85 +284,6 @@
         methods: {
             getData() {
                 $loading.show();
-                //mock
-                // let step1_data = {
-                //     "status_code": 1,
-                //     "message": "",
-                //     "data": {
-                //         "store_cart_list": {
-                //             "1": {
-                //                 "goods_list": [{
-                //                     "goods_num": 1,
-                //                     "goods_id": 1168,
-                //                     "goods_commonid": 557,
-                //                     "gc_id": 54,
-                //                     "store_id": 1,
-                //                     "commis_rate": "20.00",
-                //                     "goods_name": "2017\u65b0\u6b3e\u5973\u88c5\u6c14\u8d28\u906e\u809a\u5b50\u96ea\u7eba\u886b\u77ed\u8896\u590f\u88c5\u97e9\u7248\u788e\u82b1\u886c\u886b\u5bbd\u677e\u8d85\u957f\u4e0a\u8863 \u5bbd\u6761 S",
-                //                     "goods_price": "150.00",
-                //                     "goods_marketprice": "169.00",
-                //                     "goods_spec": {"1107": "\u5bbd\u6761", "487": "S"},
-                //                     "goods_spec_text": "\u5bbd\u6761;S",
-                //                     "store_name": "\u8001\u53cb\u7c89",
-                //                     "goods_image": "goods_image\/ydJrzExB4zqZ0e6brn0sAra4gb54fHAm4cHqKRD8.jpeg",
-                //                     "transport_id": 0,
-                //                     "goods_freight": "0.00",
-                //                     "goods_vat": 0,
-                //                     "goods_storage": 73,
-                //                     "goods_storage_alarm": 0,
-                //                     "is_fcode": 0,
-                //                     "have_gift": 0,
-                //                     "state": true,
-                //                     "storage_state": true,
-                //                     "groupbuy_info": null,
-                //                     "xianshi_info": null,
-                //                     "cart_id": 1168,
-                //                     "bl_id": 0,
-                //                     "goods_total": "150.00",
-                //                     "goods_image_url": "http:\/\/lyfimg.gxlyf.cn\/goods_image\/ydJrzExB4zqZ0e6brn0sAra4gb54fHAm4cHqKRD8.jpeg!310x310"
-                //                 }],
-                //                 "store_goods_total": "150.00",
-                //                 "store_mansong_rule_list": null,
-                //                 "store_voucher_info": [],
-                //                 "store_voucher_list": [],
-                //                 "store_name": "\u8001\u53cb\u7c89",
-                //                 "store_id": 1
-                //             }
-                //         },
-                //         "freight_hash": "eyJpdiI6IlNJdXRnd1NvOGkra3I1dXNqWnA2elE9PSIsInZhbHVlIjoieW9yUWEwNXNCMUhIYlJyZWdiV3VNQnNlZEFMVkJEQnQyTGJkaWtvaVdRQmpJTmNEUlJzSWx6SzBZVHQxWGM5TVwvTGd4SlwvMTZRelpTSVVaZWVJZ0RhUT09IiwibWFjIjoiOWNhNDdjZmJhY2Q5OGU5N2FkYzI4ZGE1OWRmMGEwZjcwMDQyZDRmOWUyZDViOWIxYzljNWM5OGVmNDlkMTY1OSJ9",
-                //         "address": null,
-                //         "ifshow_offpay": null,
-                //         "vat_hash": null,
-                //         "inv_info": null,
-                //         "available_predeposit": null,
-                //         "available_rc_balance": null,
-                //         "rpt_list": [],
-                //         "zk_list": null,
-                //         "order_amount": "150.00",
-                //         "rpt_info": [],
-                //         "address_api": "",
-                //         "store_final_total_list": {"1": "150.00"}
-                //     }
-                // };
-                // let user_address = {
-                //     "status_code": 1,
-                //     "message": "",
-                //     "data": [{
-                //         "address_id": 95,
-                //         "member_id": 289150,
-                //         "true_name": "\u5c71",
-                //         "area_id": 3036,
-                //         "city_id": 289,
-                //         "province_id": 19,
-                //         "area_info": "\u5e7f\u4e1c\u5e7f\u5dde\u5e02\u841d\u5c97\u533a",
-                //         "address": "\u79d1\u5b66\u57ce",
-                //         "tel_phone": "15889933997",
-                //         "mob_phone": "15889933997",
-                //         "is_default": 1,
-                //         "dlyp_id": 0
-                //     }]
-                // };
-
                 this.$api.userAuthPost("order/resolve", {
                     goods: this.goods,
                     is_cart: this.is_cart,
@@ -347,6 +293,8 @@
                     this.$api.responseFilter(rps.data, data => {
                         this.data = data;
                         this.page_show = true;
+                        if (this.is_cart == 3)
+                            this.order_number = data.order_number;
                     }, err => {
                         // setTimeout(() => {
                         //     $router.go(-1)
@@ -380,8 +328,20 @@
             select_address() {
                 this.modal.show()
             },
+            payment_channel($channel) {
+                if (this.payment.flag) {
+                    $toast.show("支付启动中，请稍等...");
+                    return;
+                }
+                if ($channel === "wxpay")
+                    this.payment.channel = this.is_wechat ? "wxpay" : "alipay";
+                else if ($channel === "alipay")
+                    this.payment.channel = this.is_wechat ? "wxpay" : "alipay";//"alipay";
+                else
+                    this.payment.channel = "wallet";
+            },
             go_pay() {
-                if (this.address === '' || this.address == null) {
+                if (!this.address) {
                     $toast.show("请选择收货地址");
                     return
                 }
@@ -390,7 +350,13 @@
                 //     let c_p = store_id + '|' + this.pay_massage[store_id];
                 //     msg.push(c_p)
                 // }msg.join(",")
+                if (this.order_number) {
+                    $toast.show("正在启动支付");
+                    this.payment_create();
+                    return;
+                }
                 $loading.show();
+                this.payment.flag = true;
                 this.$api.userAuthPost("/order/create", {
                     goods: this.goods,
                     is_cart: this.is_cart,
@@ -399,8 +365,10 @@
                     note: this.note
                 }, rps => {
                     this.$api.responseFilter(rps.data, data => {
+                        this.order_number = data.order_number;
                         this.$store.commit('UPDATE_COMMON_DATA', {cart_view_data_reload: true});
                         $toast.show("下单成功，正在启动支付");
+                        this.payment_create();
                     })
                     // }, res => {
                     //     this.$store.commit('UPDATE_COMMON_DATA', {
@@ -422,6 +390,57 @@
                     //     }, 1500);
                 })
             },
+            payment_create() {
+                // if (this.payment.flag) {
+                //     $toast.show("支付启动中，请稍等...");
+                //     return;
+                // }
+                // this.payment.flag = true;
+                if (this.payment.ticket[this.payment.channel]) {
+                    $toast.show("支付启动中，请稍等...");
+                    this.payment_driver();
+                    return;
+                }
+                let url = "/payment/" + this.payment.channel;
+                if (this.is_wechat)
+                    url += '?open_id=' + this.$api.l_get('open_id');
+                this.$api.userAuthPost(url,
+                    {order_number: this.order_number, type: 2},
+                    rps => {
+                        this.$api.responseFilter(rps.data, data => {
+                            this.payment.flag = false;
+                            if (this.payment.channel === "wxpay")
+                                this.payment.ticket.wxpay = data.ticket;
+                            else
+                                this.payment.ticket.alipay = data.ticket;
+                            this.payment_driver();
+                        })
+                    })
+            },
+            payment_driver() {
+                if (this.payment.channel === "alipay") {
+                    location.href = this.payment.ticket.alipay;
+                    return;
+                }
+                //微信支付
+                WeixinJSBridge.invoke("getBrandWCPayRequest",
+                    this.payment.ticket.wxpay, res => {
+                        if (res.err_msg === "get_brand_wcpay_request:ok") {
+                            // location.href = '/payment/info/wxpay/' + this.order_number;
+                            $router.replace({
+                                name: 'order_pay_success',
+                                params: {order_number: this.order_number}
+                            });
+                        } else if (res.errMsg) {
+                            alert(res.errMsg);
+                            this.payment.flag = false;
+                        } else {
+                            alert("支付遇到错误");
+                            this.payment.flag = false;
+                        }
+                    }
+                );
+            }
             // select_order_voucger(list, store_voucher_info, store_id, store_name) {
             //     this.order_store_voucher_list_data = list;
             //     this.order_store_voucher_info = store_voucher_info;

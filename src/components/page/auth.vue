@@ -26,7 +26,7 @@
                 $toast.show("登录失败")
             } else {
                 this.$api.l_set("token", this.token);
-                $router.back(this.back)
+                // $router.back(this.back)
             }
             console.log(this.back);
         },

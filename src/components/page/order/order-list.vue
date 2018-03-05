@@ -89,7 +89,7 @@
                                             @click="$router.push({name:'order_logistics',params:{id:order.id}})">
                                             查看物流
                                         </li>
-                                        <!--li class="h" v-if="order.status==10"> 立即付款 </li-->
+                                        <li class="h" v-if="order.status==1" @click="buy_now(order.id)"> 立即付款 </li>
                                         <li class="" v-if="order.status==1" @click="order_cancel(order.id)">
                                             取消订单
                                         </li>
@@ -351,6 +351,16 @@
                 //this.active=id
                 this.$store.commit('ORDERLIST_UPDATE', {active: id})
             },
+            buy_now(id){
+                $router.push({
+                    name: 'order_buynow',
+                    params: {
+                        goods: id,
+                        is_cart: 3,
+                        address_id: 0
+                    }
+                });
+            }
 //    go_orderlist(id) {
 //      $router.push({
 //        name: 'order_list',

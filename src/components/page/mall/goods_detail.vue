@@ -321,18 +321,21 @@
                     number: 0,
                     cover: ''
                 });
-                // return;
+                if (!this.$api.s_get("token"))
+                    return;
                 this.$api.userAuthGet("/goods/cart?goods_id=" + this.id, rps => {
-                    if (rps.data.code !== 0)
-                        return;
-                    this.collected = rps.data.data.favorite;
-                    if (rps.data.data.cart[0]) {
-                        this.cart = rps.data.data.cart;
-                        this.$store.commit('ACTION_SHEET_STOCK', rps.data.data.cart[0]);
-                        // this.cartNumber = rps.data.data.cart.reduce(function (sum, item) {
-                        //     return sum + item.number;
-                        // }, 0);
-                    }
+                    if (rps.data.data.code === 0)
+                        this.collected = rps.data.data.favorite;
+                    // this.$api.responseFilter(rps.data, data => {
+                    //     this.collected = data.favorite;
+                    //     // if (rps.data.data.cart[0]) {
+                    //     //     this.cart = rps.data.data.cart;
+                    //     //     this.$store.commit('ACTION_SHEET_STOCK', rps.data.data.cart[0]);
+                    //     // this.cartNumber = rps.data.data.cart.reduce(function (sum, item) {
+                    //     //     return sum + item.number;
+                    //     // }, 0);
+                    // }, err => {
+                    // })
                 });
             },
             getData() {
@@ -431,7 +434,8 @@
                 })
             },
             goTop() {
-                document.querySelector(".scroll").scrollTop = 0
+                if (document.querySelector(".scroll"))
+                    document.querySelector(".scroll").scrollTop = 0
             },
             go_comment(id) {
                 $router.push({

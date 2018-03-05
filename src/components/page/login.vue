@@ -9,6 +9,10 @@
     .other-action .freeLogin.on .before.un-remember {
         background: white;
     }
+
+    .normalInput {
+        padding: 0 .2rem;
+    }
 </style>
 
 <template lang="html">
@@ -20,10 +24,11 @@
         <div class="page-content" style="background:#ffffff;">
             <div class="wap-login">
                 <ul id="login_switch" class="login-txt">
-                    <!--<li class="">老友粉账号登录</li>-->
-                    <li class="active">手机快捷登录</li>
+                    <li :class="{'active' : type == 1}" @click="type = 2">手机快捷登录</li>
+                    <li :class="{'active' : type == 2}" @click="type = 2">账号登录</li>
                 </ul>
-                <form id="normal-logo" action="/user/login" method="post" enctype="application/x-www-form-urlencoded">
+                <form id="normal-logo" action="/user/login" method="post" enctype="application/x-www-form-urlencoded"
+                      v-if="type == 2">
                     <input name="return_url" type="hidden" value="//m.juanpi.com/order">
                     <div class="login-info">
                         <ul class="info-input">
@@ -48,41 +53,41 @@
                         </div>
                     </div>
                 </form>
-                <!--<form id="quick-login" action="/muser/password" method="post"-->
-                <!--enctype="application/x-www-form-urlencoded" v-if="false">-->
-                <!--<div class="login-info">-->
-                <!--<ul class="info-input clear">-->
-                <!--<li>-->
-                <!--<input type="tel" pattern="[0-9]*" placeholder="请输入手机号码" id="mobile" name="mobile"-->
-                <!--class="normalInput">-->
-                <!--</li>-->
-                <!--<li>-->
-                <!--<div class="quickLoginHmtl clear">-->
-                <!--<input type="tel" class="code-txt normalInput fl" id="code" placeholder="请输入验证码"-->
-                <!--name="code">-->
-                <!--<a class="btn_get get-code disable-code" id="code_btn" href="javascript:;">获取验证码</a>-->
-                <!--</div>-->
-                <!--</li>-->
-                <!--</ul>-->
-                <!--<input type="hidden" name="mtoken" value="2dee9a13913334435eb81a6efd3e61ac" id="mtoken">-->
-                <!--<input type="hidden" name="mtokenact" value="quick" id="mtokenact">-->
-                <!--<a id="btn_quick_login" class="sub codeBtn disable-btn" rel="nofollow">登 录</a>-->
-                <!--<a style="display:none;" id="normal_login" class="sub disable-btn" rel="nofollow">登 录</a>-->
-                <!--<div id="quick_l" class="other-action">-->
-                <!--<label class="freeLogin on" style="line-height:.99rem;">-->
-                <!--<input type="checkbox" class="ck" name="auto_quick" checked="checked"><i class="before"><img-->
-                <!--:src="lable_on"></i>两周内免登录</label>-->
-                <!--</div>-->
-                <!--</div>-->
-                <!--</form>-->
-                <!--<div class="wap-app">-->
-                <!--<h3 class="third-txt">第三方账号快速登录</h3>-->
-                <!--<div class="third-app clear">-->
-                <!--<a class="qq">-->
-                <!--<img src="//jp.juancdn.com/jpwebapp_v1/images_v1/user/tencent.png?29cf7667-1&amp;sv=bdd23e22">-->
-                <!--</a>-->
-                <!--</div>-->
-                <!--</div>-->
+                <form id="quick-login" action="/muser/password" method="post" v-if="type==1"
+                      enctype="application/x-www-form-urlencoded">
+                    <div class="login-info">
+                        <ul class="info-input clear">
+                            <li>
+                                <input type="tel" pattern="[0-9]*" placeholder="手机号" id="mobile" name="mobile"
+                                       class="normalInput">
+                            </li>
+                            <li>
+                                <div class="quickLoginHmtl clear">
+                                    <input type="tel" class="code-txt normalInput fl" id="code" placeholder="验证码"
+                                           name="code">
+                                    <a class="btn_get get-code disable-code" id="code_btn" href="javascript:;">获取验证码</a>
+                                </div>
+                            </li>
+                        </ul>
+                        <input type="hidden" name="mtoken" value="2dee9a13913334435eb81a6efd3e61ac" id="mtoken">
+                        <input type="hidden" name="mtokenact" value="quick" id="mtokenact">
+                        <a id="btn_quick_login" class="sub codeBtn disable-btn" rel="nofollow">登 录</a>
+                        <a style="display:none;" id="normal_login" class="sub disable-btn" rel="nofollow">登 录</a>
+                        <div id="quick_l" class="other-action">
+                            <label class="freeLogin on" style="line-height:.99rem;">
+                                <input type="checkbox" class="ck" name="auto_quick" checked="checked"><i class="before"><img
+                                    :src="lable_on"></i>两周内免登录</label>
+                        </div>
+                    </div>
+                </form>
+                <div class="wap-app" v-if="isWechat && false">
+                    <h3 class="third-txt">第三方账号快速登录</h3>
+                    <div class="third-app clear">
+                        <a class="wechat" href="/wechat/auth?targetUrl=/wechat/login">
+                            <img src="../../assets/images/icon_wx.png">
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -96,16 +101,29 @@
         name: "login",
         data() {
             return {
-                account: "18126417044",
-                password: "1234567",
+                type: 2,
+                account: '',//"18126417044",
+                password: '',//"1234567",
                 remember: false,
-                lable_on: require("../../assets/images/label_on.png")
+                lable_on: require("../../assets/images/label_on.png"),
+                openId: ''
             }
         },
         mounted() {
+            this.openId = this.$route.params.openId || false;
+            if (this.isWechat && !this.openId)
+                this.wechatAuth();
+            this.$api.l_set('open_id', this.openId);
+            // console.log(this.openId);
+        },
+        computed: {
+            isWechat() {
+                return /MicroMessenger/.test(window.navigator.userAgent);
+            }
         },
         methods: {
             login() {
+                $loading.show();
                 this.$api.userGet("/user/login?" + Qs.stringify({
                     account: this.account,
                     password: this.password,
@@ -116,6 +134,9 @@
                         $router.replace(this.$api.s_get("login_back") || "home");
                     }.bind(this));
                 });
+            },
+            wechatAuth() {
+                window.location.href = "/wechat/auth?targetUrl=/wechat/login";
             }
         }
     }
