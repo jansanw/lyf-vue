@@ -363,11 +363,6 @@
                     $toast.show("请选择收货地址");
                     return
                 }
-                // let msg = [];
-                // for (let store_id in this.pay_massage) {
-                //     let c_p = store_id + '|' + this.pay_massage[store_id];
-                //     msg.push(c_p)
-                // }msg.join(",")
                 if (this.order_number) {
                     $toast.show("正在启动支付");
                     if (this.payment.channel === "wallet")
