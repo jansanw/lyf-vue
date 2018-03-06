@@ -1,8 +1,8 @@
 <template lang="html">
     <div class="page">
         <div class="page-content">
-            <von-input type="text" v-model="name" placeholder="请输入收货人名字" label="名字"></von-input>
-            <von-input type="tel" v-model="mobile" placeholder="请输入收货人名字" label="电话"></von-input>
+            <von-input type="text" v-model="name" label="姓名"></von-input>
+            <von-input type="tel" v-model="mobile" label="电话"></von-input>
             <hl-item class="item-icon-right" @click.native="choseAdd">地区
                 <div class="item-note" v-if="Province && City && District">{{Province}} {{City}} {{District}}</div>
                 <div class="item-note" v-else>请选择地区</div>

@@ -20,13 +20,15 @@
                             <div class="module seller">
                                 <div class="o-t-title-shop">
                                     <div class="tcont">
-                                        <div class="ico">
+                                        <div class="ico" style="width:auto">
+                                            单号：{{order.order_number}}
                                             <!--<img v-lazy="order.order_store.store_avatar">-->
                                         </div>
                                         <div class="contact">
                                             <a>
                                                 <!--<p class="title">{{order.order_store.store_name}}</p>-->
                                                 <p class="" style="margin-left:.13rem;">
+
                                                     <!--<span class="ion-chevron-right"></span>-->
                                                 </p>
                                             </a>
@@ -63,10 +65,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="module serviceinfo" id="serviceinfo6"></div>
-                            <div class="module">
-
-                            </div>
+                            <!--<div class="module serviceinfo" id="serviceinfo6"></div>-->
+                            <!--<div class="module"></div>-->
                             <div class="module pay">
                                 <div class="o-total-price">
                                     <div class="cont"><span>共
@@ -118,8 +118,8 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex'
-    import "../../../assets/order.scss"
+    import {mapState} from 'vuex';
+    import "../../../assets/order.scss";
 
     export default {
         name: "order_list",

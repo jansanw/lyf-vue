@@ -4,8 +4,15 @@
             <div class="personal-head head-bg-img">
                 <img alt="" v-lazy="data.user.avatar">
                 <div class="p-head-info">
-                    <p class="p-nickname">{{data.user.name}}</p>
-                    <!--<p class="p-platform" v-if="data.user.user_wx != ''">已绑定微信</p>-->
+                    <p class="p-nickname">{{data.user.name}}
+                        <span class="von-badge" @click="loginOut()">
+                            <div class="von-badge-num">注 销</div>
+                        </span>
+                    </p>
+                    <p class="p-platform">
+                        普通会员
+                        <template v-if="$api.l_get('token')">@微信</template>
+                    </p>
                     <!--<p class="p-platform" v-else>未绑定微信</p>-->
                 </div>
             </div>
@@ -13,27 +20,26 @@
             <div class="personal-numbers hm-margin-b">
                 <!-- @click='this.$router.push({name:"message_list"})'-->
                 <div class="personal-numbers-item">
-                    <div class="number"><span>￥</span>{{data.user.consume}}</div>
+                    <div class="number"><span>￥</span>{{(data.user.consume || 0).toFixed(2)}}</div>
                     <div class="number-title">消费</div>
                 </div>
                 <div class="personal-numbers-item" @click='this.$router.push({name:"wallet"})'>
-                    <div class="number"><span>￥</span>{{data.user.balance}}</div>
+                    <div class="number"><span>￥</span>{{(data.user.balance || 0).toFixed(2)}}</div>
                     <div class="number-title">钱包</div>
                 </div>
                 <!--<div class="personal-numbers-item" id="friend" @click='go_friend_list(0)'>-->
-                    <!--<div class="number">256</div>-->
-                    <!--<div class="number-title">好友</div>-->
+                <!--<div class="number">256</div>-->
+                <!--<div class="number-title">好友</div>-->
                 <!--</div>-->
             </div>
-
 
             <ul class="aui-list aui-list-in">
                 <li class="aui-list-item " style="min-height: 44px;">
                     <div class="aui-list-item-inner">
                         <div class="aui-list-item-title">订 单</div>
                         <!--<div class="aui-list-item-right" @click="go_order_list(0)"-->
-                             <!--style="color: #aaa;display: flex;align-items: center;">查看更多 -->
-                            <!--<i class="ion-ios-arrow-right" style="color: #DDD;margin-left: 5px;"></i>-->
+                        <!--style="color: #aaa;display: flex;align-items: center;">查看更多 -->
+                        <!--<i class="ion-ios-arrow-right" style="color: #DDD;margin-left: 5px;"></i>-->
                         <!--</div>-->
                     </div>
                 </li>
@@ -91,22 +97,26 @@
             </div>
 
             <!--<ul class="aui-list aui-list-in">-->
-                <!--<li class="aui-list-item " style="min-height: 44px;">-->
-                    <!--<div class="aui-list-item-inner">-->
-                        <!--<div class="aui-list-item-title">工 具</div>-->
-                        <!--<div class="aui-list-item-right" @click="go_order_list(0)"-->
-                             <!--style="color: #aaa;display: flex;align-items: center;">查看更多 -->
-                            <!--<i class="ion-ios-arrow-right" style="color: #DDD;margin-left: 5px;"></i>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</li>-->
+            <!--<li class="aui-list-item " style="min-height: 44px;">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-title">工 具</div>-->
+            <!--<div class="aui-list-item-right" @click="go_order_list(0)"-->
+            <!--style="color: #aaa;display: flex;align-items: center;">查看更多 -->
+            <!--<i class="ion-ios-arrow-right" style="color: #DDD;margin-left: 5px;"></i>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
             <!--</ul>-->
 
             <div class="personal-wrapper-2" style="margin-top: 0">
                 <!--<div class="p-wrapper-2-item" @click='this.$router.push({name:"message_list"})'>-->
-                    <!--<div class="p-messages"><i class="iconfont icon-xiaoxi1 color-assertive"></i></div>-->
-                    <!--<p class="p-wrap-2-title">我的消息</p>-->
+                <!--<div class="p-messages"><i class="iconfont icon-xiaoxi1 color-assertive"></i></div>-->
+                <!--<p class="p-wrap-2-title">我的消息</p>-->
                 <!--</div>-->
+                <div class="p-wrapper-2-item" @click='this.$router.push({name:"charge"})'>
+                    <div class="p-coupons"><i class="iconfont icon-coupon color-positive"></i></div>
+                    <p class="p-wrap-2-title">钱包充值</p>
+                </div>
                 <!--<div class="p-wrapper-2-item" @click='this.$router.push({name:"my_voucher"})'>-->
                 <!--<div class="p-coupons"><i class="iconfont icon-coupon color-positive"></i></div>-->
                 <!--<p class="p-wrap-2-title">我的优惠券</p>-->
@@ -192,15 +202,25 @@
             this.$store.commit('UPDATE_PAGE_LOAD_STATE_DATA', {
                 user: true,
             });
-            this.get_data(() => {
-            });
+            // this.getData(() => {
+            // });
+        },
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                vm.getData(() => {
+                });
+            })
         },
         methods: {
-            get_data(done) {
+            loginOut() {
+                this.$api.l_remove('token');
+                this.$api.l_remove('open_id');
+                $router.push('home');
+            },
+            getData(done) {
                 this.is_load = true;
                 this.is_load = false;
                 this.page_show = true;
-
                 //mock
                 // let _user = {
                 //     user: {
@@ -217,7 +237,7 @@
                 // };
                 // this.user = _user;
                 //  return;
-                this.$api.userAuthGet("user/info", rps => {
+                this.$api.userAuthGet("user/info?brief=0", rps => {
                     this.$api.responseFilter(rps.data, function (data) {
                         if (!data.user.avatar)
                             data.user.avatar = "https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/bad7373fe7d6e15364d74ae0473358d7_121_121.jpg";
@@ -249,7 +269,7 @@
             },
             onRefresh(done) {
                 if (this.is_load) return;
-                this.get_data(done)
+                this.getData(done)
             },
         }
     }

@@ -36,7 +36,7 @@
 
             <section class="shopping-confirm-box">
                 <p class="scb-title" id="shoppingSwitch">商品清单
-                    <i class="fr ion-chevron-up">&nbsp;</i>
+                    <!--<i class="fr ion-chevron-up">&nbsp;</i>-->
                 </p>
                 <div class="scb-list" id="scbList" style="display: block;">
                     <!--入仓商品列表-->
@@ -109,20 +109,28 @@
                         <!--<span class="payway-tips-text"></span>-->
                         <i class="pay-type-radio"></i>
                     </li>
-                    <li :class="{'active' : payment.channel === 'wallet'}">
-                        <!-- @click="payment_channel('wallet')"-->
+                    <li :class="{'active' : payment.channel === 'wallet'}"
+                        @click="payment_channel('wallet')">
                         <img style="border-radius: 5px;" src="../../../assets/images/icon_wallet.png">
                         <span>钱包</span>
-                        <!--<span class="payway-tips-text">(余额：￥)</span>-->
+                        <badge :num="'￥:' + (this.balance || 0).toFixed(2)"></badge>
+                        <!--<span class="payway-tips-text h">(余额：￥{{(this.balance || 0).toFixed(2)}})</span>-->
                         <i class="pay-type-radio"></i>
                     </li>
                 </ul>
             </div>
             <div class="order_total order-amount-total">
-                <div class="total-title">应付金额<span>¥：{{data.amount | price_jiao}}</span></div>
-                <p class="clear"><span class="sp1">商品总额</span><span
-                        class="sp2">¥：{{data.total_market | price_jiao}}</span></p>
-                <p class="clear"><span class="sp1">总运费</span><span class="sp2">¥：{{data.freight | price_jiao}}</span>
+                <div class="total-title">
+                    应付金额
+                    <span>¥：{{data.amount | price_jiao}}</span>
+                </div>
+                <p class="clear">
+                    <span class="sp1">商品总额</span>
+                    <span class="sp2">¥：{{data.total | price_jiao}}</span>
+                </p>
+                <p class="clear">
+                    <span class="sp1">总运费</span>
+                    <span class="sp2">¥：{{data.freight | price_jiao}}</span>
                 </p>
             </div>
         </div>
@@ -159,6 +167,7 @@
                     weight: 0,
                     goods: [],
                 },
+                balance: 0,
                 is_cart: false,
                 note: '',
                 // voucher: {},
@@ -323,6 +332,11 @@
                     //     }
                     // }, error => {
                     //     $loading.hide()
+                });
+                this.$api.userAuthGet('/user/info', rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        this.balance = data.balance;
+                    })
                 })
             },
             select_address() {
@@ -337,8 +351,12 @@
                     this.payment.channel = this.is_wechat ? "wxpay" : "alipay";
                 else if ($channel === "alipay")
                     this.payment.channel = this.is_wechat ? "wxpay" : "alipay";//"alipay";
-                else
-                    this.payment.channel = "wallet";
+                else if ($channel === "wallet") {
+                    if (this.data.amount > this.balance)
+                        $toast.show("余额不足");
+                    else
+                        this.payment.channel = "wallet";
+                }
             },
             go_pay() {
                 if (!this.address) {
@@ -352,7 +370,10 @@
                 // }msg.join(",")
                 if (this.order_number) {
                     $toast.show("正在启动支付");
-                    this.payment_create();
+                    if (this.payment.channel === "wallet")
+                        this.payment_wallet();
+                    else
+                        this.payment_create();
                     return;
                 }
                 $loading.show();
@@ -368,7 +389,10 @@
                         this.order_number = data.order_number;
                         this.$store.commit('UPDATE_COMMON_DATA', {cart_view_data_reload: true});
                         $toast.show("下单成功，正在启动支付");
-                        this.payment_create();
+                        if (this.payment.channel === "wallet")
+                            this.payment_wallet();
+                        else
+                            this.payment_create();
                     })
                     // }, res => {
                     //     this.$store.commit('UPDATE_COMMON_DATA', {
@@ -389,6 +413,21 @@
                     //         $router.go(-1)
                     //     }, 1500);
                 })
+            },
+            payment_wallet() {
+                this.$api.userAuthPost("/wallet/payment", {
+                    order_number: this.order_number
+                }, rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        $router.replace({
+                            name: 'order_pay_success',
+                            params: {type: 2, channel: 'wallet', order_number: this.order_number}
+                        });
+                    }, err => {
+                        this.payment.flag = false;
+                    });
+                });
+
             },
             payment_create() {
                 // if (this.payment.flag) {
@@ -424,18 +463,21 @@
                 }
                 //微信支付
                 WeixinJSBridge.invoke("getBrandWCPayRequest",
-                    this.payment.ticket.wxpay, res => {
+                    // JSON.parse(JSON.stringify(this.payment.ticket.wxpay)),
+                    this.payment.ticket.wxpay,
+                    res => {
                         if (res.err_msg === "get_brand_wcpay_request:ok") {
                             // location.href = '/payment/info/wxpay/' + this.order_number;
                             $router.replace({
                                 name: 'order_pay_success',
-                                params: {order_number: this.order_number}
+                                params: {type: 2, channel: 'wxpay', order_number: this.order_number}
                             });
                         } else if (res.errMsg) {
                             alert(res.errMsg);
                             this.payment.flag = false;
                         } else {
-                            alert("支付遇到错误");
+                            // alert("支付遇到错误");
+                            alert(JSON.stringify(res));
                             this.payment.flag = false;
                         }
                     }

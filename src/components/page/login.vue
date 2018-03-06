@@ -110,7 +110,7 @@
             }
         },
         mounted() {
-            this.openId = this.$route.params.openId || false;
+            this.openId = this.$route.params.openId || '';
             if (this.isWechat && !this.openId)
                 this.wechatAuth();
             this.$api.l_set('open_id', this.openId);

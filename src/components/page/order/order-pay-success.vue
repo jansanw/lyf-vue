@@ -69,18 +69,22 @@
                     <i class="ion-checkmark-circled"></i>
                     <div>
                         <span class="color-dark">支付成功！</span>
-                        <p>感谢您的购买</p>
+                        <p v-if="type == 2">感谢您的购买</p>
                     </div>
                 </div>
                 <div class="pay-ewm">
                     <img src="../../../assets/images/3q.png" style="opacity: 0" alt="">
                     <!--<p class="mt-10 color-dark">如果你还未关注我们的公众号-->
-                        <!--<br/>请长按二维码识别关注</p>-->
+                    <!--<br/>请长按二维码识别关注</p>-->
                 </div>
 
                 <div class="pay-btn-group">
-                    <button class="button button-assertive button-small" @click="go_index()">继续逛逛</button>
-                    <button class="button button-royal button-small" @click="go_order_list()">我的订单</button>
+                    <button class="button button-assertive button-small" @click="go_index()">继续逛逛
+                    </button>
+                    <!--<button v-if="type == 2" class="button button-royal button-small" @click="go_order_list()">我的订单-->
+                    <!--</button>-->
+                    <button class="button button-royal button-small" @click="$router.push({name: 'user'})">个人中心
+                    </button>
                 </div>
             </div>
         </div>
@@ -90,6 +94,15 @@
 
 <script>
     export default {
+        data() {
+            return {
+                type: 0,
+                order_number: ''
+            }
+        },
+        mounted() {
+            this.type = this.$route.params.type;
+        },
         methods: {
             go_index() {
                 $router.push({name: 'home'})

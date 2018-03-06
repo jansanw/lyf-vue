@@ -65,6 +65,7 @@ let auth = resolve => require(['./components/page/auth.vue'], resolve);
 let wallet = resolve => require(['./components/page/wallet/wallet.vue'], resolve);
 let transaction_list = resolve => require(['./components/page/wallet/transaction-list.vue'], resolve);
 let my_money = resolve => require(['./components/page/wallet/my-money.vue'], resolve);
+let charge = resolve => require(['./components/page/wallet/charge.vue'], resolve);
 
 // Routes
 let routes = [{
@@ -128,7 +129,7 @@ let routes = [{
         },
         {
             //（购物车，快速购买）下单第一步  参数格式  :cart_id（产品ID|购买数量）  :ifcart  (true or false) 是否从购物车
-            path: '/order_buynow/:goods/:is_cart',
+            path: '/order_buynow/:goods-:is_cart',
             name: 'order_buynow',
             meta: {title: '下单'},
             component: order_buynow
@@ -182,7 +183,7 @@ let routes = [{
             component: order_refund_list
         },
         {
-            path: "/order-pay-success/:order_number",
+            path: "/order-pay-success/:type/:channel/:order_number",
             name: "order_pay_success",
             meta: {title: '支付成功'},
             component: order_pay_success
@@ -276,6 +277,12 @@ let routes = [{
             name: 'my_money',
             meta: {title: '我的余额'},
             component: my_money
+        },
+        {
+            path: '/charge',
+            name: 'charge',
+            meta: {title: '钱包充值'},
+            component: charge
         },
     ]
 },];
