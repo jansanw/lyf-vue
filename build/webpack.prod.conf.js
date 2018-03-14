@@ -8,6 +8,7 @@ const baseWebpackConfig = require('./webpack.base.conf');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const env = config.build.env;
+// const vConsolePlugin = require('vconsole-webpack-plugin');
 
 let webpackConfig = merge(baseWebpackConfig, {
     module: {
@@ -29,15 +30,19 @@ let webpackConfig = merge(baseWebpackConfig, {
         //vonic: 'Vonic'
     },
     plugins: [
+        // new vConsolePlugin({
+        //     filter: [],  // 需要过滤的入口文件
+        //     enable: true // 发布代码前记得改回 false
+        // }),
         // http://vuejs.github.io/vue-loader/en/workflow/production.html
         new webpack.DefinePlugin({
             'process.env': env
         }),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
-                warnings: false
+                warnings: true
             },
-            sourceMap: false
+            sourceMap: true
         }),
         // extract css into its own file
         new ExtractTextPlugin({

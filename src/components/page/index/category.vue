@@ -73,7 +73,7 @@
                 <!--</div>-->
             </div>
         </div>
-        <div class="page-content" style="top:1.2rem;">
+        <div class="page-content" style="top:0/*top:1.2rem;*/">
             <div id="root-list" ref="root_list" class="turn-background-grey">
                 <ul :style="'height:'+l_h+'px'">
                     <li ref="root_list_item" v-for="(item,index) in class_list" class="root-list-item "
@@ -189,7 +189,6 @@
             }
         },
         methods: {
-
             _initScroll() {
                 if (this.root_list_scroll) {
                     this.root_list_scroll.refresh()

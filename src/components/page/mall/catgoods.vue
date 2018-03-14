@@ -99,7 +99,7 @@
                     this.load_more = true;
                     this.page_show = false;
                     this.$refs.lyf_scroll.setscrollTop(0);
-                    $loading.show();
+                    $loading.show("");
                     // this.getData(() => {
                     //
                     // })

@@ -23,7 +23,7 @@
                     <div class="number"><span>￥</span>{{(data.user.consume || 0).toFixed(2)}}</div>
                     <div class="number-title">消费</div>
                 </div>
-                <div class="personal-numbers-item" @click='this.$router.push({name:"wallet"})'>
+                <div class="personal-numbers-item" @click='this.$router.push({name:"my_money"})'>
                     <div class="number"><span>￥</span>{{(data.user.balance || 0).toFixed(2)}}</div>
                     <div class="number-title">钱包</div>
                 </div>
@@ -245,6 +245,7 @@
                         $loading.hide();
                         this.is_load = false;
                         this.page_show = true;
+                        this.$store.commit('UPDATE_COMMON_DATA', {balance: data.user.balance});
                         done();
                     }.bind(this));
                 }, error => {

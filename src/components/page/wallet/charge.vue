@@ -120,6 +120,7 @@
                     this.amount = '';
                 if (!/\d+\.\d{2}/.test(val.toString()))
                     this.amount = val.toFixed(2);
+                this.order_number = '';
             }
         },
         computed: {
@@ -211,6 +212,13 @@
                     }
                 );
             }
+        },
+        beforeRouteEnter(to, from, next) {
+            // console.log('to:' + to.path, 'from:' + from.path);
+            next(vm => {
+                vm.amount = '';
+                this.order_number = '';
+            })
         }
     }
 </script>

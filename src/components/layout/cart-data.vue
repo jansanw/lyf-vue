@@ -185,11 +185,12 @@
                                                            max="2"></a>
                                                     </p>
                                                 </div>
-                                                <div class="edit-sku">
-                                                    <div>
-                                                        <p>{{goods.stock_name}}</p>
-                                                    </div>
-                                                </div>
+                                                <p style="color: #999;margin-left: .5rem">{{goods.stock_name}}</p>
+                                                <!--<div class="edit-sku">-->
+                                                    <!--<div>-->
+                                                        <!--<p>{{goods.stock_name}}</p>-->
+                                                    <!--</div>-->
+                                                <!--</div>-->
                                             </div>
                                         </div>
                                         <div class="icoTxt" v-if="false">
@@ -367,7 +368,7 @@
         },
         mounted() {
             if (!this.show_page) {
-                $loading.show("");
+                // $loading.show("");
                 this.getList();
             }
             // bus.$on("onVoucherStateByCart", res => {

@@ -389,24 +389,6 @@
                         else
                             this.payment_create();
                     })
-                    // }, res => {
-                    //     this.$store.commit('UPDATE_COMMON_DATA', {
-                    //         cart_view_data_reload: true
-                    //     });
-                    //     if (res.data.status_code === 1) {
-                    //         $loading.hide();
-                    //         window.location.href = res.data.data
-                    //     } else {
-                    //         $toast.show(res.data.message);
-                    //         setTimeout(function () {
-                    //             $router.go(-1)
-                    //         }, 1500);
-                    //     }
-                    // }, error => {
-                    //     $toast.show("支付失败");
-                    //     setTimeout(function () {
-                    //         $router.go(-1)
-                    //     }, 1500);
                 })
             },
             payment_wallet() {

@@ -14,9 +14,9 @@
             footnav
         },
         mounted() {
-            // this.$store.commit('UPDATE_PAGE_LOAD_STATE_DATA', {
-            //     cart: true,
-            // });
+            this.$store.commit('UPDATE_PAGE_LOAD_STATE_DATA', {
+                cart: true,
+            });
         },
         beforeRouteEnter(to, from, next) {
             // console.log('to:' + to.path, 'from:' + from.path);

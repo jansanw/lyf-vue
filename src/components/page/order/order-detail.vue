@@ -46,7 +46,7 @@
                                     <div class="cont">
                                         <h5 class="">
                                             <span>收货人：{{order_info.address.name}}</span>
-                                            <span>{{order_info.address.mobile}}</span>
+                                            <span style="margin-left: 15px">{{order_info.address.mobile}}</span>
                                         </h5>
                                         <div class="submsg">收货地址：{{order_info.address.area}}
                                             {{order_info.address.street}}
@@ -83,9 +83,9 @@
                                     </div>
                                     <div class="item-pay">
                                         <div class="item-pay-data">
-                                            <p class="price">￥{{goods.price}}</p>
+                                            <p class="price">￥{{goods.price.toFixed(2)}}</p>
                                             <p class="price">
-                                                <del class="">￥{{goods.price_market}}</del>
+                                                <del class="">￥{{goods.price_market.toFixed(2)}}</del>
                                             </p>
                                             <p class="nums">x{{goods.number}}</p>
                                         </div>
@@ -103,14 +103,18 @@
                                 <div class="order-price-freight">
                                     <dl>
                                         <dt>运费：</dt>
-                                        <dd>￥{{order_info.freight}}</dd>
+                                        <dd>
+                                            <strong>￥{{order_info.freight.toFixed(2)}}</strong>
+                                        </dd>
                                     </dl>
                                     <dl>
                                         <dt>实付款（含运费）：</dt>
-                                        <dd class="h">￥{{order_info.total}}</dd>
+                                        <dd class="h">
+                                            <strong>￥{{order_info.total.toFixed(2)}}</strong>
+                                        </dd>
                                     </dl>
                                     <dl>
-                                        <dt style="width: 10%">备注：</dt>
+                                        <dt style="width: 20%">备注：</dt>
                                         <dd style="text-align: left">{{order_info.note_buy}}</dd>
                                     </dl>
                                 </div>
@@ -132,8 +136,8 @@
                             <div class="module  orderinfo" style="padding-bottom: 70px;">
                                 <div class="order-box order-message">
                                     <p class="">订单编号：{{order_info.order_number}}</p>
-                                    <p class="">支付方式：{{order_info.trade_no}}</p>
-                                    <p class="">交易号：{{order_info.trade_no}}</p>
+                                    <p class="">支付方式：{{this.channel[order_info.payment.channel]}}</p>
+                                    <p class="">交易号：{{order_info.payment.trade_no}}</p>
                                     <p class="">创建时间：{{order_info.create_time}}</p>
                                     <p class="" v-if="order_info.payment_time != ''">
                                         付款时间：{{order_info.payment_time}}</p>
@@ -156,10 +160,12 @@
                                             @click="$router.push({name:'order_logistics',params:{id:order_info.id}})">
                                             查看物流
                                         </li>
-                                        <li class="" v-if="order_info.status==2"
-                                            @click="confirm_cancel(order_info.id)"> 取消订单全部退款
+                                        <li class="" v-if="order_info.status==2">
+                                            等待卖家发货
+                                            <!--@click="confirm_cancel(order_info.id)"> 取消订单全部退款-->
                                         </li>
-                                        <li class="h" v-if="order_info.status==1" @clik="buy_now(order_info.id)"> 立即付款</li>
+                                        <li class="h" v-if="order_info.status==1" @clik="buy_now(order_info.id)"> 立即付款
+                                        </li>
                                         <li class="" v-if="order_info.status==1"
                                             @click="order_cancel(order_info.id)"> 取消订单
                                         </li>
@@ -187,6 +193,7 @@
                 id: 63,
                 page_show: false,
                 status_text: ["交易关闭", "等待买家付款", "等待卖家发货", "卖家已发货", "交易成功"],
+                channel: {'wx_charge': '微信支付', 'ali_charge': '支付宝支付', 'wallet': '钱包支付'}
             }
         },
         mounted() {
@@ -315,7 +322,7 @@
                     $loading.hide()
                 })
             },
-            buy_now(id){
+            buy_now(id) {
                 $router.push({
                     name: 'order_buynow',
                     params: {

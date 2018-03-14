@@ -184,7 +184,7 @@
                 let top_menu = this.$refs.top_menu;
                 let top_menu_w = top_menu.clientWidth;
                 this.step_width = (this.m_w - top_menu_w) / (this.menu_len - 3);
-                console.log('top_menu_w=', top_menu_w, 'step_width=', this.step_width)
+                // console.log('top_menu_w=', top_menu_w, 'step_width=', this.step_width)
             },
             _setMenuW() {
                 let items = this.$refs.top_menu_item;

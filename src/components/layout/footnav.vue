@@ -42,6 +42,7 @@
 
         methods: {
             go(name, index) {
+                // console.log('footnav', name, this[name]);
                 if ((name === 'home' && !this.home)/* || (name === 'new_arrivals' && !this.new_arrivals)*/ || (name === 'category' && !this.category) || (name === 'cart' && !this.cart) || (name === 'user' && !this.user)) {
                     $loading.show()
                 }

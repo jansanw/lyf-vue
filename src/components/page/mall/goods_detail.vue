@@ -21,8 +21,9 @@
                 <div class="infos">
                     <div class="area">
                         <div class="prices" style="display: flex;align-items: center;width:100%;">
-                            <div class="price theme-txt" style="color:#e02e24">¥<i>{{data.price|price_yuan}}</i>
-                                <b><strong>{{data.price|price_jiao}}</strong></b>
+                            <div class="price theme-txt" style="color:#e02e24">¥
+                                <i>{{data.price}}</i>
+                                <!--<b><strong>{{data.price}}</strong></b>-->
                             </div>
                             <div class="price-old" v-show="data.price_market">¥{{data.price_market | price_yuan}}</div>
                             <!--<div style="padding-left: .27rem;">-->
@@ -41,7 +42,7 @@
                             <span>{{data.name}}</span>
                         </h3>
                         <div class="hm-flex" @click="collect(data.id)"
-                             style="width: 1.2rem;flex-direction: column;align-items:center;font-size: .27rem;padding-left: .13rem;">
+                             style="width: 2rem;flex-direction: column;align-items:center;font-size: .27rem;padding-left: .13rem;">
                             <i class="iconfont icon-favorite" :class="{'color-theme':collected}"
                                style="font-size: .59rem;"></i>
                             <template v-show="collected">已</template>
@@ -93,14 +94,14 @@
                     </li>
                 </ul>
 
-                <ul class="aui-list " v-if="false">
-                    <li class="aui-list-item aui-list-item-middle" @click="go_comment(id)">
-                        <div class="aui-list-item-inner ">
-                            买家口碑
-                            <i class="icon ion-ios-arrow-right" style="color: #DDD;"></i>
-                        </div>
-                    </li>
-                </ul>
+                <!--<ul class="aui-list " v-if="false">-->
+                <!--<li class="aui-list-item aui-list-item-middle" @click="go_comment(id)">-->
+                <!--<div class="aui-list-item-inner ">-->
+                <!--买家口碑-->
+                <!--<i class="icon ion-ios-arrow-right" style="color: #DDD;"></i>-->
+                <!--</div>-->
+                <!--</li>-->
+                <!--</ul>-->
 
                 <!--<div class="reviews hm-margin-b">-->
                 <!--<ul class="review-list">-->
@@ -171,7 +172,7 @@
                     <div class="hm-flex" :style="'width:'+recommend_list_w+'px'">
                         <template v-for="item in data.recommend">
                             <div ref="recommend_scl_item" @click="go_goods(item.id)">
-                                <div style="width:130px; margin:5px;">
+                                <div style="width:130px; margin:5px;text-align: center">
                                     <img v-lazy="item.cover" style="background-color:#ffffff; width:100%;">
                                     <p class="aui-ellipsis-2">{{item.name}}</p>
                                 </div>
@@ -345,6 +346,20 @@
                         this.data = data;
                         this.init = true;
                         $loading.hide();
+                        // console.log(this.data.stock[0].list[0]);
+                        if (this.data.stock[0].list.length === 1) {
+                            this.data.price = this.data.stock[0].list[0].price;
+                        } else {
+                            let _price = [0, 0];
+                            this.data.price = this.data.stock[0].list.map(item => {
+                                if (item.price < _price[0] || _price[0] === 0)
+                                    _price[0] = item.price.toFixed(2);
+                                if (item.price > _price[1])
+                                    _price[1] = item.price.toFixed(2);
+                            });
+                            this.data.price = _price.join("~");
+                        }
+                        this.$store.commit('ACTION_SHEET_STOCK', this.data.stock[0].list[0]);
                         //更新init_spec，init_spec_name至vuex
                         // this.$store.commit('ACTIONSHEET_UPDATE', {
                         //     key: 'cur_specx',
@@ -425,7 +440,8 @@
                 })
             },
             go_goods(id) {
-                this.id = id;
+                // this.id = id;
+                console.log('go_goods', id);
                 $router.push({
                     name: 'goods_detail',
                     params: {

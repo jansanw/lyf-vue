@@ -58,21 +58,16 @@
                     </div>
                 </li>
             </ul>
-
-
         </div>
     </div>
 
 </template>
 
 <script>
-
     export default {
-
         data() {
             return {
                 init: false,
-
             }
         },
         mounted() {

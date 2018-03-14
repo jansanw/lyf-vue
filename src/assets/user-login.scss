@@ -938,15 +938,14 @@ input {
 [data-dpr="3"] #t-user a {
     margin-right: 33px
 }
-.btn {
-    background-size: cover;
-    display: inline-block;
-    height: 0;
-    overflow: hidden;
-    text-decoration: none;
-    width: 24px;
-    height: 24px
-}
+//.btn {
+//    background-size: cover;
+//    display: inline-block;
+//    overflow: hidden;
+//    text-decoration: none;
+//    width: 24px;
+//    height: 24px
+//}
 [data-dpr="2"] .btn {
     width: 48px
 }

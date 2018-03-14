@@ -13,18 +13,47 @@
     .normalInput {
         padding: 0 .2rem;
     }
+
+    .get-code {
+        right: 0;
+        top: 0;
+        height: 48px;
+        line-height: 48px;
+        font-size: 14px;
+        color: #999;
+    }
+
+    #code_btn img {
+        padding: 0;
+        width: 90px;
+        height: 34px;
+        line-height: 34px;
+        margin-right: 30px;
+        vertical-align: middle;
+    }
+
+    .btn-code {
+        border: 1px solid #ccc;
+        padding: 8px 10px;
+        border-radius: 4px;
+    }
+
+    .enable-code {
+        color: #ff464e;
+        border-color: #ff464e;
+    }
 </style>
 
 <template lang="html">
     <div class="page has-navbar">
         <von-header class="fx">
             <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.go(-1)"></button>
-            <span slot="title">登录</span>
+            <span slot="title">登 录</span>
         </von-header>
         <div class="page-content" style="background:#ffffff;">
             <div class="wap-login">
                 <ul id="login_switch" class="login-txt">
-                    <li :class="{'active' : type == 1}" @click="type = 2">手机快捷登录</li>
+                    <li :class="{'active' : type == 1}" @click="type = 1">手机快捷登录</li>
                     <li :class="{'active' : type == 2}" @click="type = 2">账号登录</li>
                 </ul>
                 <form id="normal-logo" action="/user/login" method="post" enctype="application/x-www-form-urlencoded"
@@ -42,9 +71,9 @@
                             </li>
                         </ul>
                         <a id="btn_login"
-                           :class="{sub:true, 'disable-btn':!(account.length > 5 && password.length > 5)}"
+                           :class="{sub:true, 'disable-btn':!validate}"
                            rel="nofollow"
-                           @click="login">登 录</a>
+                           @click="validate && login()">登 录</a>
                         <div id="login_l" class="other-action">
                             <label class="freeLogin on" style="line-height:.99rem;">
                                 <input type="checkbox" class="ck" name="auto" v-model="remember">
@@ -53,30 +82,44 @@
                         </div>
                     </div>
                 </form>
-                <form id="quick-login" action="/muser/password" method="post" v-if="type==1"
+                <form id="quick-login" method="post" v-if="type==1"
                       enctype="application/x-www-form-urlencoded">
                     <div class="login-info">
                         <ul class="info-input clear">
                             <li>
-                                <input type="tel" pattern="[0-9]*" placeholder="手机号" id="mobile" name="mobile"
-                                       class="normalInput">
+                                <input type="tel" pattern="[0-9]*" placeholder="手机号" name="mobile"
+                                       class="normalInput" v-model="account">
                             </li>
                             <li>
                                 <div class="quickLoginHmtl clear">
-                                    <input type="tel" class="code-txt normalInput fl" id="code" placeholder="验证码"
-                                           name="code">
-                                    <a class="btn_get get-code disable-code" id="code_btn" href="javascript:;">获取验证码</a>
+                                    <input type="tel" class="code-txt normalInput fl" placeholder="图形验证码"
+                                           name="code" v-model="captcha">
+                                    <a id="code_btn" href="javascript:;">
+                                        <img class="btn-code get-code" id="captcha-code" :src="captchaSrc"
+                                             @click="captchaImage()"/>
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="quickLoginHmtl clear">
+                                    <input type="tel" class="code-txt normalInput fl" id="code" placeholder="短信验证码"
+                                           name="code" v-model="code" autocomplete="off">
+                                    <a :class="{'btn-code':true, 'get-code':true, 'enable-code':validateCode}"
+                                       @click="smsCode()">
+                                        <template v-if="codeCountDown > 0">已发送({{codeCountDown}}s)</template>
+                                        <template v-else>获取验证码</template>
+                                    </a>
                                 </div>
                             </li>
                         </ul>
-                        <input type="hidden" name="mtoken" value="2dee9a13913334435eb81a6efd3e61ac" id="mtoken">
-                        <input type="hidden" name="mtokenact" value="quick" id="mtokenact">
-                        <a id="btn_quick_login" class="sub codeBtn disable-btn" rel="nofollow">登 录</a>
-                        <a style="display:none;" id="normal_login" class="sub disable-btn" rel="nofollow">登 录</a>
+                        <a id="btn_quick_login" :class="{sub:true, codeBtn:true, 'disable-btn':!validate}"
+                           rel="nofollow" @click="validate && login()">登 录</a>
+                        <!--<a style="display:none;" id="normal_login" class="sub disable-btn" rel="nofollow">登 录</a>-->
                         <div id="quick_l" class="other-action">
                             <label class="freeLogin on" style="line-height:.99rem;">
-                                <input type="checkbox" class="ck" name="auto_quick" checked="checked"><i class="before"><img
-                                    :src="lable_on"></i>两周内免登录</label>
+                                <input type="checkbox" class="ck" name="auto" v-model="remember">
+                                <i :class="{before:true, 'un-remember':!remember}"><img :src="lable_on"></i>两周内免登录
+                            </label>
                         </div>
                     </div>
                 </form>
@@ -101,42 +144,100 @@
         name: "login",
         data() {
             return {
-                type: 2,
-                account: '',//"18126417044",
-                password: '',//"1234567",
+                type: 1,
+                account: "15889933997",//'',
+                password: "123456",//'',
+                captcha: "",
+                captchaId: "",
+                captchaSrc: '',
                 remember: false,
                 lable_on: require("../../assets/images/label_on.png"),
-                openId: ''
+                openId: '',
+                code: '',
+                codeCountDown: 0,
+                interval: null
             }
         },
         mounted() {
+            this.captchaImage();
+
             this.openId = this.$route.params.openId || '';
             if (this.isWechat && !this.openId)
                 this.wechatAuth();
             this.$api.l_set('open_id', this.openId);
-            // console.log(this.openId);
         },
         computed: {
             isWechat() {
                 return /MicroMessenger/.test(window.navigator.userAgent);
+            },
+            validate() {
+                if (!/^1((3|5|8){1}\d{1}|70)\d{8}$/.test(this.account))
+                    return false;
+                if (this.type === 1 && /\d{3,6}/.test(this.code))
+                    return true;
+                else if (this.type === 2 && this.password)
+                    return true;
+                return false;
+            },
+            validateCode() {
+                if (!/^1((3|5|8){1}\d{1}|70)\d{8}$/.test(this.account))
+                    return false;
+                if (!/\d{3,6}/.test(this.captcha))
+                    return false;
+                if (this.codeCountDown > 0)
+                    return false;
+                return true;
             }
         },
         methods: {
+            smsCode() {
+                if (!this.validateCode || this.codeCountDown > 0)
+                    return;
+                this.codeCountDown = 60;
+                $loading.show();
+                this.$api.userGet("/sms_code?" + Qs.stringify({
+                    template: "login",
+                    mobile: this.account,
+                    captcha_id: this.captchaId,
+                    captcha: this.captcha
+                }), rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        this.interval = setInterval(() => {
+                            this.codeCountDown--;
+                            if (this.codeCountDown <= 0)
+                                clearInterval(this.interval);
+                        }, 1000);
+                    }, err => {
+                        this.codeCountDown = 0;
+                        this.captcha = '';
+                    });
+                });
+            },
             login() {
                 $loading.show();
                 this.$api.userGet("/user/login?" + Qs.stringify({
                     account: this.account,
                     password: this.password,
-                    remember: this.remember
+                    remember: this.remember,
+                    code: this.code
                 }), rps => {
-                    this.$api.responseFilter(rps.data, function (data) {
+                    this.$api.responseFilter(rps.data, data => {
                         this.$api.l_set('token', data.token);
                         $router.replace(this.$api.s_get("login_back") || "home");
-                    }.bind(this));
+                    });
                 });
             },
             wechatAuth() {
                 window.location.href = "/wechat/auth?targetUrl=/wechat/login";
+            },
+            captchaImage() {
+                this.$api.userGet('/captcha?width=100&height=30&size=17', rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        this.captchaId = data.id;
+                        this.captchaSrc = data.captcha;
+                        this.captcha = '';
+                    })
+                })
             }
         }
     }

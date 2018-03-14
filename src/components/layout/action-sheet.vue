@@ -8,8 +8,9 @@
                         <img :src="goods_sku_img"><!--init_color_id @click="sku_show_pic()"  -->
                     </template>
                     <div class="infos">
-                        <p class="price">¥<strong id="J_sku-price">{{stock_choose.price}}</strong><span
-                                id="J_sku-stock"></span>
+                        <p class="price">¥
+                            <strong id="J_sku-price">{{(stock_choose.price || 0).toFixed(2)}}</strong>
+                            <span id="J_sku-stock"></span>
                         </p>
                         <p class="text">库存：{{stock_choose.stock}}</p>
                         <p class="text">已选
@@ -54,7 +55,9 @@
                                 <p class="btn-minus off" @click="decline">
                                     <a class="btn minus" min=""></a>
                                 </p>
-                                <p class="btn-input"><input type="tel" v-model="quantity"></p>
+                                <p class="btn-input">
+                                    <input type="tel" v-model="quantity">
+                                </p>
                                 <p class="btn-plus" @click="add">
                                     <a class="btn plus" max=""></a>
                                 </p>
@@ -219,11 +222,11 @@
             //     }
             // },
             choose_stock(item) {
-                let _item = this.cart.find(v => {
-                    return v.id === item.id;
-                });
-                // console.log(_item);
-                this.$store.commit('ACTION_SHEET_STOCK', _item || item);
+                // let _item = this.cart.find(v => {
+                //     return v.id === item.id;
+                // });
+                // console.log('choose_stock', _item);
+                this.$store.commit('ACTION_SHEET_STOCK', item);
             },
             // choose_spec(index, key1, key2) {
             //     this.$set(this.cur_spec, index, key2);

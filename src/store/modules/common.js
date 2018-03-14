@@ -21,6 +21,7 @@ const state = {
     //     status_alias: "正常",
     //     sn: 2
     // }
+    balance: 0
 };
 const mutations = {
     ['UPDATE_COMMON_DATA'](state, payload) {
