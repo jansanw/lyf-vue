@@ -76,12 +76,12 @@
                                         <div class="hm-list-price hm-flex"
                                              style=" margin-top:.07rem;justify-content: space-between;">
                                             <div class="" style="color: #ee2e3a;font-weight: 700;">
-                                                <span>￥
+                                                <span v-if="showPirce">￥
                                                     <b>
-                                                        <strong style="font-size:.48rem;">{{item.price|price_yuan}}</strong>
+                                                        <strong style="font-size:.48rem;">{{item.price.toFixed(2)}}</strong>
                                                     </b>
-                                                    {{item.price|price_jiao}}
                                                 </span>
+                                                <span v-else>???</span>
                                             </div>
                                             <div class="hm-color-gray" style="color:#9c9c9c;">
                                                 <small>已售</small>
@@ -138,7 +138,8 @@
                     autoplay: 3000,
                     pagination: '.swiper-pagination'
                 },
-                top_menu_scroll: null
+                top_menu_scroll: null,
+                showPirce: false
             }
         },
         computed: mapState({
@@ -153,7 +154,6 @@
             is_load: state => state.home.list[state.home.active].is_load,
             load_more: state => state.home.list[state.home.active].load_more,
             more_data: state => state.home.list[state.home.active].more_data,
-
         }),
         mounted() {
             $loading.hide();
@@ -306,6 +306,11 @@
             goTop() {
                 document.querySelector(".scroll").scrollTop = 0
             }
+        },
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                vm.showPirce = vm.$api.l_get('token');
+            })
         }
     }
 </script>

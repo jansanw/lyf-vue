@@ -341,7 +341,7 @@
             },
             getData() {
                 $loading.show("");
-                this.$api.userGet('goods/detail?id=' + this.id, rps => {
+                this.$api.userAuthGet('goods/detail?id=' + this.id, rps => {
                     this.$api.responseFilter(rps.data, data => {
                         this.data = data;
                         this.init = true;

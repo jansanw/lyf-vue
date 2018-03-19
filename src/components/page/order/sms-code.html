@@ -1,0 +1,91 @@
+<template lang="html">
+    <div class="page">
+        <div class="page-content">
+            <von-input type="text" v-model="name" label="姓名"></von-input>
+            <von-input type="tel" v-model="mobile" label="电话"></von-input>
+            <hl-item class="item-icon-right" @click.native="choseAdd">地区
+                <div class="item-note" v-if="Province && City && District">{{Province}} {{City}} {{District}}</div>
+                <div class="item-note" v-else>请选择地区</div>
+                <span class="icon ion-ios-arrow-right"></span></hl-item>
+            <von-input type="text" v-model="street" placeholder="请填写详细街道地址" label="街道"></von-input>
+            <div class="pd-10">
+                <button class="button button-assertive button-block" :disabled="ck_save" @click="save_address()">保存
+                </button>
+            </div>
+
+        </div>
+    </div>
+</template>
+
+<script>
+    import bus from '../../../bus.js'
+
+    export default {
+        data() {
+            return {
+                id: -1,
+                name: "",
+                mobile: "",
+                street: "",
+                showChose: false,
+                showProvince: true,
+                showCity: false,
+                showDistrict: false,
+                showCityList: false,
+                showDistrictList: false,
+                province_id: 0,
+                city_id: 0,
+                district_id: 0,
+                GetProvinceId: 2,
+                District: false,
+                Province: false,
+                City: false,
+                // v-for循环判断是否为当前
+                selected: false,
+                info: []
+            }
+        },
+        computed: {},
+        watch: {
+            id(val, oldVal) {
+                if (val !== oldVal && val > 0) {
+                    if (this.info.length <= 0) {
+                        $loading.show();
+                        this.getData()
+                    } else {
+                        this.init_address()
+                    }
+                }
+            },
+            info(val, oldVal) {
+                if (val.length > 0) {
+                }
+            }
+        },
+        methods: {}
+    }
+</script>
+
+<style lang="css">
+    .title h4 {
+        display: inline-block;
+        font-weight: normal;
+        color: #999;
+        margin: 0;
+        padding: 0 0 0 .27rem;
+        font-size: .4rem;
+        line-height: 1.2rem;
+    }
+
+    .title span {
+        position: absolute;
+        right: 0;
+        width: 1.2rem;
+        height: 1.2rem;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 1.2rem;
+        font-size: .4rem;
+        color: #EA5A49;
+    }
+</style>

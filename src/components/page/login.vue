@@ -54,7 +54,7 @@
             <div class="wap-login">
                 <ul id="login_switch" class="login-txt">
                     <li :class="{'active' : type == 1}" @click="type = 1">手机快捷登录</li>
-                    <li :class="{'active' : type == 2}" @click="type = 2">账号登录</li>
+                    <li :class="{'active' : type == 2}" @click="type = 2" style="display: none">账号登录</li>
                 </ul>
                 <form id="normal-logo" action="/user/login" method="post" enctype="application/x-www-form-urlencoded"
                       v-if="type == 2">
@@ -145,8 +145,8 @@
         data() {
             return {
                 type: 1,
-                account: "15889933997",//'',
-                password: "123456",//'',
+                account: '',//"15889933997",
+                password: '',//"123456",
                 captcha: "",
                 captchaId: "",
                 captchaSrc: '',

@@ -59,8 +59,10 @@
             <list v-for="(item, index) in list" :key="item.id">
                 <item thin>
                     {{ item.subject }}
-                    <strong :class="{ 'red' : item.type == 1 }">￥：{{ item.type == 1 ? '+' : '-' }}{{
-                        item.amount.toFixed(2) }}</strong>
+                    <!---->
+                    <strong :class="{ 'red' : item.type % 2 }">￥：
+                        {{ item.type % 2 ? '+' : '-' }}
+                        {{ item.amount.toFixed(2) }}</strong>
                 </item>
                 <item>
                     [{{ channel[item.channel] }}] / {{ item.order_number }}
@@ -89,7 +91,7 @@
                 list: [],
                 page: 1,
                 pageCount: 0,
-                channel: {'wx_charge': '微信支付', 'ali_charge': '支付宝支付', 'wallet': '钱包支付'}
+                channel: {wx_charge: '微信支付', ali_charge: '支付宝支付', wallet: '钱包支付', backend: '后台充值'}
             }
         },
 

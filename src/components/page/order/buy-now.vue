@@ -1,4 +1,24 @@
-<style lang="css">
+<style lang="scss" scoped>
+    #sms-code .action-sheet-option {
+        height: 44px;
+        padding: 7px;
+        input {
+            display: inline;
+            width: 70%;
+        }
+        span {
+            font-size: 13px;
+            color: #ccc;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 4px;
+        }
+        .red {
+            color: #ff464e;
+            border-color: #ff464e;
+        }
+    }
+
 
 </style>
 
@@ -61,7 +81,7 @@
                                         </div>
                                         <div class="obi-second">
                                             <p class="type fl">{{item.stock_name}}</p>
-                                            <p class="old fr">×{{item.quantity}}</p>
+                                            <p class="old fr">×{{item.quantity || item.number}}</p>
                                         </div>
                                     </div>
                                 </a>
@@ -141,7 +161,34 @@
         <!--<order-store-voucher-list :popupVisible="order_store_voucher_list_show"-->
         <!--:voucherlist="order_store_voucher_list_data" :voucherInfo="order_store_voucher_info"-->
         <!--:storename="order_store_voucher_list_name"></order-store-voucher-list>-->
+
+        <div class="action-sheet-backdrop active" von-action-sheet="" theme="weixin" id="sms-code"
+             v-if="payment.smsShow">
+            <div class="action-sheet-wrapper action-sheet-up">
+                <div class="action-sheet">
+                    <div class="action-sheet-group">
+                        <div class="action-sheet-title" style="text-align: right" @click="payment.smsShow = false">
+                            <span>x</span>
+                        </div>
+                        <div class=" action-sheet-option" style="height: 44px">
+                            <div class="hairline-top"></div>
+                            <input type="number" placeholder="短信验证码" v-model="payment.smsCode"/>
+                            <span @click="smsCode()" :class="{red:codeCountDown <= 0}">
+                                <template v-if="codeCountDown > 0">已发送({{codeCountDown}}s)</template>
+                                <template v-else>获取验证码</template>
+                            </span>
+                            <div class="hairline-bottom"></div>
+                        </div>
+                    </div>
+                    <div class="action-sheet-group action-sheet-cancel">
+                        <button class="button" @click="payment_wallet()">确 定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
 </template>
 
 <script>
@@ -182,15 +229,18 @@
                 // order_store_voucher_info: null,
                 // order_store_voucher_list_show: false,
                 // order_store_voucher_list_name: "店铺优惠",
+                codeCountDown: 0,
                 payment: {
                     type: 2,
                     flag: false,
-                    order_number: '',
+                    // order_number: '',
                     channel: 'alipay',
                     ticket: {
                         alipay: null,
                         wxpay: null
-                    }
+                    },
+                    smsShow: false,
+                    smsCode: ''
                 },
             }
         },
@@ -342,6 +392,24 @@
             select_address() {
                 this.modal.show()
             },
+            smsCode() {
+                if (this.codeCountDown > 0)
+                    return;
+                this.codeCountDown = 60;
+                $loading.show();
+                this.$api.userAuthGet("/wallet/code", rps => {
+                    this.$api.responseFilter(rps.data, data => {
+                        this.interval = setInterval(() => {
+                            this.codeCountDown--;
+                            if (this.codeCountDown <= 0)
+                                clearInterval(this.interval);
+                        }, 1000);
+                    }, err => {
+                        this.codeCountDown = 0;
+                        this.payment.smsCode = '';
+                    });
+                });
+            },
             payment_channel($channel) {
                 if (this.payment.flag) {
                     $toast.show("支付启动中，请稍等...");
@@ -365,9 +433,11 @@
                 }
                 if (this.order_number) {
                     $toast.show("正在启动支付");
-                    if (this.payment.channel === "wallet")
-                        this.payment_wallet();
-                    else
+                    if (this.payment.channel === "wallet") {
+                        // this.payment_wallet();
+                        this.payment.smsShow = true;
+                        // this.smsCode();
+                    } else
                         this.payment_create();
                     return;
                 }
@@ -384,16 +454,25 @@
                         this.order_number = data.order_number;
                         this.$store.commit('UPDATE_COMMON_DATA', {cart_view_data_reload: true});
                         $toast.show("下单成功，正在启动支付");
-                        if (this.payment.channel === "wallet")
-                            this.payment_wallet();
-                        else
+                        if (this.payment.channel === "wallet") {
+                            // this.payment_wallet();
+                            this.payment.smsShow = true;
+                            this.smsCode();
+                        } else
                             this.payment_create();
                     })
                 })
             },
             payment_wallet() {
+                if (!this.payment.smsCode) {
+                    $toast.show("请输入短信验证码");
+                    return;
+                }
+                $loading.show();
+                this.payment.smsShow = false;
                 this.$api.userAuthPost("/wallet/payment", {
-                    order_number: this.order_number
+                    order_number: this.order_number,
+                    code: this.payment.smsCode
                 }, rps => {
                     this.$api.responseFilter(rps.data, data => {
                         $router.replace({
@@ -402,6 +481,8 @@
                         });
                     }, err => {
                         this.payment.flag = false;
+                        this.payment.smsCode = '';
+                        // this.payment.smsShow = true;
                     });
                 });
 
